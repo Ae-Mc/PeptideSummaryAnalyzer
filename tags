@@ -1,0 +1,53 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ApplyParamsFilter	PeptideSummaryAnalyzer_8.py	/^def ApplyParamsFilter(unused: Comparable,$/;"	f
+Comparable	PeptideSummaryAnalyzer_8.py	/^class Comparable():$/;"	c
+GetFileLines	PeptideSummaryAnalyzer_8.py	/^def GetFileLines(filename: str) -> list:$/;"	f
+GetParam	PeptideSummaryAnalyzer_8.py	/^def GetParam(paramString: str) -> Comparable:$/;"	f
+ID	PeptideSummaryAnalyzer_7.1.py	/^class ID(dict):$/;"	c
+ID	PeptideSummaryAnalyzer_7.py	/^class ID(dict):$/;"	c
+INPUTPATH	PeptideSummaryAnalyzer_7.1.py	/^INPUTPATH = "Input"$/;"	v
+INPUTPATH	PeptideSummaryAnalyzer_7.py	/^INPUTPATH = "Input"$/;"	v
+INPUTPATH	PeptideSummaryAnalyzer_8.py	/^INPUTPATH = ".\/Input"$/;"	v
+IsFloat	PeptideSummaryAnalyzer_8.py	/^def IsFloat(var: str) -> bool:$/;"	f
+OUTPUTPATH	PeptideSummaryAnalyzer_7.1.py	/^OUTPUTPATH = "Output\/"$/;"	v
+OUTPUTPATH	PeptideSummaryAnalyzer_7.py	/^OUTPUTPATH = "Output\/"$/;"	v
+ReadPeptideSummary	PeptideSummaryAnalyzer_8.py	/^def ReadPeptideSummary(inputDir: str) -> dict:$/;"	f
+ReadSeqDB	PeptideSummaryAnalyzer_8.py	/^def ReadSeqDB(seqDBFilename: str) -> dict:$/;"	f
+ReadTable	PeptideSummaryAnalyzer_8.py	/^def ReadTable(tableFilename: str, sep='\\t') -> dict:$/;"	f
+Sequence	PeptideSummaryAnalyzer_8.py	/^class Sequence():$/;"	c
+__init__	PeptideSummaryAnalyzer_7.1.py	/^    def __init__(self):$/;"	m	class:ID
+__init__	PeptideSummaryAnalyzer_7.py	/^	def __init__(self):$/;"	m	class:ID
+__init__	PeptideSummaryAnalyzer_8.py	/^    def __init__(self):$/;"	m	class:Sequence
+__init__	PeptideSummaryAnalyzer_8.py	/^    def __init__(self, op: str="", unused: str=""):$/;"	m	class:Comparable
+compare	PeptideSummaryAnalyzer_7.1.py	/^    def compare(op, arg1, arg2):$/;"	f	function:getInfoFromFiles
+compare	PeptideSummaryAnalyzer_7.py	/^	def compare(op, arg1, arg2):$/;"	f	function:getInfoFromFiles
+compare	PeptideSummaryAnalyzer_8.py	/^    def compare(self, value, filename: str) -> bool:$/;"	m	class:Comparable
+getInfoFromFiles	PeptideSummaryAnalyzer_7.1.py	/^def getInfoFromFiles(idFileName, IDs, IDExclusionList, seqDB, db, rawOutput,$/;"	f
+getInfoFromFiles	PeptideSummaryAnalyzer_7.py	/^def getInfoFromFiles(idFileName, IDs, IDExclusionList, seqDB, db, rawOutput, confOp, conf, contribOp, contrib, unusedOp, unused):$/;"	f
+getOpData	PeptideSummaryAnalyzer_7.1.py	/^    def getOpData(string):$/;"	f	function:inputParams
+getOpData	PeptideSummaryAnalyzer_7.py	/^	def getOpData(string):$/;"	f	function:inputParams
+inputParams	PeptideSummaryAnalyzer_7.1.py	/^def inputParams(idFileName, idExclusionFileName, dbFileName, input_unused,$/;"	f
+inputParams	PeptideSummaryAnalyzer_7.py	/^def inputParams(idFileName, idExclusionFileName, dbFileName, input_unused,$/;"	f
+isFloat	PeptideSummaryAnalyzer_7.1.py	/^def isFloat(string):$/;"	f
+main	PeptideSummaryAnalyzer_7.1.py	/^def main():$/;"	f
+main	PeptideSummaryAnalyzer_7.py	/^def main():$/;"	f
+main	PeptideSummaryAnalyzer_8.py	/^def main():$/;"	f
+outParams	PeptideSummaryAnalyzer_7.1.py	/^outParams = ["Unused", "seq_length_summ", "counts", "Sc_summ", "Psignal_summ",$/;"	v
+outParams	PeptideSummaryAnalyzer_7.py	/^outParams = ["Unused", "seq_length_summ", "counts", "Sc_summ", "Psignal_summ", "Sc_norm", "Psignal_norm", "SP_2", "seq_length"]$/;"	v
+outputResultsToFiles	PeptideSummaryAnalyzer_7.1.py	/^def outputResultsToFiles(rawOutput, trueOutput, seqDB,$/;"	f
+outputResultsToFiles	PeptideSummaryAnalyzer_7.py	/^def outputResultsToFiles(rawOutput, trueOutput, seqDB, seqDescDB, shortFileNames):$/;"	f
+params	PeptideSummaryAnalyzer_7.1.py	/^params = ["Unused", "seq_length_summ", "counts", "Sc_summ", "Psignal_summ",$/;"	v
+params	PeptideSummaryAnalyzer_7.py	/^params = ["Unused", "seq_length_summ", "counts", "Sc_summ", "Psignal_summ", "Sc_norm", "Psignal_norm", "SP_2"]$/;"	v
+positions	PeptideSummaryAnalyzer_7.1.py	/^positions = {$/;"	v
+positions	PeptideSummaryAnalyzer_7.py	/^positions = {$/;"	v
+rawOutputToTrueOutput	PeptideSummaryAnalyzer_7.1.py	/^def rawOutputToTrueOutput(IDs, seqDB, rawOutput, shortFileNames,$/;"	f
+rawOutputToTrueOutput	PeptideSummaryAnalyzer_7.py	/^def rawOutputToTrueOutput(IDs, seqDB, rawOutput, shortFileNames, maxGroupAbsence, minGroupsWithId):$/;"	f
+readInputFiles	PeptideSummaryAnalyzer_7.1.py	/^def readInputFiles():$/;"	f
+readInputFiles	PeptideSummaryAnalyzer_7.py	/^def readInputFiles():$/;"	f
+val	PeptideSummaryAnalyzer_8.py	/^    def val(self):$/;"	m	class:Comparable
+val	PeptideSummaryAnalyzer_8.py	/^    def val(self, value):$/;"	m	class:Comparable

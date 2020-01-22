@@ -1,0 +1,66 @@
+N	Unused	Total	%Cov	%Cov(50)	%Cov(95)	Accession	Name	Species	Peptides(95%)			Biological Processes	Molecular Function	PANTHER ID
+1	16.59	16.59	56.1100006103516	48.1799989938736	44.879999756813	Efra.gene16498_i0_length912.p1	Efra.gene16498_i0_length912.p1		12					
+2	12.12	12.12	57.4299991130829	46.5299993753433	46.5299993753433	Efra.gene24458_i0_length609.p1	Myophilin	i0_length609.p1	8					
+3	9.45	9.45	36.379998922348	18.9500004053116	18.9500004053116	Efra.gene9182_i0_length1380.p1	Efra.gene9182_i0_length1380.p1		5					
+4	8.23	8.23	31.1300009489059	31.1300009489059	31.1300009489059	Efra.gene50115_i0_length321.p1	Efra.gene50115_i0_length321.p1		6					
+5	8	8	60.7800006866455	58.8199973106384	58.8199973106384	Efra.gene29886_i0_length489.p1	Efra.gene29886_i0_length489.p1		9					
+6	8	8	62.7300024032593	62.7300024032593	62.7300024032593	Efra.gene47379_i0_length333.p1	Fibrinogen alpha chain [Cleaved into: Fibrinopeptide A; Fibrinogen alpha chain]	Cleaved into: Fibrinopeptide A; Fibrinogen alpha chain	5					
+7	6	6	49.6399998664856	40.149998664856	40.149998664856	Efra.gene35579_i0_length414.p1	Efra.gene35579_i0_length414.p1		4					
+8	5.96	6	17.9800003767014	17.9800003767014	15.4599994421005	Efra.gene14678_i0_length1005.p1	Metalloproteinase inhibitor 2 (Tissue inhibitor of metalloproteinases 2) (TIMP-2)	i0_length1005.p1	3					
+8	0	3.85	19.5899993181229	10.8199998736382	10.8199998736382	Efra.gene14246_i0_length1029.p1	Metalloproteinase inhibitor 3 (Tissue inhibitor of metalloproteinases 3) (TIMP-3)	i0_length1029.p1	2					
+9	4.01	4.01	23.3400002121925	6.89700022339821	6.89700022339821	Efra.gene12442_i0_length1134.p1	Actin-1/2	i0_length1134.p1	2					
+9	0	4.01	25.3899991512299	6.8060003221035	6.8060003221035	Efra.gene12182_i0_length1149.p1	Actin, non-muscle 6.2	i0_length1149.p1	2					
+9	0	4.01	23.6599996685982	6.34099990129471	6.34099990129471	Efra.gene10979_i0_length1233.p1	Actin, non-muscle 6.2	i0_length1233.p1	2					
+9	0	4.01	22.5700005888939	6.82400017976761	6.82400017976761	Efra.gene12280_i0_length1146.p1	Actin, clone 205	i0_length1146.p1	2					
+9	0	4.01	20.9000006318092	6.87799975275993	6.87799975275993	Efra.gene10979_i3_length1134.p1	Actin, non-muscle 6.2	i3_length1134.p1	2					
+9	0	4.01	15.5599996447563	7.49299973249435	7.49299973249435	Efra.gene14059_i2_length1041.p1	Actin, cytoskeletal (M)	i2_length1041.p1	2					
+9	0	4.01	14.5600005984306	7.00799971818924	7.00799971818924	Efra.gene12819_i0_length1113.p1	Actin, cytoplasmic [Cleaved into: Actin, cytoplasmic, intermediate form]	Cleaved into: Actin, cytoplasmic, intermediate form	2					
+10	4.01	4.01	21.5200006961823	17.9399996995926	17.9399996995926	cont|0014|TRYP_PIG	Trypsin 9-231 [Sus scrofa (contaminant)]	Sus scrofa (contaminant)	2					
+11	4	4	2.83400006592274	1.19000002741814	1.19000002741814	Efra.gene330_i0_length5295.p1	Complement C3 [Cleaved into: Complement C3 beta chain; Complement C3 alpha chain; C3a anaphylatoxin; Complement C3 gamma chain] (Fragment)	Cleaved into: Complement C3 beta chain; Complement C3 alpha chain; C3a anaphylatoxin; Complement C3 gamma chain	2					
+12	4	4	28.4200012683868	21.8600004911423	21.8600004911423	Efra.gene26710_i0_length552.p1	Profilin	i0_length552.p1	2					
+13	3.7	3.7	20.7399994134903	11.4799998700619	11.4799998700619	Efra.gene18607_i0_length813.p1	Sushi domain-containing protein 2	i0_length813.p1	2					
+14	3.61	8.01	23.9099994301796	15.1700004935265	12.4099999666214	Efra.gene10049_i0_length1308.p1	Efra.gene10049_i0_length1308.p1		4					
+14	0	6.32	26.4899998903275	14.1299992799759	11.4799998700619	Efra.gene9364_i0_length1362.p1	Efra.gene9364_i0_length1362.p1		3					
+15	3.42	3.42	25.229999423027	20.5599993467331	20.5599993467331	Efra.gene49354_i0_length324.p1	Protocadherin Fat 3 (hFat3) (Cadherin family member 15) (FAT tumor suppressor homolog 3)	i0_length324.p1	2					
+15	0	2	25.5800008773804	6.39500021934509	6.39500021934509	Efra.gene28361_i0_length519.p1	Protocadherin Fat 1 (Cadherin family member 7) (Cadherin-related tumor suppressor homolog) (Protein fat homolog) [Cleaved into: Protocadherin Fat 1, nuclear form]	Cleaved into: Protocadherin Fat 1, nuclear form	1					
+16	3.24	3.24	16.5299996733665	13.1400004029274	13.1400004029274	Efra.gene21131_i1_length711.p1	Cysteine and glycine-rich protein 3 (Cysteine-rich protein 3) (CRP3) (LIM domain protein, cardiac) (Muscle LIM protein)	i1_length711.p1	2					
+17	2.66	2.66	41.8599992990494	41.8599992990494	32.5599998235703	Efra.gene56589_i0_length261.p1	Efra.gene56589_i0_length261.p1		2					
+18	2.06	2.06	50.5400002002716	23.6599996685982	23.6599996685982	Efra.gene62669_i0_length282.p1	Neuromacin-like protein	i0_length282.p1	2					
+19	2	6	58.9699983596802	36.7500007152557	36.7500007152557	Efra.gene42958_i0_length354.p1	Tenascin-R (TN-R) (Restrictin)	i0_length354.p1	5					
+20	2	2	8.97400006651878	1.92300006747246	1.92300006747246	cont|0011|KER	keratin 10 (epidermolytic hyperkeratosis; keratosis palmaris et plantaris) [Homo sapiens (contaminant)]	Homo sapiens (contaminant)	1					
+20	0	2	9.44399982690811	2.02399995177984	2.02399995177984	cont|0008|KER	keratin 10, type I, cytoskeletal - human [Homo sapiens (contaminant)]	Homo sapiens (contaminant)	1					
+20	0	2	12.4700002372265	2.77100000530481	2.77100000530481	cont|0006|KER	keratin-10 [Homo sapiens (contaminant)]	Homo sapiens (contaminant)	1					
+20	0	2	9.5890000462532	2.05499995499849	2.05499995499849	cont|0004|KER	Keratin 10 [Homo sapiens (contaminant)]	Homo sapiens (contaminant)	1					
+20	0	2	9.44399982690811	2.02399995177984	2.02399995177984	cont|0001|KER	Keratin, type I cytoskeletal 10 (Cytokeratin 10) (K10) (CK 10) [Homo sapiens (contaminant)]	Homo sapiens (contaminant)	1					
+20	0	2	10.1599998772144	3.125	3.125	cont|0005|KER	keratin 10 [Homo sapiens (contaminant)]	Homo sapiens (contaminant)	1					
+21	2	2	11.8000000715256	4.8140000551939	4.8140000551939	cont|0010|KER	keratin 1 (epidermolytic hyperkeratosis) [Homo sapiens (contaminant)]	Homo sapiens (contaminant)	1					
+21	0	2	11.8000000715256	4.8140000551939	4.8140000551939	cont|0009|KER	keratin 1 [Homo sapiens (contaminant)]	Homo sapiens (contaminant)	1					
+21	0	2	11.8000000715256	4.8140000551939	4.8140000551939	cont|0007|K2C1_HUMAN	Keratin, type II cytoskeletal 1 (Cytokeratin 1) (K1) (CK 1) (67 kDa cytokeratin) (Hair alpha protein) [Homo sapiens (contaminant)]	Homo sapiens (contaminant)	1					
+22	2	2	2.53500007092953	1.20700001716614	1.20700001716614	Efra.gene399_i0_length4974.p1	Fibropellin-1 (Epidermal growth factor-related protein 1) (Fibropellin-I) (SpEGF I) (UEGF-1)	i0_length4974.p1	1					
+22	0	2	23.2600003480911	23.2600003480911	23.2600003480911	Efra.gene399_i1_length261.p1	Thyroglobulin (Tg)	i1_length261.p1	1					
+23	2	2	12.2100003063679	4.94999997317791	4.94999997317791	Efra.gene16536_i2_length909.p1	Efra.gene16536_i2_length909.p1		1					
+23	0	2	14.4199997186661	14.4199997186661	14.4199997186661	Efra.gene16536_i3_length315.p1	Efra.gene16536_i3_length315.p1		1					
+24	2	2	17.0900002121925	10.2600000798702	10.2600000798702	Efra.gene41171_i0_length356.p1	Efra.gene41171_i0_length356.p1		1					
+24	0	2	13.9500007033348	13.9500007033348	13.9500007033348	Efra.gene41171_i1_length366.p1	Efra.gene41171_i1_length366.p1		1					
+25	2	2	11.3600000739098	5.30299991369247	5.30299991369247	Efra.gene19022_i1_length795.p1	Fucolectin-4	i1_length795.p1	1					
+25	0	2	12.5499993562698	5.85799999535084	5.85799999535084	Efra.gene18564_i2_length720.p1	Pentraxin fusion protein	i2_length720.p1	1					
+25	0	2	13.2200002670288	6.16700015962124	6.16700015962124	Efra.gene18564_i1_length813.p1	Pentraxin fusion protein	i1_length813.p1	1					
+25	0	2	14.8900002241135	14.8900002241135	14.8900002241135	Efra.gene19022_i0_length285.p1	Efra.gene19022_i0_length285.p1		1					
+26	2	2	1.28199998289347	1.28199998289347	1.28199998289347	Efra.gene482_i1_length4723.p1	Pregnancy zone protein (Alpha-2-macroglobulin) (Alpha-2-M) [Cleaved into: Alpha-2-macroglobulin 165 kDa subunit; Alpha-2-macroglobulin 35 kDa subunit]	Cleaved into: Alpha-2-macroglobulin 165 kDa subunit; Alpha-2-macroglobulin 35 kDa subunit	1					
+27	2	2	17.8000003099442	17.8000003099442	17.8000003099442	Efra.gene42777_i0_length357.p1	Efra.gene42777_i0_length357.p1		1					
+28	2	2	11.1800000071526	11.1800000071526	11.1800000071526	Efra.gene25400_i0_length486.p1	Titin (EC 2.7.11.1) (Connectin) (Rhabdomyosarcoma antigen MU-RMS-40.14)	i0_length486.p1	1					
+29	2	2	4.31299991905689	4.31299991905689	4.31299991905689	Efra.gene12747_i0_length1116.p1	Efra.gene12747_i0_length1116.p1		1					
+30	2	2	15.7100006937981	15.7100006937981	15.7100006937981	Efra.gene110165_i0_length213.p1	Ectonucleotide pyrophosphatase/phosphodiesterase family member 1 (E-NPP 1) (Lymphocyte antigen 41) (Ly-41) (Phosphodiesterase I/nucleotide pyrophosphatase 1) (Plasma-cell membrane glycoprotein PC-1) [Cleaved into: Ectonucleotide pyrophosphatase/phosphodiesterase family member 1, secreted form] [Includes: Alkaline phosphodiesterase I (EC 3.1.4.1); Nucleotide pyrophosphatase (NPPase) (EC 3.6.1.9) (Nucleotide diphosphatase)]	Cleaved into: Ectonucleotide pyrophosphatase/phosphodiesterase family member 1, secreted form	1					
+31	1.85	2	10.8800001442432	10.8800001442432	10.8800001442432	Efra.gene32379_i0_length452.p1	Efra.gene32379_i0_length452.p1		2					
+32	0.81	0.81	64.2099976539612	49.4700014591217	49.4700014591217	Efra.gene59574_i0_length288.p1	Neuromacin	i0_length288.p1	3					
+33	0.6	0.6	17.8299993276596	17.0499995350838	0	Efra.gene38041_i0_length390.p1	Histone H4	i0_length390.p1	1					
+34	0.3	0.3	13.3300006389618	13.3300006389618	0	Efra.gene60545_i1_length273.p1	Efra.gene60545_i1_length273.p1		0					
+34	0	0.3	8.63299965858459	8.63299965858459	0	Efra.gene34789_i0_length420.p1	Efra.gene34789_i0_length420.p1		0					
+35	0.09	0.09	11.9999997317791	11.9999997317791	0	Efra.gene38556_i0_length385.p1	Efra.gene38556_i0_length385.p1		0					
+36	0.07	0.07	29.3300002813339	15.9999996423721	0	Efra.gene42768_i0_length273.p1	Efra.gene42768_i0_length273.p1		0					
+37	0.05	0.05	23.6399993300438	4.26400005817413	0	Efra.gene17127_i6_length777.p1	Tropomyosin	i6_length777.p1	0					
+37	0	0.05	16.2499994039536	6.87500014901161	0	Efra.gene30370_i0_length483.p1	Tropomyosin	i0_length483.p1	0					
+37	0	0.05	17.8100004792213	7.53400027751923	0	Efra.gene17127_i5_length441.p1	Tropomyosin alpha-3 chain (Gamma-tropomyosin) (Tropomyosin-3)	i5_length441.p1	0					
+37	0	0.05	20.6300005316734	8.73000025749207	0	Efra.gene17127_i2_length381.p1	Tropomyosin alpha-3 chain (Gamma-tropomyosin) (Tropomyosin-3)	i2_length381.p1	0					
+37	0	0.05	8.90400037169456	3.76700013875961	0	Efra.gene17127_i0_length880.p1	Tropomyosin	i0_length880.p1	0					
+37	0	0.05	11.4600002765656	11.4600002765656	0	Efra.gene59164_i0_length291.p1	Tropomyosin alpha-1 chain (Alpha-tropomyosin) (Tropomyosin-1)	i0_length291.p1	0					
