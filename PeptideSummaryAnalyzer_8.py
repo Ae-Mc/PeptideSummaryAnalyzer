@@ -93,88 +93,24 @@ def ReadSeqDB(seqDBFilename: str) -> dict:
     return None
 
 
-def GetParam(paramString: str) -> Comparable:
-    """ Получение param
-
-    Получение param, общего для всех фалов, либо для каждого своего, из строки.
-    Формат: [операция][[имя файла] или [число]]
-    Примеры:
-        >=99
-        < paramList.txt"""
-
-    paramString = paramString.strip()
-    param = Comparable(
-        op=''.join([ch for ch in paramString if ch in "!=<>"]))
-
-    paramString = paramString[len(param.op):].strip()
-    if IsFloat(paramString):
-        param.val = float(paramString)
-    elif len(param.op) and len(paramString):
-        with open(paramString) as paramStringFile:
-            strings = paramStringFile.read().replace(' ', '\t').split('\n')
-            paramStrings = {}
-            for string in strings:
-                string = string.strip()
-                if len(string):
-                    paramStrings[string.split('\t')[0]] = string.split('\t')[1]
-            param.val = paramStrings
-    return param
-
-
-def GetFileLines(filename: str) -> list:
-    """ Returns list of file strings without newline symbols """
-
-    try:
-        with open(filename) as tfile:
-            return tfile.read().split('\n')
-    except FileNotFoundError:
-        return None
-
-
-def ApplyDefaultConf(peptideTables: Dict[str, Dict[str, List[str]]]):
-    """ default-условие: Accession учитывается, если хотя бы одна
-    из строк с ним имеет Conf >= 99 или минимум две строки имеют
-    Conf >= 95"""
-
-    for tableNum in peptideTables:
-        curTable = peptideTables[tableNum]
-        curTableLen = len(curTable["Unused"])
-        # Заносим все Accession в список Accession для удаления
-        # В процессе чтения списка записи из него будут удаляться
-        blackListByConfCondition: Dict[str, int] = {}
-        for accession in curTable["Accessions"]:
-            if accession not in blackListByConfCondition:
-                blackListByConfCondition[
-                    accession.split(';')[0]] = 0
-
-        i = 0
-        while i < curTableLen:
-            curAccession = curTable["Accessions"][i].split(';')[0]
-            if curAccession in blackListByConfCondition:
-                    blackListByConfCondition[curAccession] += (
-                        TestConfDedaultCondition(curTable["Conf"][i]))
-                    if blackListByConfCondition[curAccession] > 1:
-                        del blackListByConfCondition[curAccession]
-        RemoveAccessionsFromTableByBlacklist(curTable, blackListByCondition)
-    return peptideTables
-
-def RemoveAccessionsFromTableByBlackList(peptideTable: Dict[str, List[str]],
-    blackList: Dict[str, List[str]]):
-    i = 0
-    while i < curTableLen:
-        if(peptideTable["Accessions"][i].split(';')[0] in blackList):
-            RemoveRow(curTable, i)
-            curTableLen -= 1
-            i -= 1
-        i += 1
-
-
 def TestConfDefaultCondition(confVal: int):
     if float(confVal) >= 99.0:
         return 2
     if float(confVal) >= 95.0:
         return 1
     return 0
+
+
+def RemoveAccessionsFromTableByBlacklist(peptideTable: Dict[str, List[str]],
+                                         blackList: Dict[str, int]):
+    i = 0
+    curTableLen = len(peptideTable["Accessions"])
+    while i < curTableLen:
+        if(peptideTable["Accessions"][i].split(';')[0] in blackList):
+            RemoveRow(peptideTable, i)
+            curTableLen -= 1
+            i -= 1
+        i += 1
 
 
 def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:
@@ -190,55 +126,6 @@ def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:
     columns = [column for column in table]
     for column in columns:
         del table[column][rowNum]
-
-
-def ApplyParamsFilter(unused: Comparable,
-                      contrib: Comparable,
-                      conf: Comparable,
-                      peptideTables: Dict[str, Dict[str, List[str]]]) -> dict:
-    """ Применяем фильтры, завязанные на параметры unused, contib, conf.
-
-    peptideTables - словарь вида
-    {
-        "1.1": {
-            "Заголовок 1": ["Значение 1", "Значение 2", ..., "Значение n1"],
-            "Заголовок 2": ["Значение 1", "Значение 2", ..., "Значение n1"],
-            ..............................................................
-            "Заголовок N1": ["Значение 1", "Значение 2", ..., "Значение n1"]
-        },
-        "1.2": {
-            "Заголовок 1": ["Значение 1", "Значение 2", ..., "Значение n2"],
-            "Заголовок 2": ["Значение 1", "Значение 2", ..., "Значение n2"],
-            ..............................................................
-            "Заголовок N2": ["Значение 1", "Значение 2", ..., "Значение n2"]
-        },
-        ...,
-        "I-ый файл": {
-            "Заголовок 1": ["Значение 1", "Значение 2", ..., "Значение nI"],
-            "Заголовок 2": ["Значение 1", "Значение 2", ..., "Значение nI"],
-            ..............................................................
-            "Заголовок NI": ["Значение 1", "Значение 2", ..., "Значение nI"]
-        }
-    }
-
-    Возвращаем словарь с уже применёнными фильрами.
-    """
-
-    for tableNum in peptideTables:
-        curTable = peptideTables[tableNum]
-        curTableLen = len(curTable["Unused"])
-        i = 0
-
-        while i < curTableLen:
-            if not (unused.compare(curTable["Unused"][i], tableNum) and
-                    contrib.compare(curTable["Contrib"][i], tableNum) and
-                    conf.compare(curTable["Conf"][i], tableNum)):
-                RemoveRow(curTable, i)
-                i -= 1
-                curTableLen -= 1
-            i += 1
-
-    return peptideTables
 
 
 # TODO: Сделать применение белого/чёрного списков
@@ -332,7 +219,9 @@ def GetScPsigFileSumm(peptideTables: Dict[str, Dict[str, List[str]]]) -> Dict:
         while i < len(curTable["Sc"]):
             curSumm["Sc"] += float(curTable["Sc"][i])
             curSumm["pSignal"] += float(curTable["PrecursorSignal"][i])
+            i += 1
     return fileSumms
+
 
 # Может ли переменная быть приведена к типу float
 def IsFloat(var: str) -> bool:
@@ -341,6 +230,122 @@ def IsFloat(var: str) -> bool:
         return True
     except (ValueError, TypeError):
         return False
+
+
+def ApplyParamsFilter(unused: Comparable,
+                      contrib: Comparable,
+                      conf: Comparable,
+                      peptideTables: Dict[str, Dict[str, List[str]]]) -> dict:
+    """ Применяем фильтры, завязанные на параметры unused, contib, conf.
+
+    peptideTables - словарь вида
+    {
+        "1.1": {
+            "Заголовок 1": ["Значение 1", "Значение 2", ..., "Значение n1"],
+            "Заголовок 2": ["Значение 1", "Значение 2", ..., "Значение n1"],
+            ..............................................................
+            "Заголовок N1": ["Значение 1", "Значение 2", ..., "Значение n1"]
+        },
+        "1.2": {
+            "Заголовок 1": ["Значение 1", "Значение 2", ..., "Значение n2"],
+            "Заголовок 2": ["Значение 1", "Значение 2", ..., "Значение n2"],
+            ..............................................................
+            "Заголовок N2": ["Значение 1", "Значение 2", ..., "Значение n2"]
+        },
+        ...,
+        "I-ый файл": {
+            "Заголовок 1": ["Значение 1", "Значение 2", ..., "Значение nI"],
+            "Заголовок 2": ["Значение 1", "Значение 2", ..., "Значение nI"],
+            ..............................................................
+            "Заголовок NI": ["Значение 1", "Значение 2", ..., "Значение nI"]
+        }
+    }
+
+    Возвращаем словарь с уже применёнными фильрами.
+    """
+
+    for tableNum in peptideTables:
+        curTable = peptideTables[tableNum]
+        curTableLen = len(curTable["Unused"])
+        i = 0
+
+        while i < curTableLen:
+            if not (unused.compare(curTable["Unused"][i], tableNum) and
+                    contrib.compare(curTable["Contrib"][i], tableNum) and
+                    conf.compare(curTable["Conf"][i], tableNum)):
+                RemoveRow(curTable, i)
+                i -= 1
+                curTableLen -= 1
+            i += 1
+
+    return peptideTables
+
+
+def ApplyDefaultConf(peptideTables: Dict[str, Dict[str, List[str]]]):
+    """ default-условие: Accession учитывается, если хотя бы одна
+    из строк с ним имеет Conf >= 99 или минимум две строки имеют
+    Conf >= 95"""
+
+    for tableNum in peptideTables:
+        curTable = peptideTables[tableNum]
+        curTableLen = len(curTable["Unused"])
+        # Заносим все Accession в список Accession для удаления
+        # В процессе чтения списка записи из него будут удаляться
+        blackListByConfCondition: Dict[str, int] = {}
+        for accession in curTable["Accessions"]:
+            if accession not in blackListByConfCondition:
+                blackListByConfCondition[
+                    accession.split(';')[0]] = 0
+
+        i = 0
+        while i < curTableLen:
+            curAccession = curTable["Accessions"][i].split(';')[0]
+            if curAccession in blackListByConfCondition:
+                blackListByConfCondition[curAccession] += (
+                    TestConfDefaultCondition(int(curTable["Conf"][i])))
+                if blackListByConfCondition[curAccession] > 1:
+                    del blackListByConfCondition[curAccession]
+        RemoveAccessionsFromTableByBlacklist(curTable,
+                                             blackListByConfCondition)
+    return peptideTables
+
+
+def GetFileLines(filename: str) -> list:
+    """ Returns list of file strings without newline symbols """
+
+    try:
+        with open(filename) as tfile:
+            return tfile.read().split('\n')
+    except FileNotFoundError:
+        return None
+
+
+def GetParam(paramString: str) -> Comparable:
+    """ Получение param
+
+    Получение param, общего для всех фалов, либо для каждого своего, из строки.
+    Формат: [операция][[имя файла] или [число]]
+    Примеры:
+        >=99
+        < paramList.txt"""
+
+    paramString = paramString.strip()
+    param = Comparable(
+        op=''.join([ch for ch in paramString if ch in "!=<>"]))
+
+    paramString = paramString[len(param.op):].strip()
+    if IsFloat(paramString):
+        param.val = float(paramString)
+    elif len(param.op) and len(paramString):
+        with open(paramString) as paramStringFile:
+            strings = paramStringFile.read().replace(' ', '\t').split('\n')
+            paramStrings = {}
+            for string in strings:
+                string = string.strip()
+                if len(string):
+                    paramStrings[string.split('\t')[0]] = string.split('\t')[1]
+            param.val = paramStrings
+    return param
 
 
 def ReadTable(tableFilename: str, sep='\t') -> Dict[str, List[str]]:
@@ -411,6 +416,9 @@ def main():
 
     ApplyBlackList(peptideTables, blackList)
     fileSumms = GetScPsigFileSumm(peptideTables)
+    seqDB is True
+    whiteList is True
+    fileSumms is True
 
 
 if __name__ == "__main__":

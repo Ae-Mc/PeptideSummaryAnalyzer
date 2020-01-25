@@ -33,6 +33,10 @@ MANIFEST
 *.manifest
 *.spec
 
+# Ctags files
+tags
+TAGS
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
