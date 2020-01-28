@@ -1,0 +1,7 @@
+Accession	Description
+Efra.gene24458_i0_length609.p1	Myophilin
+Efra.gene21131_i1_length711.p1	Cysteine and glycine-rich protein 3 (Cysteine-rich protein 3) (CRP3) (LIM domain protein, cardiac) (Muscle LIM protein)
+Efra.gene17127_i0_length880.p1	Tropomyosin
+Efra.gene1749_i1_length3021.p1	Major yolk protein (MYP) (Vitellogenin)
+Efra.gene1853_i0_length2945.p1	Filamin-A (FLN-A) (Actin-binding protein 280) (ABP-280) (Alpha-filamin) (Endothelial actin-binding protein) (Filamin-1) (Non-muscle filamin)
+Efra.gene14059_i2_length1041.p1	Actin, cytoskeletal (M)

@@ -119,7 +119,6 @@ def inputParams(idFileName, idExclusionFileName, dbFileName, input_unused,
                 unused = {}
                 for string in strings:
                     unused[string.split('\t')[0]] = string.split('\t')[-1]
-        exit(0)
         contribOp, contrib = getOpData(input_contribution)
         confOp, conf = getOpData(input_confidence)
         minGroupsWithId = int(input_minGroupsWithId)
@@ -264,15 +263,14 @@ def getInfoFromFiles(idFileName, IDs, IDExclusionList, seqDB, db, rawOutput,
 # удаление из вывода id, не соответствующих условию (группы)
 def rawOutputToTrueOutput(IDs, seqDB, rawOutput, shortFileNames,
                           maxGroupAbsence, minGroupsWithId):
-    groupCount = 1
-    for i in range(1, len(shortFileNames)):
-        if(shortFileNames[i].split('.')[0] !=
-           shortFileNames[i - 1].split('.')[0]):
-            groupCount += 1
-        i += 1
-
-    # Находим те элементы, которые отсутствуют слишком много раз
     if (maxGroupAbsence != ""):
+        groupCount = 1
+        for i in range(1, len(shortFileNames)):
+            if(shortFileNames[i].split('.')[0] !=
+               shortFileNames[i - 1].split('.')[0]):
+                groupCount += 1
+
+        # Находим те элементы, которые отсутствуют слишком много раз
         for id in IDs:
             i = 0
             groupsWithIdNum = groupCount
@@ -322,9 +320,9 @@ def outputResultsToFiles(rawOutput, trueOutput, seqDB,
     outputFiles = {}
     if not exists("Output"):
         mkdir("Output")
+
     for param in params:
         outputFiles[param] = (param + ".txt").replace(" ", "_")
-    for param in params:
         outputFile = open(OUTPUTPATH + outputFiles[param], "w")
         lines = [[id] for id in trueOutput]
         if param == "Sc_summ":
