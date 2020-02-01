@@ -2,7 +2,16 @@
 class Sequence:
     len: int
     desc: str
-    seq: str
+    __seq: str
+
+    @property
+    def seq(self):
+        return self.__seq
+
+    @seq.setter
+    def seq(self, seq: str):
+        self.len = len(seq)
+        self.__seq = seq
 
     def __init__(self) -> None:
         self.len = 0
@@ -16,7 +25,7 @@ class Comparable:
     val: str
     __float: bool
 
-    def __init__(self, op: str="", unused: str="") -> None:
+    def __init__(self, op: str = "", unused: str = "") -> None:
         self.op: str = op
         self.val: str = unused
         self.__float: bool = False
@@ -52,7 +61,7 @@ class Comparable:
 
 # Класс для хранения параметров Accession
 class Accession:
-    unused: float
+    Unused: float
     ScSumm: float
     ScNorm: float
     ScNormToFileNormRatio: float
@@ -63,12 +72,12 @@ class Accession:
     Counts: int
     PSignalAndScNormRatiosAverage: float
 
-    def __init__(self, name="", unused=0, ScSumm=0, ScNorm=0,
+    def __init__(self, name="", Unused=0, ScSumm=0, ScNorm=0,
                  ScNormToFileNormRatio=0, PSignalSumm=0, PSignalNorm=0,
                  PSignalNormToFileNormRatio=0, SeqlenSumm=0, Counts=0,
                  PSignalAndScNormRatiosAverage=0):
         self.name = name
-        self.unused = unused
+        self.Unused = Unused
         self.ScSumm = ScSumm
         self.ScNorm = ScNorm
         self.ScNormToFileNormRatio = ScNormToFileNormRatio

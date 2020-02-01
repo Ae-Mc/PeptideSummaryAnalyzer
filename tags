@@ -16,16 +16,18 @@ Comparable	Classes.py	/^class Comparable:$/;"	c
 CountAccessionLackInGroup	PeptideSummaryAnalyzer_8.py	/^def CountAccessionLackInGroup($/;"	f
 CountGroupsWithAccession	PeptideSummaryAnalyzer_8.py	/^def CountGroupsWithAccession($/;"	f
 CreateDirIfNotExist	PeptideSummaryAnalyzer_8.py	/^def CreateDirIfNotExist(directoryPath: str) -> None:$/;"	f
-GenerateAccessionsListOverAllTables	PeptideSummaryAnalyzer_8.py	/^def GenerateAccessionsListOverAllTables($/;"	f
+GenerateAccessionsBunchOverAllTables	PeptideSummaryAnalyzer_8.py	/^def GenerateAccessionsBunchOverAllTables($/;"	f
 GenerateDescriptionFile	PeptideSummaryAnalyzer_8.py	/^def GenerateDescriptionFile(outputDirPath: str,$/;"	f
 GenerateGroupsBunch	PeptideSummaryAnalyzer_8.py	/^def GenerateGroupsBunch($/;"	f
+GenerateJointOutputFile	PeptideSummaryAnalyzer_8.py	/^def GenerateJointOutputFile($/;"	f
 GenerateOutputFiles	PeptideSummaryAnalyzer_8.py	/^def GenerateOutputFiles($/;"	f
 GenerateTableAccessionsBunch	PeptideSummaryAnalyzer_8.py	/^def GenerateTableAccessionsBunch(peptideTable: Dict[str, List[str]]):$/;"	f
-GenerateTableByField	PeptideSummaryAnalyzer_8.py	/^def GenerateTableByField($/;"	f
+GenerateTableFileByField	PeptideSummaryAnalyzer_8.py	/^def GenerateTableFileByField($/;"	f
 GetAccessionsFromTable	PeptideSummaryAnalyzer_8.py	/^def GetAccessionsFromTable($/;"	f
 GetAccessionsPerTable	PeptideSummaryAnalyzer_8.py	/^def GetAccessionsPerTable($/;"	f
 GetFileLines	PeptideSummaryAnalyzer_8.py	/^def GetFileLines(filename: str) -> list:$/;"	f
 GetParam	PeptideSummaryAnalyzer_8.py	/^def GetParam(paramString: str) -> Comparable:$/;"	f
+GetProteinSummaryReplacements	PeptideSummaryAnalyzer_8.py	/^def GetProteinSummaryReplacements(inputDir: str) -> Dict[str, str]:$/;"	f
 GetScPsigAndNormFilesSumm	PeptideSummaryAnalyzer_8.py	/^def GetScPsigAndNormFilesSumm($/;"	f
 ID	OldFolderOrder/PeptideSummaryAnalyzer_7.py	/^class ID(dict):$/;"	c
 ID	PeptideSummaryAnalyzer_7.1.py	/^class ID(dict):$/;"	c
@@ -33,7 +35,7 @@ ID	PeptideSummaryAnalyzer_7.py	/^class ID(dict):$/;"	c
 INPUTPATH	OldFolderOrder/PeptideSummaryAnalyzer_7.py	/^INPUTPATH = "Input"$/;"	v
 INPUTPATH	PeptideSummaryAnalyzer_7.1.py	/^INPUTPATH = "Input"$/;"	v
 INPUTPATH	PeptideSummaryAnalyzer_7.py	/^INPUTPATH = "Input"$/;"	v
-INPUTPATH	PeptideSummaryAnalyzer_8.py	/^INPUTPATH = ".\/Input"$/;"	v
+INPUTPATH	PeptideSummaryAnalyzer_8.py	/^INPUTPATH = "Input"$/;"	v
 IsFloat	PeptideSummaryAnalyzer_8.py	/^def IsFloat(value):$/;"	f
 OUTPUTPATH	OldFolderOrder/PeptideSummaryAnalyzer_7.py	/^OUTPUTPATH = "Output\/"$/;"	v
 OUTPUTPATH	PeptideSummaryAnalyzer_7.1.py	/^OUTPUTPATH = "Output\/"$/;"	v
@@ -45,12 +47,11 @@ RemoveAccessionFromAllTables	PeptideSummaryAnalyzer_8.py	/^def RemoveAccessionFr
 RemoveAccessionsFromTableByBlacklist	PeptideSummaryAnalyzer_8.py	/^def RemoveAccessionsFromTableByBlacklist(peptideTable: Dict[str, List[str]],$/;"	f
 RemoveRow	PeptideSummaryAnalyzer_8.py	/^def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:$/;"	f
 Sequence	Classes.py	/^class Sequence:$/;"	c
-TableToFile	PeptideSummaryAnalyzer_8.py	/^def TableToFile(table: List[List[str]], filename: str):$/;"	f
 TestConfDefaultCondition	PeptideSummaryAnalyzer_8.py	/^def TestConfDefaultCondition(confVal: int):$/;"	f
 TestUnusedContribConfParams	PeptideSummaryAnalyzer_8.py	/^def TestUnusedContribConfParams(unused: Comparable,$/;"	f
 __init__	Classes.py	/^    def __init__(self) -> None:$/;"	m	class:Sequence
-__init__	Classes.py	/^    def __init__(self, name="", unused=0, ScSumm=0, ScNorm=0,$/;"	m	class:Accession
-__init__	Classes.py	/^    def __init__(self, op: str="", unused: str="") -> None:$/;"	m	class:Comparable
+__init__	Classes.py	/^    def __init__(self, name="", Unused=0, ScSumm=0, ScNorm=0,$/;"	m	class:Accession
+__init__	Classes.py	/^    def __init__(self, op: str = "", unused: str = "") -> None:$/;"	m	class:Comparable
 __init__	OldFolderOrder/PeptideSummaryAnalyzer_7.py	/^	def __init__(self):$/;"	m	class:ID
 __init__	PeptideSummaryAnalyzer_7.1.py	/^    def __init__(self):$/;"	m	class:ID
 __init__	PeptideSummaryAnalyzer_7.py	/^	def __init__(self):$/;"	m	class:ID
@@ -94,6 +95,8 @@ rawOutputToTrueOutput	PeptideSummaryAnalyzer_7.py	/^def rawOutputToTrueOutput(ID
 readInputFiles	OldFolderOrder/PeptideSummaryAnalyzer_7.py	/^def readInputFiles():$/;"	f
 readInputFiles	PeptideSummaryAnalyzer_7.1.py	/^def readInputFiles():$/;"	f
 readInputFiles	PeptideSummaryAnalyzer_7.py	/^def readInputFiles():$/;"	f
+seq	Classes.py	/^    def seq(self):$/;"	m	class:Sequence
+seq	Classes.py	/^    def seq(self, seq: str):$/;"	m	class:Sequence
 set_prefs	.ropeproject/config.py	/^def set_prefs(prefs):$/;"	f
 val	Classes.py	/^    def val(self):$/;"	m	class:Comparable
 val	Classes.py	/^    def val(self, value):$/;"	m	class:Comparable

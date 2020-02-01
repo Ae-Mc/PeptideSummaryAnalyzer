@@ -1,0 +1,102 @@
+N	Unused	Total	%Cov	%Cov(50)	%Cov(95)	Accession	Name	Species	Peptides(95%)			Biological Processes	Molecular Function	PANTHER ID
+1	16.13	16.13	57.9200029373169	51.9800007343292	51.9800007343292	Efra.gene24458_i0_length609.p1	Myophilin	i0_length609.p1	16					
+2	10.37	10.37	16.9799998402596	10.1300001144409	5.46200014650822	Efra.gene1749_i1_length3021.p1	Major yolk protein (MYP) (Vitellogenin)	i1_length3021.p1	4					
+3	8.9	8.9	54.1299998760223	43.2300001382828	43.2300001382828	Efra.gene16498_i0_length912.p1	Efra.gene16498_i0_length912.p1		13					
+4	8.32	8.32	45.8999991416931	45.8999991416931	45.8999991416931	Efra.gene26710_i0_length552.p1	Profilin	i0_length552.p1	5					
+5	7.89	7.89	25.6500005722046	15.4499992728233	12.8299996256828	Efra.gene12182_i0_length1149.p1	Actin, non-muscle 6.2	i0_length1149.p1	5					
+5	0	7.89	17.7200004458427	15.6100004911423	12.9600003361702	Efra.gene10979_i3_length1134.p1	Actin, non-muscle 6.2	i3_length1134.p1	5					
+5	0	7.56	29.4400006532669	17.509999871254	17.509999871254	Efra.gene12442_i0_length1134.p1	Actin-1/2	i0_length1134.p1	6					
+5	0	7.56	23.8999992609024	11.9499996304512	11.9499996304512	Efra.gene10979_i0_length1233.p1	Actin, non-muscle 6.2	i0_length1233.p1	5					
+5	0	7.56	24.779999256134	14.1200006008148	14.1200006008148	Efra.gene14059_i2_length1041.p1	Actin, cytoskeletal (M)	i2_length1041.p1	5					
+5	0	7.56	22.5700005888939	12.8600001335144	12.8600001335144	Efra.gene12280_i0_length1146.p1	Actin, clone 205	i0_length1146.p1	5					
+5	0	7.56	15.8999994397163	13.2100000977516	13.2100000977516	Efra.gene12819_i0_length1113.p1	Actin, cytoplasmic [Cleaved into: Actin, cytoplasmic, intermediate form]	Cleaved into: Actin, cytoplasmic, intermediate form	5					
+6	6	6	29.2400002479553	21.6100007295609	21.6100007295609	Efra.gene21131_i1_length711.p1	Cysteine and glycine-rich protein 3 (Cysteine-rich protein 3) (CRP3) (LIM domain protein, cardiac) (Muscle LIM protein)	i1_length711.p1	3					
+6	0	4	22.4900007247925	13.8799995183945	13.8799995183945	Efra.gene23746_i0_length630.p1	Cysteine and glycine-rich protein 2 (Cysteine-rich protein 2) (CRP2) (Double LIM protein 1) (DLP-1)	i0_length630.p1	2					
+7	5.36	5.36	34.0400010347366	34.0400010347366	34.0400010347366	Efra.gene34277_i0_length426.p1	Glyceraldehyde-3-phosphate dehydrogenase (GAPDH) (EC 1.2.1.12) (Peptidyl-cysteine S-nitrosylase GAPDH) (EC 2.6.99.-)	i0_length426.p1	3					
+8	5.24	5.24	36.3599985837936	27.649998664856	10.6100000441074	Efra.gene19022_i1_length795.p1	Fucolectin-4	i1_length795.p1	2					
+8	0	5.24	40.1699990034103	30.5400013923645	11.7200002074242	Efra.gene18564_i2_length720.p1	Pentraxin fusion protein	i2_length720.p1	2					
+8	0	3.02	32.1599990129471	25.9900003671646	6.16700015962124	Efra.gene18564_i1_length813.p1	Pentraxin fusion protein	i1_length813.p1	1					
+9	4.7	4.7	17.4500003457069	9.60799977183342	9.60799977183342	Efra.gene7598_i0_length1533.p1	Efra.gene7598_i0_length1533.p1		3					
+10	4.65	4.65	2.95700002461672	2.95700002461672	2.95700002461672	Efra.gene399_i0_length4974.p1	Fibropellin-1 (Epidermal growth factor-related protein 1) (Fibropellin-I) (SpEGF I) (UEGF-1)	i0_length4974.p1	3					
+10	0	3.77	45.3500002622604	37.2099995613098	37.2099995613098	Efra.gene399_i1_length261.p1	Thyroglobulin (Tg)	i1_length261.p1	2					
+11	4.33	4.33	29.2499989271164	29.2499989271164	29.2499989271164	Efra.gene50115_i0_length321.p1	Efra.gene50115_i0_length321.p1		3					
+12	4	4	21.5200006961823	21.5200006961823	17.9399996995926	cont|0014|TRYP_PIG	Trypsin 9-231 [Sus scrofa (contaminant)]	Sus scrofa (contaminant)	2					
+13	3.48	3.48	44.7200000286102	29.1900008916855	21.7399999499321	Efra.gene30096_i0_length486.p1	Collectin-12 (Collectin placenta protein 1) (CL-P1) (hCL-P1) (Nurse cell scavenger receptor 2) (Scavenger receptor class A member 4) (Scavenger receptor with C-type lectin)	i0_length486.p1	2					
+14	3.28	3.28	18.5399994254112	10.9300002455711	10.9300002455711	Efra.gene16539_i1_length909.p1	Kunitz-type serine protease inhibitor (Venom trypsin inhibitor)	i1_length909.p1	2					
+14	0	2	11.540000140667	6.1540000140667	6.1540000140667	Efra.gene16539_i3_length783.p1	Four-domain proteases inhibitor (McaPI)	i3_length783.p1	1					
+14	0	2	27.0300000905991	14.4099995493889	14.4099995493889	Efra.gene16539_i2_length336.p1	Protease inhibitor 2 (CmPI-II) (Protease inhibitor-II)	i2_length336.p1	1					
+15	3.22	3.22	13.3499994874001	3.41599993407726	3.41599993407726	cont|0009|KER	keratin 1 [Homo sapiens (contaminant)]	Homo sapiens (contaminant)	2					
+15	0	3.22	13.3499994874001	3.41599993407726	3.41599993407726	cont|0007|K2C1_HUMAN	Keratin, type II cytoskeletal 1 (Cytokeratin 1) (K1) (CK 1) (67 kDa cytokeratin) (Hair alpha protein) [Homo sapiens (contaminant)]	Homo sapiens (contaminant)	2					
+15	0	3.22	10.5599999427795	3.41599993407726	3.41599993407726	cont|0010|KER	keratin 1 (epidermolytic hyperkeratosis) [Homo sapiens (contaminant)]	Homo sapiens (contaminant)	2					
+16	3.12	3.12	37.610000371933	28.2099992036819	28.2099992036819	Efra.gene43037_i0_length354.p1	Efra.gene43037_i0_length354.p1		3					
+17	3.1	3.12	25.6999999284744	25.6999999284744	16.7600005865097	Efra.gene27331_i1_length540.p1	Calmodulin (CaM)	i1_length540.p1	2					
+17	0	2.27	34.5899999141693	22.5600004196167	22.5600004196167	Efra.gene37076_i0_length399.p1	Calmodulin (CaM)	i0_length399.p1	2					
+17	0	2.27	30.6100010871887	30.6100010871887	30.6100010871887	Efra.gene22225_i4_length296.p1	Calmodulin (CaM)	i4_length296.p1	2					
+17	0	2.27	22.0599994063377	22.0599994063377	22.0599994063377	Efra.gene22225_i2_length411.p1	Calmodulin (CaM)	i2_length411.p1	2					
+18	2.89	2.89	9.40999984741211	1.19000002741814	0.623599998652935	Efra.gene330_i0_length5295.p1	Complement C3 [Cleaved into: Complement C3 beta chain; Complement C3 alpha chain; C3a anaphylatoxin; Complement C3 gamma chain] (Fragment)	Cleaved into: Complement C3 beta chain; Complement C3 alpha chain; C3a anaphylatoxin; Complement C3 gamma chain	1					
+19	2.76	2.76	33.899998664856	15.7499998807907	3.76700013875961	Efra.gene17127_i0_length880.p1	Tropomyosin	i0_length880.p1	1					
+19	0	2.62	36.0500007867813	17.8299993276596	4.26400005817413	Efra.gene17127_i6_length777.p1	Tropomyosin	i6_length777.p1	1					
+19	0	1.39	25.6199985742569	13.7500002980232	6.87500014901161	Efra.gene30370_i0_length483.p1	Tropomyosin	i0_length483.p1	1					
+19	0	1.39	28.0800014734268	15.0700002908707	7.53400027751923	Efra.gene17127_i5_length441.p1	Tropomyosin alpha-3 chain (Gamma-tropomyosin) (Tropomyosin-3)	i5_length441.p1	1					
+20	2.74	2.76	36.7500007152557	36.7500007152557	36.7500007152557	Efra.gene42958_i0_length354.p1	Tenascin-R (TN-R) (Restrictin)	i0_length354.p1	2					
+21	2.49	2.49	22.8000000119209	10.8800001442432	7.25400000810623	Efra.gene20233_i3_length579.p1	C-type mannose receptor 2 (C-type lectin domain family 13 member E) (Endocytic receptor 180) (Macrophage mannose receptor 2) (Urokinase-type plasminogen activator receptor-associated protein) (UPAR-associated protein) (Urokinase receptor-associated protein) (CD antigen CD280)	i3_length579.p1	4					
+21	0	2.49	25	14.1100004315376	11.2899996340275	Efra.gene20233_i0_length744.p1	C-type mannose receptor 2 (C-type lectin domain family 13 member E) (Endocytic receptor 180) (Macrophage mannose receptor 2) (Urokinase-type plasminogen activator receptor-associated protein) (UPAR-associated protein) (Urokinase receptor-associated protein) (CD antigen CD280)	i0_length744.p1	4					
+21	0	2.49	19.1300004720688	15.2199998497963	12.1699996292591	Efra.gene20233_i2_length690.p1	Mannose-binding protein A (MBP-A) (28 kDa mannan-binding protein monomeric subunit) (pMBP-28) (Mannan-binding lectin A) (MBL-A) (Mannose-binding lectin A)	i2_length690.p1	4					
+22	2.31	2.31	19.370000064373	15.1800006628036	15.1800006628036	Efra.gene25799_i1_length576.p1	Versican core protein (Chondroitin sulfate proteoglycan core protein 2) (Chondroitin sulfate proteoglycan 2) (Large fibroblast proteoglycan) (PG-M)	i1_length576.p1	2					
+23	2.24	2.24	12.8800004720688	12.8800004720688	8.7119996547699	Efra.gene17580_i1_length858.p1	Efra.gene17580_i1_length858.p1		3					
+24	2.02	2.02	23.6599996685982	23.6599996685982	15.0499999523163	Efra.gene62669_i0_length282.p1	Neuromacin-like protein	i0_length282.p1	1					
+25	2	2	11.6700001060963	3.70399989187717	3.70399989187717	Efra.gene6586_i0_length1651.p1	Collagenase 3 (EC 3.4.24.-) (Matrix metalloproteinase-13) (MMP-13)	i0_length1651.p1	1					
+26	2	2	22.0300003886223	6.78000003099442	6.78000003099442	Efra.gene27516_i0_length534.p1	Myosin light chain 1/3, skeletal muscle isoform (MLC1/MLC3) (MLC1F/MLC3F) (Myosin light chain alkali 1/2) (Myosin light chain A1/A2)	i0_length534.p1	1					
+27	2	2	31.6199988126755	22.2200006246567	22.2200006246567	Efra.gene42994_i0_length354.p1	Efra.gene42994_i0_length354.p1		1					
+28	2	2	33.3299994468689	16.6700005531311	16.6700005531311	Efra.gene29886_i0_length489.p1	Efra.gene29886_i0_length489.p1		2					
+29	2	2	16.6700005531311	8.33299979567528	8.33299979567528	Efra.gene28977_i0_length507.p1	Peptidyl-prolyl cis-trans isomerase (PPIase) (EC 5.2.1.8) (Cyclophilin) (Cyclosporin A-binding protein) (Rotamase)	i0_length507.p1	1					
+30	2	2	21.7099994421005	11.1800000071526	11.1800000071526	Efra.gene25400_i0_length486.p1	Titin (EC 2.7.11.1) (Connectin) (Rhabdomyosarcoma antigen MU-RMS-40.14)	i0_length486.p1	1					
+31	2	2	25	14.4199997186661	14.4199997186661	Efra.gene16536_i3_length315.p1	Efra.gene16536_i3_length315.p1		1					
+31	0	2	8.91100019216537	4.94999997317791	4.94999997317791	Efra.gene16536_i2_length909.p1	Efra.gene16536_i2_length909.p1		1					
+32	2	2	7.73599967360497	4.87099997699261	4.87099997699261	Efra.gene13900_i0_length1047.p1	Efra.gene13900_i0_length1047.p1		1					
+33	2	2	17.8000003099442	17.8000003099442	17.8000003099442	Efra.gene42777_i0_length357.p1	Efra.gene42777_i0_length357.p1		1					
+34	2	2	10.2899998426437	10.2899998426437	10.2899998426437	Efra.gene35823_i0_length411.p1	Transgelin-2	i0_length411.p1	1					
+34	0	2	6.93100020289421	6.93100020289421	6.93100020289421	Efra.gene22328_i1_length673.p1	Calponin-3 (Calponin, acidic isoform)	i1_length673.p1	1					
+35	2	2	23.6100003123283	23.6100003123283	23.6100003123283	Efra.gene25967_i2_length219.p1	Myosin regulatory light chain 2, smooth muscle major isoform (MLC-2) (DTNB) (G1) (Isoform L20-A)	i2_length219.p1	1					
+35	0	2	16.0400003194809	16.0400003194809	16.0400003194809	Efra.gene25967_i1_length321.p1	Myosin regulatory light chain 2, smooth muscle minor isoform (MLC-2) (DTNB) (G1) (Isoform L20-B1)	i1_length321.p1	1					
+35	0	2	8.99500027298927	8.99500027298927	8.99500027298927	Efra.gene25967_i0_length570.p1	Myosin regulatory light chain 2, smooth muscle minor isoform (MLC-2) (DTNB) (G1) (Isoform L20-B1)	i0_length570.p1	1					
+36	1.86	1.86	19.4900006055832	5.93199990689754	5.93199990689754	Efra.gene21137_i1_length711.p1	Serine protease inhibitor dipetalogastin (Dipetalin) (Fragment)	i1_length711.p1	1					
+36	0	1.86	27.6399999856949	11.3799996674061	11.3799996674061	Efra.gene21137_i0_length372.p1	Serine protease inhibitor Kazal-type 9 (Lymphoepithelial Kazal-type-related inhibitor 2)	i0_length372.p1	1					
+37	1.8	1.8	6.61600008606911	3.30800004303455	3.30800004303455	Efra.gene11716_i0_length1179.p1	Balbiani ring protein 3	i0_length1179.p1	1					
+38	1.62	1.62	27.5400012731552	27.5400012731552	27.5400012731552	Efra.gene113616_i0_length210.p1	Ectonucleotide pyrophosphatase/phosphodiesterase family member 1 (E-NPP 1) (Lymphocyte antigen 41) (Ly-41) (Phosphodiesterase I/nucleotide pyrophosphatase 1) (Plasma-cell membrane glycoprotein PC-1) [Cleaved into: Ectonucleotide pyrophosphatase/phosphodiesterase family member 1, secreted form] [Includes: Alkaline phosphodiesterase I (EC 3.1.4.1); Nucleotide pyrophosphatase (NPPase) (EC 3.6.1.9) (Nucleotide diphosphatase)]	Cleaved into: Ectonucleotide pyrophosphatase/phosphodiesterase family member 1, secreted form	2					
+39	1.58	1.58	20.4300001263618	13.9799997210503	13.9799997210503	Efra.gene26421_i0_length561.p1	Globin C, coelomic	i0_length561.p1	2					
+39	0	1.58	17.9199993610382	12.2599996626377	12.2599996626377	Efra.gene23511_i1_length639.p1	Globin-1 (Globin I)	i1_length639.p1	2					
+39	0	1.54	16.2000000476837	4.63000014424324	4.63000014424324	Efra.gene23068_i0_length651.p1	Globin C, coelomic	i0_length651.p1	1					
+40	1.43	1.43	15.7100006937981	15.7100006937981	15.7100006937981	Efra.gene110165_i0_length213.p1	Ectonucleotide pyrophosphatase/phosphodiesterase family member 1 (E-NPP 1) (Lymphocyte antigen 41) (Ly-41) (Phosphodiesterase I/nucleotide pyrophosphatase 1) (Plasma-cell membrane glycoprotein PC-1) [Cleaved into: Ectonucleotide pyrophosphatase/phosphodiesterase family member 1, secreted form] [Includes: Alkaline phosphodiesterase I (EC 3.1.4.1); Nucleotide pyrophosphatase (NPPase) (EC 3.6.1.9) (Nucleotide diphosphatase)]	Cleaved into: Ectonucleotide pyrophosphatase/phosphodiesterase family member 1, secreted form	2					
+41	1.39	1.39	16.9400006532669	4.91800010204315	4.91800010204315	Efra.gene26810_i2_length552.p1	Peptidyl-prolyl cis-trans isomerase (PPIase) (EC 5.2.1.8) (Cyclophilin) (Cyclosporin A-binding protein) (Rotamase)	i2_length552.p1	1					
+42	1.27	1.27	46.5099990367889	37.2099995613098	37.2099995613098	Efra.gene41171_i1_length366.p1	Efra.gene41171_i1_length366.p1		2					
+42	0	1.27	27.3499995470047	27.3499995470047	27.3499995470047	Efra.gene41171_i0_length356.p1	Efra.gene41171_i0_length356.p1		2					
+43	1.23	1.23	14.8599997162819	14.8599997162819	14.8599997162819	Efra.gene99937_i0_length225.p1	Efra.gene99937_i0_length225.p1		3					
+44	1.09	1.09	10.8800001442432	10.8800001442432	10.8800001442432	Efra.gene32379_i0_length452.p1	Efra.gene32379_i0_length452.p1		1					
+45	1	1	10.1899996399879	10.1899996399879	10.1899996399879	Efra.gene49456_i1_length324.p1	Efra.gene49456_i1_length324.p1		1					
+45	0	1	15.7100006937981	15.7100006937981	15.7100006937981	Efra.gene49456_i0_length210.p1	Efra.gene49456_i0_length210.p1		1					
+46	0.97	0.97	8.20299983024597	1.19300000369549	1.19300000369549	Efra.gene813_i1_length4026.p1	Major yolk protein (MYP) (Vitellogenin)	i1_length4026.p1	1					
+47	0.93	0.93	21.1999997496605	7.60900005698204	7.60900005698204	Efra.gene26595_i0_length555.p1	Aggrecan core protein (Cartilage-specific proteoglycan core protein) (CSPCP)	i0_length555.p1	1					
+47	0	0.93	18.6700001358986	18.6700001358986	18.6700001358986	Efra.gene26595_i1_length225.p1	Type-2 ice-structuring protein (Type II antifreeze protein) (AFP)	i1_length225.p1	1					
+48	0.85	0.85	23.6699998378754	7.10100010037422	7.10100010037422	Efra.gene25800_i0_length528.p1	Lysozyme (EC 3.2.1.17) (1,4-beta-N-acetylmuramidase) (Invertebrate-type lysozyme)	i0_length528.p1	1					
+48	0	0.85	17.1100005507469	7.89500027894974	7.89500027894974	Efra.gene31924_i2_length459.p1	Lysozyme (EC 3.2.1.17) (1,4-beta-N-acetylmuramidase) (Invertebrate-type lysozyme)	i2_length459.p1	1					
+48	0	0.85	15.8500000834465	7.31699988245964	7.31699988245964	Efra.gene29637_i0_length495.p1	Lysozyme (EC 3.2.1.17) (1,4-beta-N-acetylmuramidase) (Invertebrate-type lysozyme)	i0_length495.p1	1					
+48	0	0.85	15.8500000834465	7.31699988245964	7.31699988245964	Efra.gene29528_i1_length495.p1	Lysozyme 1 (EC 3.2.1.17) (1,4-beta-N-acetylmuramidase 1) (Invertebrate-type lysozyme 1) (cv-lysozyme 1)	i1_length495.p1	1					
+48	0	0.85	13.6099994182587	6.2830001115799	6.2830001115799	Efra.gene25800_i2_length576.p1	Lysozyme (EC 3.2.1.17) (1,4-beta-N-acetylmuramidase) (Invertebrate-type lysozyme)	i2_length576.p1	1					
+49	0.52	0.52	6.90800026059151	0.849399995058775	0	Efra.gene329_i3_length5301.p1	Complement C3 [Cleaved into: Complement C3 beta chain; Complement C3 alpha chain; C3a anaphylatoxin; Complement C3 gamma chain] (Fragment)	Cleaved into: Complement C3 beta chain; Complement C3 alpha chain; C3a anaphylatoxin; Complement C3 gamma chain	0					
+50	0.49	0.49	8.24699997901917	8.24699997901917	0	Efra.gene25400_i1_length585.p1	Titin (EC 2.7.11.1) (Connectin) (Rhabdomyosarcoma antigen MU-RMS-40.14)	i1_length585.p1	0					
+51	0.39	0.39	8.24000015854836	3.74500006437302	0	Efra.gene18777_i0_length804.p1	Efra.gene18777_i0_length804.p1		0					
+52	0.37	0.37	15.8299997448921	8.63299965858459	0	Efra.gene34789_i0_length420.p1	Efra.gene34789_i0_length420.p1		0					
+52	0	0.37	13.3300006389618	13.3300006389618	0	Efra.gene60545_i1_length273.p1	Efra.gene60545_i1_length273.p1		0					
+53	0.31	0.31	6.74199983477592	6.74199983477592	0	Efra.gene67852_i0_length270.p1	Efra.gene67852_i0_length270.p1		0					
+53	0	0.31	6.31600022315979	6.31600022315979	0	Efra.gene60021_i0_length288.p1	Efra.gene60021_i0_length288.p1		0					
+54	0.27	0.27	15.6900003552437	15.6900003552437	0	Efra.gene22225_i1_length309.p1	Calmodulin-beta (Cam B) (Fragment)	i1_length309.p1	0					
+55	0.22	0.22	13.6999994516373	5.47900013625622	0	Efra.gene26841_i0_length549.p1	Efra.gene26841_i0_length549.p1		0					
+55	0	0.22	5.19500002264977	5.19500002264977	0	Efra.gene31742_i2_length462.p1	Efra.gene31742_i2_length462.p1		0					
+55	0	0.22	10.2600000798702	10.2600000798702	0	Efra.gene31742_i1_length237.p1	Efra.gene31742_i1_length237.p1		0					
+56	0.17	0.17	6.94399997591972	6.94399997591972	0	Efra.gene21462_i0_length701.p1	Alpha-crystallin B chain (Alpha(B)-crystallin)	i0_length701.p1	0					
+57	0.15	0.15	9.73099991679192	2.89900004863739	0	RRRRREfra.gene8400_i1_length1452.p1	REVERSED Deleted in malignant brain tumors 1 protein (Glycoprotein 340) (Gp-340) (Hensin) (Salivary agglutinin) (SAG) (Surfactant pulmonary-associated D-binding protein)	i1_length1452.p1	0					
+58	0.13	0.13	15.9999996423721	15.9999996423721	0	Efra.gene42768_i0_length273.p1	Efra.gene42768_i0_length273.p1		0					
+59	0.1	0.1	4.64899986982346	1.24000003561378	0	Efra.gene1853_i0_length2945.p1	Filamin-A (FLN-A) (Actin-binding protein 280) (ABP-280) (Alpha-filamin) (Endothelial actin-binding protein) (Filamin-1) (Non-muscle filamin)	i0_length2945.p1	0					
+60	0.09	0.09	5.53199984133244	0.492599979043007	0	Efra.gene76_i0_length7917.p1	Lysine-specific demethylase 3B (EC 1.14.11.-) (JmjC domain-containing histone demethylation protein 2B) (Jumonji domain-containing protein 1B) (Nuclear protein 5qNCA)	i0_length7917.p1	0					
+61	0.06	0.06	5.22399991750717	1.04499999433756	0	Efra.gene816_i0_length4023.p1	Phosphoribosylformylglycinamidine synthase (FGAM synthase) (FGAMS) (EC 6.3.5.3) (Formylglycinamide ribonucleotide amidotransferase) (FGAR amidotransferase) (FGAR-AT) (Formylglycinamide ribotide amidotransferase)	i0_length4023.p1	0					
