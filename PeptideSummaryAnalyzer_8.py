@@ -1,7 +1,8 @@
 from typing import List, Dict, Union, Tuple
 from os import listdir, mkdir
 from os.path import exists
-from Classes import Sequence, Comparable, Accession
+from Classes import Sequence, Comparable, Accession, Input
+from sys import argv
 
 INPUTPATH = "Input"
 
@@ -28,14 +29,6 @@ INPUTPATH = "Input"
         }
     }
 """
-
-
-def IsFloat(value):
-    try:
-        float(value)
-        return True
-    except (TypeError, ValueError):
-        return False
 
 
 def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:
@@ -120,7 +113,6 @@ def GenerateAccessionsBunchOverAllTables(
             if accessionName not in accessions:
                 accessions[accessionName] = {}
             accessions[accessionName][tableName] = accession
-    print(accessions)
     return accessions
 
 
@@ -137,7 +129,6 @@ def CreateDirIfNotExist(directoryPath: str) -> None:
             pass
 
 
-# TODO: Сделать вывод в файлы
 def GenerateOutputFiles(
         outputDirPath: str,
         filesSumms: Dict[str, Dict[str, float]],
@@ -479,7 +470,7 @@ def ApplyDefaultConf(peptideTables: Dict[str, Dict[str, List[str]]]):
     return peptideTables
 
 
-def GetFileLines(filename: str) -> list:
+def GetFileLines(filename: str) -> List[str]:
     """ Returns list of file strings without newline symbols """
 
     try:
@@ -487,34 +478,6 @@ def GetFileLines(filename: str) -> list:
             return tfile.read().split('\n')
     except FileNotFoundError:
         return None
-
-
-def GetParam(paramString: str) -> Comparable:
-    """ Получение param
-
-    Получение param, общего для всех фалов, либо для каждого своего, из строки.
-    Формат: [операция][[имя файла] или [число]]
-    Примеры:
-        >=99
-        < paramList.txt"""
-
-    paramString = paramString.strip()
-    param = Comparable(
-        op=''.join([ch for ch in paramString if ch in "!=<>"]))
-
-    paramString = paramString[len(param.op):].strip()
-    if IsFloat(paramString):
-        param.val = float(paramString)
-    elif len(param.op) and len(paramString):
-        with open(paramString) as paramStringFile:
-            strings = paramStringFile.read().replace(' ', '\t').split('\n')
-            paramStrings = {}
-            for string in strings:
-                string = string.strip()
-                if len(string):
-                    paramStrings[string.split('\t')[0]] = string.split('\t')[1]
-            param.val = paramStrings
-    return param
 
 
 def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
@@ -557,9 +520,99 @@ def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
     return None
 
 
-# TODO: Сделать обработку ProteinSummary файлов
-def GetProteinSummaryReplacements(inputDir: str) -> Dict[str, str]:
-    pass
+def ApplyProteinReplacements(replacementsPerTable: Dict[str, Dict[str, str]],
+                             peptideTables: Dict[str, Dict[str, List[str]]]):
+
+    for tableName, table in peptideTables.items():
+        tableReplacements = replacementsPerTable[tableName]
+        for i in range(0, len(table["Accessions"])):
+            if table["Accessions"][i] in tableReplacements:
+                table["Accessions"][i] = (
+                    tableReplacements[table["Accessions"][i]])
+
+
+def GetRepresentativeAccessionForGroup(
+        accessionsWithMaxUnused: Dict[str, float],
+        group: List[Tuple[str, float]]) -> str:
+
+    representativeAccession: Tuple[str, float] = (
+        group[0][0], accessionsWithMaxUnused[group[0][0]])
+    for accessionName, unused in group:
+        if accessionsWithMaxUnused[accessionName] > representativeAccession[1]:
+            representativeAccession = (accessionName,
+                                       accessionsWithMaxUnused[accessionName])
+    return representativeAccession[0]
+
+
+def GetReplacementsForGroups(
+        accessionsWithMaxUnused: Dict[str, float],
+        groups: List[List[Tuple[str, float]]]
+) -> Dict[str, str]:
+
+    replacements = {}
+    for group in groups:
+        representativeAccession = GetRepresentativeAccessionForGroup(
+            accessionsWithMaxUnused, group)
+        for accession, unused in group:
+            replacements[accession] = representativeAccession
+    return replacements
+
+
+def GetReplacementsPerTable(
+        accessionsWithMaxUnused: Dict[str, float],
+        groupsPerTables: Dict[str, List[List[Tuple[str, float]]]]
+) -> Dict[str, Dict[str, str]]:
+    replacementsPerTable: Dict[str, Dict[str, str]] = {}
+    for tableName, groups in groupsPerTables.items():
+        replacementsPerTable[tableName] = GetReplacementsForGroups(
+            accessionsWithMaxUnused, groups)
+    return replacementsPerTable
+
+
+def GetAccessionsWithMaxUnusedFromProteinGroups(
+        groupsPerTables: Dict[str, List[List[Tuple[str, float]]]]
+) -> Dict[str, float]:
+    accessions: Dict[str, float] = {}
+    for groups in groupsPerTables.values():
+        for group in groups:
+            for accessionName, unused in group:
+                if accessionName not in accessions:
+                    accessions[accessionName] = unused
+                elif unused > accessions[accessionName]:
+                    accessions[accessionName] = unused
+    return accessions
+
+
+def GetProteinGroupsFromFile(filename: str) -> List[List[Tuple[str, float]]]:
+    fileTable = ReadTable(filename)
+    groups: List[List[Tuple[str, float]]] = []
+    for i in range(0, len(fileTable["N"])):
+        if fileTable["Accession"][i].startswith("RRRRR"):
+            break
+        if float(fileTable["Unused"][i]) != 0:
+            unused = float(fileTable["Unused"][i])
+            groups.append([])
+        groups[-1].append((fileTable["Accession"][i],
+                           unused))
+    return groups
+
+
+def GetProteinGroupsFromFiles(
+        inputDir: str) -> Dict[str, List[List[Tuple[str, float]]]]:
+
+    groups: Dict[str, List[List[Tuple[str, float]]]] = {}
+    for filename in listdir(inputDir):
+        if filename.endswith("ProteinSummary.txt"):
+            groups[filename.split('_')[0]] = GetProteinGroupsFromFile(
+                inputDir + '/' + filename)
+    return groups
+
+
+def GetProteinSummaryReplacements(inputDir: str) -> Dict[str, Dict[str, str]]:
+    groupsPerTables = GetProteinGroupsFromFiles(inputDir)
+    accessions = GetAccessionsWithMaxUnusedFromProteinGroups(groupsPerTables)
+    replacementsPerTable = GetReplacementsPerTable(accessions, groupsPerTables)
+    return replacementsPerTable
 
 
 def ReadTable(tableFilename: str, sep='\t') -> Dict[str, List[str]]:
@@ -610,40 +663,60 @@ def ReadPeptideSummaries(inputDir: str) -> Dict:
     return peptideTables
 
 
+def GetInput() -> Input:
+    inputParams = Input()
+    if len(argv) == 9:
+        inputParams.seqDB = ReadSeqDB(argv[1])
+        inputParams.unused = Comparable.GetComparableClass(argv[2])
+        inputParams.contrib = Comparable.GetComparableClass(argv[3])
+        inputParams.conf = argv[4]
+        inputParams.whiteList = GetFileLines(argv[5])
+        inputParams.blackList = GetFileLines(argv[6])
+        inputParams.minGroupsWithAccession = int(argv[7])
+        inputParams.maxGroupAbsence = int(argv[8])
+    else:
+        inputParams.whiteList = GetFileLines(input("Id file name: "))
+        inputParams.blackList = GetFileLines(input("ID exclusion file name: "))
+        inputParams.seqDB = ReadSeqDB(input("Database file name: "))
+        inputParams.unused = Comparable.GetComparableClass(input("Unused: "))
+        inputParams.contrib = Comparable.GetComparableClass(
+            input("Contribution: "))
+        inputParams.conf = input("Confidence: ")
+        inputParams.minGroupsWithAccession = int(input("Min groups with ID: "))
+        inputParams.maxGroupAbsence = int(
+            input("Max missing values per group: "))
+    return inputParams
+
+
 def main():
     peptideTables = ReadPeptideSummaries(INPUTPATH)
     proteinReplacements = GetProteinSummaryReplacements(INPUTPATH)
-    proteinReplacements is None
-    seqDB = ReadSeqDB("EFRA_cont.fasta")
-    unused = GetParam(">=20")
-    contrib = GetParam(">=1")
-    conf = ">=50"
-    whiteList = GetFileLines("")
-    blackList = GetFileLines("IDexcl.txt")
+    ApplyProteinReplacements(proteinReplacements, peptideTables)
+    inputParams = GetInput()
 
-    if conf.strip() == "default":
+    if inputParams.isDefaultConf:
         ApplyDefaultConf(peptideTables)
-        ApplyParamsFilter(unused, contrib, GetParam(""), peptideTables)
-    else:
-        ApplyParamsFilter(unused, contrib, GetParam(conf), peptideTables)
+    ApplyParamsFilter(inputParams.unused,
+                      inputParams.contrib,
+                      inputParams.conf,
+                      peptideTables)
 
-    minGroupsWithAccession = 1
-    maxGroupAbsence = 5
+    if inputParams.blackList:
+        ApplyBlackList(peptideTables, inputParams.blackList)
+    if inputParams.whiteList:
+        ApplyWhiteList(peptideTables, inputParams.whiteList)
 
-    if blackList:
-        ApplyBlackList(peptideTables, blackList)
-    if whiteList:
-        ApplyWhiteList(peptideTables, whiteList)
-
-    accessionsPerFile = GetAccessionsPerTable(peptideTables, seqDB)
+    accessionsPerFile = GetAccessionsPerTable(peptideTables, inputParams.seqDB)
     filesSumms = GetScPsigAndNormFilesSumm(accessionsPerFile)
     CalculateAccessionsNormRatios(accessionsPerFile, filesSumms)
 
     ApplyGroupFilter(accessionsPerFile,
-                     maxGroupAbsence,
-                     minGroupsWithAccession)
+                     inputParams.maxGroupAbsence,
+                     inputParams.minGroupsWithAccession)
 
-    GenerateOutputFiles("Output/", seqDB=seqDB, filesSumms=filesSumms,
+    GenerateOutputFiles("Output/",
+                        seqDB=inputParams.seqDB,
+                        filesSumms=filesSumms,
                         accessionsPerTable=accessionsPerFile)
 
 

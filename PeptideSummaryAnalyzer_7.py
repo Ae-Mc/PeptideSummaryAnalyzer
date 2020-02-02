@@ -1,6 +1,5 @@
 from os import listdir, mkdir
 from os.path import exists
-from math import floor
 
 INPUTPATH = "Input"
 OUTPUTPATH = "Output/"

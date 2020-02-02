@@ -9,6 +9,7 @@ ApplyBlackList	PeptideSummaryAnalyzer_8.py	/^def ApplyBlackList(peptideTables: D
 ApplyDefaultConf	PeptideSummaryAnalyzer_8.py	/^def ApplyDefaultConf(peptideTables: Dict[str, Dict[str, List[str]]]):$/;"	f
 ApplyGroupFilter	PeptideSummaryAnalyzer_8.py	/^def ApplyGroupFilter(accessionsPerTable: Dict[str, Dict[str, Accession]],$/;"	f
 ApplyParamsFilter	PeptideSummaryAnalyzer_8.py	/^def ApplyParamsFilter(unused: Comparable,$/;"	f
+ApplyProteinReplacements	PeptideSummaryAnalyzer_8.py	/^def ApplyProteinReplacements(replacementsPerTable: Dict[str, Dict[str, str]],$/;"	f
 ApplyWhiteList	PeptideSummaryAnalyzer_8.py	/^def ApplyWhiteList(peptideTables: Dict[str, Dict[str, List[str]]],$/;"	f
 CalculateAccessionsNormRatios	PeptideSummaryAnalyzer_8.py	/^def CalculateAccessionsNormRatios($/;"	f
 CalculateNormParamsForAccessions	PeptideSummaryAnalyzer_8.py	/^def CalculateNormParamsForAccessions(accessions: Dict[str, Accession],$/;"	f
@@ -25,9 +26,17 @@ GenerateTableAccessionsBunch	PeptideSummaryAnalyzer_8.py	/^def GenerateTableAcce
 GenerateTableFileByField	PeptideSummaryAnalyzer_8.py	/^def GenerateTableFileByField($/;"	f
 GetAccessionsFromTable	PeptideSummaryAnalyzer_8.py	/^def GetAccessionsFromTable($/;"	f
 GetAccessionsPerTable	PeptideSummaryAnalyzer_8.py	/^def GetAccessionsPerTable($/;"	f
-GetFileLines	PeptideSummaryAnalyzer_8.py	/^def GetFileLines(filename: str) -> list:$/;"	f
-GetParam	PeptideSummaryAnalyzer_8.py	/^def GetParam(paramString: str) -> Comparable:$/;"	f
-GetProteinSummaryReplacements	PeptideSummaryAnalyzer_8.py	/^def GetProteinSummaryReplacements(inputDir: str) -> Dict[str, str]:$/;"	f
+GetAccessionsWithMaxUnusedFromProteinGroups	PeptideSummaryAnalyzer_8.py	/^def GetAccessionsWithMaxUnusedFromProteinGroups($/;"	f
+GetComparable	Classes.py	/^    def GetComparable(self, paramString: str):$/;"	m	class:Comparable
+GetComparableClass	Classes.py	/^    def GetComparableClass(paramString: str):$/;"	m	class:Comparable
+GetFileLines	PeptideSummaryAnalyzer_8.py	/^def GetFileLines(filename: str) -> List[str]:$/;"	f
+GetInput	PeptideSummaryAnalyzer_8.py	/^def GetInput() -> Input:$/;"	f
+GetProteinGroupsFromFile	PeptideSummaryAnalyzer_8.py	/^def GetProteinGroupsFromFile(filename: str) -> List[List[Tuple[str, float]]]:$/;"	f
+GetProteinGroupsFromFiles	PeptideSummaryAnalyzer_8.py	/^def GetProteinGroupsFromFiles($/;"	f
+GetProteinSummaryReplacements	PeptideSummaryAnalyzer_8.py	/^def GetProteinSummaryReplacements(inputDir: str) -> Dict[str, Dict[str, str]]:$/;"	f
+GetReplacementsForGroups	PeptideSummaryAnalyzer_8.py	/^def GetReplacementsForGroups($/;"	f
+GetReplacementsPerTable	PeptideSummaryAnalyzer_8.py	/^def GetReplacementsPerTable($/;"	f
+GetRepresentativeAccessionForGroup	PeptideSummaryAnalyzer_8.py	/^def GetRepresentativeAccessionForGroup($/;"	f
 GetScPsigAndNormFilesSumm	PeptideSummaryAnalyzer_8.py	/^def GetScPsigAndNormFilesSumm($/;"	f
 ID	OldFolderOrder/PeptideSummaryAnalyzer_7.py	/^class ID(dict):$/;"	c
 ID	PeptideSummaryAnalyzer_7.1.py	/^class ID(dict):$/;"	c
@@ -36,7 +45,8 @@ INPUTPATH	OldFolderOrder/PeptideSummaryAnalyzer_7.py	/^INPUTPATH = "Input"$/;"	v
 INPUTPATH	PeptideSummaryAnalyzer_7.1.py	/^INPUTPATH = "Input"$/;"	v
 INPUTPATH	PeptideSummaryAnalyzer_7.py	/^INPUTPATH = "Input"$/;"	v
 INPUTPATH	PeptideSummaryAnalyzer_8.py	/^INPUTPATH = "Input"$/;"	v
-IsFloat	PeptideSummaryAnalyzer_8.py	/^def IsFloat(value):$/;"	f
+Input	Classes.py	/^class Input:$/;"	c
+IsFloat	Classes.py	/^def IsFloat(value):$/;"	f
 OUTPUTPATH	OldFolderOrder/PeptideSummaryAnalyzer_7.py	/^OUTPUTPATH = "Output\/"$/;"	v
 OUTPUTPATH	PeptideSummaryAnalyzer_7.1.py	/^OUTPUTPATH = "Output\/"$/;"	v
 OUTPUTPATH	PeptideSummaryAnalyzer_7.py	/^OUTPUTPATH = "Output\/"$/;"	v
@@ -59,6 +69,8 @@ compare	Classes.py	/^    def compare(self, value, filename: str) -> bool:$/;"	m	
 compare	OldFolderOrder/PeptideSummaryAnalyzer_7.py	/^	def compare(op, arg1, arg2):$/;"	f	function:getInfoFromFiles
 compare	PeptideSummaryAnalyzer_7.1.py	/^    def compare(op, arg1, arg2):$/;"	f	function:getInfoFromFiles
 compare	PeptideSummaryAnalyzer_7.py	/^	def compare(op, arg1, arg2):$/;"	f	function:getInfoFromFiles
+conf	Classes.py	/^    def conf(self):$/;"	m	class:Input
+conf	Classes.py	/^    def conf(self, val):$/;"	m	class:Input
 diff	Output/diff.py	/^                diff = newFileContent.find('\\n') - origFileContent.find('\\n')$/;"	v
 getInfoFromFiles	OldFolderOrder/PeptideSummaryAnalyzer_7.py	/^def getInfoFromFiles(idFileName, IDs, IDExclusionList, seqDB, db, rawOutput, confOp, conf, contribOp, contrib, unusedOp, unused):$/;"	f
 getInfoFromFiles	PeptideSummaryAnalyzer_7.1.py	/^def getInfoFromFiles(idFileName, IDs, IDExclusionList, seqDB, db, rawOutput,$/;"	f
