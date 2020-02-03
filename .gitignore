@@ -37,6 +37,10 @@ MANIFEST
 tags
 TAGS
 
+# Archives
+*.zip
+*.rar
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
