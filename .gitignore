@@ -41,6 +41,9 @@ TAGS
 *.zip
 *.rar
 
+# Output files
+Output/*.txt
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
