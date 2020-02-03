@@ -520,6 +520,46 @@ def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
     return None
 
 
+def GetInput() -> Input:
+    inputParams = Input()
+    if len(argv) == 9:
+        inputParams.whiteList = GetFileLines(argv[5])
+        inputParams.blackList = GetFileLines(argv[6])
+        inputParams.seqDB = ReadSeqDB(argv[1])
+        inputParams.unused = Comparable.GetComparableClass(argv[2])
+        inputParams.contrib = Comparable.GetComparableClass(argv[3])
+        inputParams.conf = argv[4]
+        inputParams.minGroupsWithAccession = int(argv[7])
+        inputParams.maxGroupAbsence = int(argv[8])
+    else:
+        inputParams.whiteList = GetFileLines(input("Id file name: "))
+        inputParams.blackList = GetFileLines(input("ID exclusion file name: "))
+        inputParams.seqDB = ReadSeqDB(input("Database file name: "))
+        inputParams.unused = Comparable.GetComparableClass(input("Unused: "))
+        inputParams.contrib = Comparable.GetComparableClass(
+            input("Contribution: "))
+        inputParams.conf = input("Confidence: ")
+        inputParams.minGroupsWithAccession = int(input("Min groups with ID: "))
+        inputParams.maxGroupAbsence = int(
+            input("Max missing values per group: "))
+    return inputParams
+
+
+def RemoveReversedAccessionsFromTables(
+        peptideTables: Dict[str, Dict[str, List[str]]]):
+
+    for peptideTable in peptideTables.values():
+        i = 0
+        while i < len(peptideTable["Accessions"]):
+            if peptideTable["Accessions"][i].startswith("RRRRR"):
+                break
+            i += 1
+
+        if i < len(peptideTable["Accessions"]):
+            for column in peptideTable.values():
+                del column[i:]
+
+
 def ApplyProteinReplacements(replacementsPerTable: Dict[str, Dict[str, str]],
                              peptideTables: Dict[str, Dict[str, List[str]]]):
 
@@ -663,34 +703,10 @@ def ReadPeptideSummaries(inputDir: str) -> Dict:
     return peptideTables
 
 
-def GetInput() -> Input:
-    inputParams = Input()
-    if len(argv) == 9:
-        inputParams.seqDB = ReadSeqDB(argv[1])
-        inputParams.unused = Comparable.GetComparableClass(argv[2])
-        inputParams.contrib = Comparable.GetComparableClass(argv[3])
-        inputParams.conf = argv[4]
-        inputParams.whiteList = GetFileLines(argv[5])
-        inputParams.blackList = GetFileLines(argv[6])
-        inputParams.minGroupsWithAccession = int(argv[7])
-        inputParams.maxGroupAbsence = int(argv[8])
-    else:
-        inputParams.whiteList = GetFileLines(input("Id file name: "))
-        inputParams.blackList = GetFileLines(input("ID exclusion file name: "))
-        inputParams.seqDB = ReadSeqDB(input("Database file name: "))
-        inputParams.unused = Comparable.GetComparableClass(input("Unused: "))
-        inputParams.contrib = Comparable.GetComparableClass(
-            input("Contribution: "))
-        inputParams.conf = input("Confidence: ")
-        inputParams.minGroupsWithAccession = int(input("Min groups with ID: "))
-        inputParams.maxGroupAbsence = int(
-            input("Max missing values per group: "))
-    return inputParams
-
-
 def main():
     peptideTables = ReadPeptideSummaries(INPUTPATH)
     proteinReplacements = GetProteinSummaryReplacements(INPUTPATH)
+    RemoveReversedAccessionsFromTables(peptideTables)
     ApplyProteinReplacements(proteinReplacements, peptideTables)
     inputParams = GetInput()
 
