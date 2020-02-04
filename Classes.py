@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Union
 
 
 def IsFloat(value):
@@ -33,7 +33,7 @@ class Sequence:
 # Класс для хранения параметров фильтра
 class Comparable:
     op: str
-    val: str
+    __val: str
     __float: bool
 
     def __init__(self, op: str = "", unused: str = "") -> None:
@@ -163,8 +163,8 @@ class Input:
     contrib: Comparable
     __conf: Comparable
     isDefaultConf: bool
-    whiteList: List[str]
-    blackList: List[str]
+    whiteList: Union[List[str], None]
+    blackList: Union[List[str], None]
     minGroupsWithAccession: int
     maxGroupAbsence: int
 

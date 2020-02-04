@@ -31,17 +31,17 @@ INPUTPATH = "Input"
 """
 
 
+class AccessionTables:
+
+    peptideTables: Dict[str, Dict[str, List[str]]]
+    proteinReplacements: Dict[str, Dict[str, str]]
+
+    def __init__(self, inputDir="Input"):
+        self.peptideTables = ReadPeptideSummaries(inputDir)
+        self.proteinReplacements = GetProteinSummaryReplacements(inputDir)
+
+
 def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:
-    """ Удаляет строку из таблицы
-
-    Удаляет строку из таблицы вида
-    {
-        "Заголовок 1": ["Значение 1", "Значение 2", ..., "Значение n1"],
-        "Заголовок 2": ["Значение 1", "Значение 2", ..., "Значение n1"],
-        ..............................................................
-        "Заголовок N1": ["Значение 1", "Значение 2", ..., "Значение n1"]
-    } """
-
     columns = [column for column in table]
     for column in columns:
         del table[column][rowNum]
@@ -704,26 +704,31 @@ def ReadPeptideSummaries(inputDir: str) -> Dict:
 
 
 def main():
-    peptideTables = ReadPeptideSummaries(INPUTPATH)
-    proteinReplacements = GetProteinSummaryReplacements(INPUTPATH)
-    RemoveReversedAccessionsFromTables(peptideTables)
-    ApplyProteinReplacements(proteinReplacements, peptideTables)
+    accessionsTables = AccessionTables(INPUTPATH)
+    RemoveReversedAccessionsFromTables(accessionsTables.peptideTables)
+    ApplyProteinReplacements(
+        accessionsTables.proteinReplacements, accessionsTables.peptideTables)
     inputParams = GetInput()
 
     if inputParams.isDefaultConf:
-        ApplyDefaultConf(peptideTables)
+        ApplyDefaultConf(accessionsTables.peptideTables)
     ApplyParamsFilter(inputParams.unused,
                       inputParams.contrib,
                       inputParams.conf,
-                      peptideTables)
+                      accessionsTables.peptideTables)
+
+    if inputParams.whiteList:
+        ApplyWhiteList(accessionsTables.peptideTables, inputParams.whiteList)
+
+    filesSumms = GetScPsigAndNormFilesSumm(
+        GetAccessionsPerTable(accessionsTables.peptideTables,
+                              inputParams.seqDB))
 
     if inputParams.blackList:
-        ApplyBlackList(peptideTables, inputParams.blackList)
-    if inputParams.whiteList:
-        ApplyWhiteList(peptideTables, inputParams.whiteList)
+        ApplyBlackList(accessionsTables.peptideTables, inputParams.blackList)
 
-    accessionsPerFile = GetAccessionsPerTable(peptideTables, inputParams.seqDB)
-    filesSumms = GetScPsigAndNormFilesSumm(accessionsPerFile)
+    accessionsPerFile = GetAccessionsPerTable(accessionsTables.peptideTables,
+                                              inputParams.seqDB)
     CalculateAccessionsNormRatios(accessionsPerFile, filesSumms)
 
     ApplyGroupFilter(accessionsPerFile,
