@@ -37,8 +37,86 @@ class AccessionTables:
     proteinReplacements: Dict[str, Dict[str, str]]
 
     def __init__(self, inputDir="Input"):
-        self.peptideTables = ReadPeptideSummaries(inputDir)
-        self.proteinReplacements = GetProteinSummaryReplacements(inputDir)
+        self.ReadPeptideSummaries(inputDir)
+        self.proteinReplacements = self.GetProteinSummaryReplacements(inputDir)
+
+    def ReadPeptideSummaries(self, inputDir: str) -> None:
+        """ Считывание всех PeptideSummary файлов в словарь """
+        self.peptideTables = {}
+        for filename in listdir(inputDir):
+            if "Peptide" in filename:
+                self.peptideTables[filename.split('_')[0]] = (
+                    self.ReadTable(inputDir + '/' + filename))
+
+    def GetProteinSummaryReplacements(
+            self, inputDir: str) -> Dict[str, Dict[str, str]]:
+        groupsPerTables = self.GetProteinGroupsFromFiles(inputDir)
+        accessions = (
+            self.GetAccessionsWithMaxUnusedFromProteinGroups(groupsPerTables))
+        replacementsPerTable = (
+            GetReplacementsPerTable(accessions, groupsPerTables))
+        return replacementsPerTable
+
+    def GetProteinGroupsFromFiles(
+            self, inputDir: str) -> Dict[str, List[List[Tuple[str, float]]]]:
+
+        groups: Dict[str, List[List[Tuple[str, float]]]] = {}
+        for filename in listdir(inputDir):
+            if filename.endswith("ProteinSummary.txt"):
+                groups[filename.split('_')[0]] = self.GetProteinGroupsFromFile(
+                    inputDir + '/' + filename)
+        return groups
+
+    def GetProteinGroupsFromFile(
+            self, filename: str) -> List[List[Tuple[str, float]]]:
+        fileTable = self.ReadTable(filename)
+        groups: List[List[Tuple[str, float]]] = []
+        for i in range(0, len(fileTable["N"])):
+            if fileTable["Accession"][i].startswith("RRRRR"):
+                break
+            if float(fileTable["Unused"][i]) != 0:
+                unused = float(fileTable["Unused"][i])
+                groups.append([])
+            groups[-1].append((fileTable["Accession"][i],
+                               unused))
+        return groups
+
+    def GetAccessionsWithMaxUnusedFromProteinGroups(
+            self,
+            groupsPerTables: Dict[str, List[List[Tuple[str, float]]]]
+    ) -> Dict[str, float]:
+        accessions: Dict[str, float] = {}
+        for groups in groupsPerTables.values():
+            for group in groups:
+                for accessionName, unused in group:
+                    if accessionName not in accessions:
+                        accessions[accessionName] = unused
+                    elif unused > accessions[accessionName]:
+                        accessions[accessionName] = unused
+        return accessions
+
+    @staticmethod
+    def ReadTable(tableFilename: str, sep='\t') -> Dict[str, List[str]]:
+        """ Считываем файл в словарь, где ключом является заголовок, а
+        значением — список значений в столбце """
+
+        with open(tableFilename) as tempFile:
+            strings = tempFile.read().split('\n')
+            tempFile.close()
+            table: Dict[str, List[str]] = {}
+            columns = strings[0].split(sep)
+
+            for column in columns:
+                table[column] = []
+            for string in strings[1:]:
+                if len(string.strip()):
+                    i = 0
+                    for value in string.split(sep):
+                        table[columns[i]].append(value)
+                        i += 1
+
+            return table
+        return None
 
 
 def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:
@@ -607,100 +685,6 @@ def GetReplacementsPerTable(
         replacementsPerTable[tableName] = GetReplacementsForGroups(
             accessionsWithMaxUnused, groups)
     return replacementsPerTable
-
-
-def GetAccessionsWithMaxUnusedFromProteinGroups(
-        groupsPerTables: Dict[str, List[List[Tuple[str, float]]]]
-) -> Dict[str, float]:
-    accessions: Dict[str, float] = {}
-    for groups in groupsPerTables.values():
-        for group in groups:
-            for accessionName, unused in group:
-                if accessionName not in accessions:
-                    accessions[accessionName] = unused
-                elif unused > accessions[accessionName]:
-                    accessions[accessionName] = unused
-    return accessions
-
-
-def GetProteinGroupsFromFile(filename: str) -> List[List[Tuple[str, float]]]:
-    fileTable = ReadTable(filename)
-    groups: List[List[Tuple[str, float]]] = []
-    for i in range(0, len(fileTable["N"])):
-        if fileTable["Accession"][i].startswith("RRRRR"):
-            break
-        if float(fileTable["Unused"][i]) != 0:
-            unused = float(fileTable["Unused"][i])
-            groups.append([])
-        groups[-1].append((fileTable["Accession"][i],
-                           unused))
-    return groups
-
-
-def GetProteinGroupsFromFiles(
-        inputDir: str) -> Dict[str, List[List[Tuple[str, float]]]]:
-
-    groups: Dict[str, List[List[Tuple[str, float]]]] = {}
-    for filename in listdir(inputDir):
-        if filename.endswith("ProteinSummary.txt"):
-            groups[filename.split('_')[0]] = GetProteinGroupsFromFile(
-                inputDir + '/' + filename)
-    return groups
-
-
-def GetProteinSummaryReplacements(inputDir: str) -> Dict[str, Dict[str, str]]:
-    groupsPerTables = GetProteinGroupsFromFiles(inputDir)
-    accessions = GetAccessionsWithMaxUnusedFromProteinGroups(groupsPerTables)
-    replacementsPerTable = GetReplacementsPerTable(accessions, groupsPerTables)
-    return replacementsPerTable
-
-
-def ReadTable(tableFilename: str, sep='\t') -> Dict[str, List[str]]:
-    """ Считывание файла-таблицы в словарь
-
-    На вход принимается имя файла, из которого считывать таблицу.
-    Формат таблицы:
-        Заголовок 1\tЗаголовок 2\t...\tЗаголовок N
-        Значение 1.1\tЗначение 2.1\t...\tЗначение N.1
-        Значение 1.2\tЗначение 2.2\t...\tЗначение N.2
-        .............................................
-        Значение 1.n\tЗначение 2.n\t...\tЗначение N.n
-    Первая строка считается как заголовки столбцов.
-    На выходе получается словарь вида:
-    {
-        "column name 1": ["value1", "value2", ..., "valueN"],
-        "column name 2": ["value1", "value2", ..., "valueN"],
-        "column name n": ["value1", "value2", ..., "valueN"]
-    }
-    """
-
-    with open(tableFilename) as tempFile:
-        strings = tempFile.read().split('\n')
-        tempFile.close()
-        table: Dict[str, List[str]] = {}
-        columns = strings[0].split(sep)
-
-        for column in columns:
-            table[column] = []
-        for string in strings[1:]:
-            if len(string.strip()):
-                i = 0
-                for value in string.split(sep):
-                    table[columns[i]].append(value)
-                    i += 1
-
-        return table
-    return None
-
-
-def ReadPeptideSummaries(inputDir: str) -> Dict:
-    """ Считывание всех PeptideSummary файлов в словарь """
-    peptideTables = {}
-    for filename in listdir(inputDir):
-        if "Peptide" in filename:
-            peptideTables[filename.split('_')[0]] = (
-                ReadTable(inputDir + '/' + filename))
-    return peptideTables
 
 
 def main():
