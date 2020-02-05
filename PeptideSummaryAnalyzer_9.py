@@ -4,6 +4,9 @@ from os.path import exists
 from Classes import Sequence, Comparable, Accession, Input
 from sys import argv
 
+# TODO: Доделать сортировку имён файлов
+# TODO: Сделать создание файла с группами
+
 INPUTPATH = "Input"
 
 """ peptideTables - словарь вида
@@ -35,10 +38,18 @@ class AccessionTables:
 
     peptideTables: Dict[str, Dict[str, List[str]]]
     proteinReplacements: Dict[str, Dict[str, str]]
+    proteinReplacementsGroups: Dict[str, Dict[str, List[str]]]
+    accessionsPerTable: Dict[str, Dict[str, Accession]]
+    sortedTableNums: List[str]
 
-    def __init__(self, inputDir="Input"):
-        self.ReadPeptideSummaries(inputDir)
-        self.proteinReplacements = self.GetProteinSummaryReplacements(inputDir)
+    def __init__(self, inputDir=None):
+        if inputDir is not None:
+            self.ReadPeptideSummaries(inputDir)
+            self.sortedTableNums = sorted(self.peptideTables.keys())
+            self.RemoveReversedAccessionsFromTables()
+
+            self.GetProteinSummaryReplacements(inputDir)
+            self.RemoveReversedAccessionsFromProteinReplacements()
 
     def ReadPeptideSummaries(self, inputDir: str) -> None:
         """ Считывание всех PeptideSummary файлов в словарь """
@@ -48,14 +59,44 @@ class AccessionTables:
                 self.peptideTables[filename.split('_')[0]] = (
                     self.ReadTable(inputDir + '/' + filename))
 
+    def RemoveReversedAccessionsFromTables(self):
+
+        for peptideTable in self.peptideTables.values():
+            i = 0
+            while i < len(peptideTable["Accessions"]):
+                if peptideTable["Accessions"][i].startswith("RRRRR"):
+                    break
+                i += 1
+
+            if i < len(peptideTable["Accessions"]):
+                for column in peptideTable.values():
+                    del column[i:]
+
     def GetProteinSummaryReplacements(
-            self, inputDir: str) -> Dict[str, Dict[str, str]]:
-        groupsPerTables = self.GetProteinGroupsFromFiles(inputDir)
-        accessions = (
+            self, inputDir: str):
+
+        groupsPerTables: Dict[str, List[List[Tuple[str, float]]]] = (
+            self.GetProteinGroupsFromFiles(inputDir))
+        accessions: Dict[str, float] = (
             self.GetAccessionsWithMaxUnusedFromProteinGroups(groupsPerTables))
-        replacementsPerTable = (
+        self.GetProteinReplacementsGroupsPerTable(groupsPerTables, accessions)
+        self.proteinReplacements = (
             GetReplacementsPerTable(accessions, groupsPerTables))
-        return replacementsPerTable
+
+    def RemoveReversedAccessionsFromProteinReplacements(self) -> None:
+
+        for accessionName in self.proteinReplacements:
+            if accessionName.startswith("RRRRR"):
+                del self.proteinReplacements[accessionName]
+
+    def ApplyProteinReplacements(self):
+
+        for tableName, table in self.peptideTables.items():
+            tableReplacements = self.proteinReplacements[tableName]
+            for i in range(0, len(table["Accessions"])):
+                if table["Accessions"][i] in tableReplacements:
+                    table["Accessions"][i] = (
+                        tableReplacements[table["Accessions"][i]])
 
     def GetProteinGroupsFromFiles(
             self, inputDir: str) -> Dict[str, List[List[Tuple[str, float]]]]:
@@ -65,20 +106,6 @@ class AccessionTables:
             if filename.endswith("ProteinSummary.txt"):
                 groups[filename.split('_')[0]] = self.GetProteinGroupsFromFile(
                     inputDir + '/' + filename)
-        return groups
-
-    def GetProteinGroupsFromFile(
-            self, filename: str) -> List[List[Tuple[str, float]]]:
-        fileTable = self.ReadTable(filename)
-        groups: List[List[Tuple[str, float]]] = []
-        for i in range(0, len(fileTable["N"])):
-            if fileTable["Accession"][i].startswith("RRRRR"):
-                break
-            if float(fileTable["Unused"][i]) != 0:
-                unused = float(fileTable["Unused"][i])
-                groups.append([])
-            groups[-1].append((fileTable["Accession"][i],
-                               unused))
         return groups
 
     def GetAccessionsWithMaxUnusedFromProteinGroups(
@@ -94,6 +121,42 @@ class AccessionTables:
                     elif unused > accessions[accessionName]:
                         accessions[accessionName] = unused
         return accessions
+
+    def GetProteinReplacementsGroupsPerTable(
+            self,
+            groupsPerTables: Dict[str, List[List[Tuple[str, float]]]],
+            accessionsWithMaxUnused: Dict[str, float]
+    ) -> None:
+        self.proteinReplacementsGroups = {}
+        for tableNum, table in groupsPerTables.items():
+            for group in table:
+                if len(group) == 1:
+                    continue
+
+                representativeAccessionName = group[0][0]
+                i = 1
+                while i < len(group):
+                    if(accessionsWithMaxUnused[group[i][0]] >
+                       accessionsWithMaxUnused[representativeAccessionName]):
+                        representativeAccessionName = group[i][0]
+                    i += 1
+
+                self.proteinReplacementsGroups[tableNum] = {
+                    representativeAccessionName:
+                        [accessionName for accessionName, unused in group
+                         if accessionName != representativeAccessionName]}
+
+    def GetProteinGroupsFromFile(
+            self, filename: str) -> List[List[Tuple[str, float]]]:
+        fileTable = self.ReadTable(filename)
+        groups: List[List[Tuple[str, float]]] = []
+        for i in range(0, len(fileTable["N"])):
+            if float(fileTable["Unused"][i]) != 0:
+                unused = float(fileTable["Unused"][i])
+                groups.append([])
+            groups[-1].append((fileTable["Accession"][i],
+                               unused))
+        return groups
 
     @staticmethod
     def ReadTable(tableFilename: str, sep='\t') -> Dict[str, List[str]]:
@@ -118,6 +181,52 @@ class AccessionTables:
             return table
         return None
 
+    def GetAccessionsFromTable(
+            self,
+            peptideTable: Dict[str, List[str]]) -> Dict[str, Accession]:
+        """ Получаем unused, суммы значений Sc, Precursor Signal и сумму длинн
+        последовательностей и подсчитываем количество строк с одинаковым
+        Accession для каждого Accession """
+
+        accessions: Dict[str, Accession] = {}
+        i = 0
+        while i < len(peptideTable["Accessions"]):
+            curAccession = peptideTable["Accessions"][i].split(sep=';')[0]
+            if curAccession not in accessions:
+                accessions[curAccession] = Accession(name=curAccession)
+            accessions[curAccession].Counts += 1
+            accessions[curAccession].Unused = float(peptideTable["Unused"][i])
+            accessions[curAccession].ScSumm += float(peptideTable["Sc"][i])
+            accessions[curAccession].PSignalSumm += float(
+                peptideTable["PrecursorSignal"][i])
+            accessions[curAccession].SeqlenSumm += (
+                len(peptideTable["Sequence"][i]))
+            i += 1
+        return accessions
+
+    def CalculateNormParamsForAccessions(self: "AccessionTables",
+                                         accessions: Dict[str, Accession],
+                                         seqences: Dict[str, Sequence]):
+        for accession in accessions:
+            curAccession = accessions[accession]
+            curAccession.ScNorm = curAccession.ScSumm / seqences[accession].len
+            curAccession.PSignalNorm = (
+                curAccession.PSignalSumm / seqences[accession].len)
+
+    def GetAccessionsPerTable(
+            self,
+            seqences: Dict[str, Sequence]):
+        """ Получаем суммы значений Sc, Precursor Signal и сумму длинн
+        последовательностей для каждого Accession, а также нормализованные
+        значения Precursor Signal и Sc для каждого файла"""
+
+        self.accessionsPerTable: Dict[str, Dict[str, Accession]] = {}
+        for tableNum in self.peptideTables:
+            self.accessionsPerTable[tableNum] = (
+                self.GetAccessionsFromTable(self.peptideTables[tableNum]))
+            self.CalculateNormParamsForAccessions(
+                self.accessionsPerTable[tableNum], seqences)
+
 
 def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:
     columns = [column for column in table]
@@ -126,9 +235,9 @@ def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:
 
 
 def GenerateJointOutputFile(
+        outFilename: str,
         accessionsBunch: Dict[str, Dict[str, Accession]],
-        seqDB: Dict[str, Sequence],
-        outFilename: str = "output.txt") -> None:
+        seqDB: Dict[str, Sequence]) -> None:
 
     with open(outFilename, 'w') as outFile:
         outFile.write("Accession\tFilename\tUnused\tseq_length_summ\t\
@@ -150,19 +259,30 @@ counts\tSc_summ\tPsignal_summ\tSc_norm\tPsignal_norm\tSP_2\tseq_length")
                         seqlen=seqDB[accessionName].len))
 
 
+def GenerateGroupsFile(outFilename: str,
+                       accessionTables: AccessionTables) -> None:
+    with open(outFilename, 'w') as outFile:
+        outFile.write(("Representative\tAccession" +
+                       "\t{}" * len(accessionTables.sortedTableNums) +
+                       '\n').format(*accessionTables.sortedTableNums))
+        for tableNum in accessionTables.sortedTableNums:
+            pass
+
+
 def GenerateTableFileByField(
         fieldName: str,
         accessionsBunch: Dict[str, Dict[str, Accession]],
-        accessionsPerTable: Dict[str, Dict[str, Accession]],
+        accessionTables: AccessionTables,
         outFilename: str) -> None:
 
     with open(outFilename, mode='w') as outFile:
         outFile.write("Accession")
-        outFile.write((("\t{}" * len(accessionsPerTable))).format(
-            *accessionsPerTable))
+        outFile.write((("\t{}" * len(accessionTables.sortedTableNums))).format(
+            *accessionTables.sortedTableNums))
         for accession in accessionsBunch.keys():
             outFile.write("\n" + accession)
-            for table in accessionsPerTable.values():
+            for tableNum in accessionTables.sortedTableNums:
+                table = accessionTables.accessionsPerTable[tableNum]
                 if accession in table:
                     outFile.write('\t{}'.format(
                         table[accession].__dict__[fieldName]))
@@ -211,11 +331,11 @@ def GenerateOutputFiles(
         outputDirPath: str,
         filesSumms: Dict[str, Dict[str, float]],
         seqDB: Dict[str, Sequence],
-        accessionsPerTable: Dict[str, Dict[str, Accession]]) -> None:
+        accessionTables: AccessionTables) -> None:
 
     CreateDirIfNotExist(outputDirPath)
     accessionsBunch = GenerateAccessionsBunchOverAllTables(
-        accessionsPerTable)
+        accessionTables.accessionsPerTable)
     GenerateDescriptionFile(outputDirPath, accessionsBunch, seqDB)
     fieldsToFiles: Tuple[Tuple[str, str], ...] = (
         ("Counts", "counts.txt"),
@@ -228,13 +348,18 @@ def GenerateOutputFiles(
         ("Unused", "unused.txt")
     )
     for field, filename in fieldsToFiles:
-        GenerateTableFileByField(fieldName=field,
-                                 accessionsBunch=accessionsBunch,
-                                 accessionsPerTable=accessionsPerTable,
-                                 outFilename=outputDirPath + '/' + filename)
-    GenerateJointOutputFile(accessionsBunch,
-                            seqDB,
-                            outputDirPath + '/' + "output.txt")
+        GenerateTableFileByField(
+            fieldName=field,
+            accessionsBunch=accessionsBunch,
+            accessionTables=accessionTables,
+            outFilename=outputDirPath + '/' + filename)
+
+    GenerateGroupsFile(outputDirPath + '/' + "Groups.txt", accessionTables)
+
+    GenerateJointOutputFile(outputDirPath + '/' + "output.txt",
+                            accessionsBunch,
+                            # accessionTables=accessionTables,
+                            seqDB=seqDB)
 
 
 def CountAccessionLackInGroup(
@@ -380,53 +505,6 @@ def GetScPsigAndNormFilesSumm(
     return fileSumms
 
 
-def GetAccessionsFromTable(
-        peptideTable: Dict[str, List[str]]) -> Dict[str, Accession]:
-    """ Получаем unused, суммы значений Sc, Precursor Signal и сумму длинн
-    последовательностей и подсчитываем количество строк с одинаковым
-    Accession для каждого Accession """
-
-    accessions: Dict[str, Accession] = {}
-    i = 0
-    while i < len(peptideTable["Accessions"]):
-        curAccession = peptideTable["Accessions"][i].split(sep=';')[0]
-        if curAccession not in accessions:
-            accessions[curAccession] = Accession(name=curAccession)
-        accessions[curAccession].Counts += 1
-        accessions[curAccession].Unused = float(peptideTable["Unused"][i])
-        accessions[curAccession].ScSumm += float(peptideTable["Sc"][i])
-        accessions[curAccession].PSignalSumm += float(
-            peptideTable["PrecursorSignal"][i])
-        accessions[curAccession].SeqlenSumm += len(peptideTable["Sequence"][i])
-        i += 1
-    return accessions
-
-
-def CalculateNormParamsForAccessions(accessions: Dict[str, Accession],
-                                     seqences: Dict[str, Sequence]):
-    for accession in accessions:
-        curAccession = accessions[accession]
-        curAccession.ScNorm = curAccession.ScSumm / seqences[accession].len
-        curAccession.PSignalNorm = (
-            curAccession.PSignalSumm / seqences[accession].len)
-
-
-def GetAccessionsPerTable(
-        peptideTables: Dict[str, Dict[str, List[str]]],
-        seqences: Dict[str, Sequence]) -> Dict[str, Dict[str, Accession]]:
-    """ Получаем суммы значений Sc, Precursor Signal и сумму длинн
-    последовательностей для каждого Accession, а также нормализованные
-    значения Precursor Signal и Sc для каждого файла"""
-
-    accessionsPerTable: Dict[str, Dict[str, Accession]] = {}
-    for tableNum in peptideTables:
-        accessionsPerTable[tableNum] = (
-            GetAccessionsFromTable(peptideTables[tableNum]))
-        CalculateNormParamsForAccessions(accessionsPerTable[tableNum],
-                                         seqences)
-    return accessionsPerTable
-
-
 def ApplyWhiteList(peptideTables: Dict[str, Dict[str, List[str]]],
                    whiteList: List[str]):
     """ Удаляем из всех таблиц все id, отсутствующие в белом списке """
@@ -551,11 +629,10 @@ def ApplyDefaultConf(peptideTables: Dict[str, Dict[str, List[str]]]):
 def GetFileLines(filename: str) -> Union[List[str], None]:
     """ Returns list of file strings without newline symbols """
 
-    try:
+    if len(filename):
         with open(filename) as tfile:
             return tfile.read().split('\n')
-    except FileNotFoundError:
-        return None
+    return None
 
 
 def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
@@ -601,12 +678,12 @@ def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
 def GetInput() -> Input:
     inputParams = Input()
     if len(argv) == 9:
-        inputParams.whiteList = GetFileLines(argv[5])
-        inputParams.blackList = GetFileLines(argv[6])
-        inputParams.seqDB = ReadSeqDB(argv[1])
-        inputParams.unused = Comparable.GetComparableClass(argv[2])
-        inputParams.contrib = Comparable.GetComparableClass(argv[3])
-        inputParams.conf = argv[4]
+        inputParams.whiteList = GetFileLines(argv[1])
+        inputParams.blackList = GetFileLines(argv[2])
+        inputParams.seqDB = ReadSeqDB(argv[3])
+        inputParams.unused = Comparable.GetComparableClass(argv[4])
+        inputParams.contrib = Comparable.GetComparableClass(argv[5])
+        inputParams.conf = argv[6]
         inputParams.minGroupsWithAccession = int(argv[7])
         inputParams.maxGroupAbsence = int(argv[8])
     else:
@@ -621,32 +698,6 @@ def GetInput() -> Input:
         inputParams.maxGroupAbsence = int(
             input("Max missing values per group: "))
     return inputParams
-
-
-def RemoveReversedAccessionsFromTables(
-        peptideTables: Dict[str, Dict[str, List[str]]]):
-
-    for peptideTable in peptideTables.values():
-        i = 0
-        while i < len(peptideTable["Accessions"]):
-            if peptideTable["Accessions"][i].startswith("RRRRR"):
-                break
-            i += 1
-
-        if i < len(peptideTable["Accessions"]):
-            for column in peptideTable.values():
-                del column[i:]
-
-
-def ApplyProteinReplacements(replacementsPerTable: Dict[str, Dict[str, str]],
-                             peptideTables: Dict[str, Dict[str, List[str]]]):
-
-    for tableName, table in peptideTables.items():
-        tableReplacements = replacementsPerTable[tableName]
-        for i in range(0, len(table["Accessions"])):
-            if table["Accessions"][i] in tableReplacements:
-                table["Accessions"][i] = (
-                    tableReplacements[table["Accessions"][i]])
 
 
 def GetRepresentativeAccessionForGroup(
@@ -688,41 +739,41 @@ def GetReplacementsPerTable(
 
 
 def main():
-    accessionsTables = AccessionTables(INPUTPATH)
-    RemoveReversedAccessionsFromTables(accessionsTables.peptideTables)
-    ApplyProteinReplacements(
-        accessionsTables.proteinReplacements, accessionsTables.peptideTables)
+    accessionTables = AccessionTables(INPUTPATH)
+    accessionTables.ApplyProteinReplacements()
+    import json
+    print(json.dumps(accessionTables.proteinReplacementsGroups))
     inputParams = GetInput()
+    accessionTables.seqDB = inputParams.seqDB
 
     if inputParams.isDefaultConf:
-        ApplyDefaultConf(accessionsTables.peptideTables)
+        ApplyDefaultConf(accessionTables.peptideTables)
     ApplyParamsFilter(inputParams.unused,
                       inputParams.contrib,
                       inputParams.conf,
-                      accessionsTables.peptideTables)
+                      accessionTables.peptideTables)
 
     if inputParams.whiteList:
-        ApplyWhiteList(accessionsTables.peptideTables, inputParams.whiteList)
+        ApplyWhiteList(accessionTables.peptideTables, inputParams.whiteList)
 
-    filesSumms = GetScPsigAndNormFilesSumm(
-        GetAccessionsPerTable(accessionsTables.peptideTables,
-                              inputParams.seqDB))
+    accessionTables.GetAccessionsPerTable(inputParams.seqDB)
+    filesSumms = GetScPsigAndNormFilesSumm(accessionTables.accessionsPerTable)
 
     if inputParams.blackList:
-        ApplyBlackList(accessionsTables.peptideTables, inputParams.blackList)
+        ApplyBlackList(accessionTables.peptideTables, inputParams.blackList)
 
-    accessionsPerFile = GetAccessionsPerTable(accessionsTables.peptideTables,
-                                              inputParams.seqDB)
-    CalculateAccessionsNormRatios(accessionsPerFile, filesSumms)
+    accessionTables.GetAccessionsPerTable(inputParams.seqDB)
+    CalculateAccessionsNormRatios(accessionTables.accessionsPerTable,
+                                  filesSumms)
 
-    ApplyGroupFilter(accessionsPerFile,
+    ApplyGroupFilter(accessionTables.accessionsPerTable,
                      inputParams.maxGroupAbsence,
                      inputParams.minGroupsWithAccession)
 
     GenerateOutputFiles("Output/",
                         seqDB=inputParams.seqDB,
                         filesSumms=filesSumms,
-                        accessionsPerTable=accessionsPerFile)
+                        accessionTables=accessionTables)
 
 
 if __name__ == "__main__":

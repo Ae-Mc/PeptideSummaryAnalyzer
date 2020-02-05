@@ -80,11 +80,16 @@ def GenerateTableFileByField(
 
     with open(outFilename, mode='w') as outFile:
         outFile.write("Accession")
+        sortedAccessionsBunchKeys = [*accessionsPerTable]
+        sortedAccessionsBunchKeys.sort()
+        sortedTableNums = [*accessionsPerTable.keys()]
+        sortedTableNums.sort()
         outFile.write((("\t{}" * len(accessionsPerTable))).format(
-            *accessionsPerTable))
-        for accession in accessionsBunch.keys():
+            *sortedAccessionsBunchKeys))
+        for accession in sortedAccessionsBunchKeys:
             outFile.write("\n" + accession)
-            for table in accessionsPerTable.values():
+            for tableNum in sortedTableNums:
+                table = accessionsPerTable[tableNum]
                 if accession in table:
                     outFile.write('\t{}'.format(
                         table[accession].__dict__[fieldName]))
