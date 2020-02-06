@@ -1,3 +1,5 @@
+#!python3.7
+import json
 from typing import List, Dict, Union, Tuple
 from os import listdir, mkdir
 from os.path import exists
@@ -5,28 +7,27 @@ from Classes import Sequence, Comparable, Accession, Input
 from sys import argv
 
 # TODO: Доделать сортировку имён файлов
-# TODO: Сделать создание файла с группами
 
 INPUTPATH = "Input"
 
 """ peptideTables - словарь вида
     {
         "1.1": {
-            "Заголовок 1": ["Значение 1", "Значение 2", ..., "Значение n1"],
-            "Заголовок 2": ["Значение 1", "Значение 2", ..., "Значение n1"],
+            "Заголовок 1":  ["Значение 1", "Значение 2", ..., "Значение n1"],
+            "Заголовок 2":  ["Значение 1", "Значение 2", ..., "Значение n1"],
             ..............................................................
             "Заголовок N1": ["Значение 1", "Значение 2", ..., "Значение n1"]
         },
         "1.2": {
-            "Заголовок 1": ["Значение 1", "Значение 2", ..., "Значение n2"],
-            "Заголовок 2": ["Значение 1", "Значение 2", ..., "Значение n2"],
+            "Заголовок 1":  ["Значение 1", "Значение 2", ..., "Значение n2"],
+            "Заголовок 2":  ["Значение 1", "Значение 2", ..., "Значение n2"],
             ..............................................................
             "Заголовок N2": ["Значение 1", "Значение 2", ..., "Значение n2"]
         },
         ...,
         "I-ый файл": {
-            "Заголовок 1": ["Значение 1", "Значение 2", ..., "Значение nI"],
-            "Заголовок 2": ["Значение 1", "Значение 2", ..., "Значение nI"],
+            "Заголовок 1":  ["Значение 1", "Значение 2", ..., "Значение nI"],
+            "Заголовок 2":  ["Значение 1", "Значение 2", ..., "Значение nI"],
             ..............................................................
             "Заголовок NI": ["Значение 1", "Значение 2", ..., "Значение nI"]
         }
@@ -38,7 +39,7 @@ class AccessionTables:
 
     peptideTables: Dict[str, Dict[str, List[str]]]
     proteinReplacements: Dict[str, Dict[str, str]]
-    proteinReplacementsGroups: Dict[str, Dict[str, List[str]]]
+    proteinReplacementsGroups: Dict[str, Dict[str, Dict[str, int]]]
     accessionsPerTable: Dict[str, Dict[str, Accession]]
     sortedTableNums: List[str]
 
@@ -50,6 +51,8 @@ class AccessionTables:
 
             self.GetProteinSummaryReplacements(inputDir)
             self.RemoveReversedAccessionsFromProteinReplacements()
+
+            self.GetProteinReplacementsGroupsPerTable()
 
     def ReadPeptideSummaries(self, inputDir: str) -> None:
         """ Считывание всех PeptideSummary файлов в словарь """
@@ -79,15 +82,19 @@ class AccessionTables:
             self.GetProteinGroupsFromFiles(inputDir))
         accessions: Dict[str, float] = (
             self.GetAccessionsWithMaxUnusedFromProteinGroups(groupsPerTables))
-        self.GetProteinReplacementsGroupsPerTable(groupsPerTables, accessions)
+        print(json.dumps(groupsPerTables,
+                         indent=4,
+                         separators=(", ", ": ")))
         self.proteinReplacements = (
             GetReplacementsPerTable(accessions, groupsPerTables))
 
     def RemoveReversedAccessionsFromProteinReplacements(self) -> None:
 
-        for accessionName in self.proteinReplacements:
-            if accessionName.startswith("RRRRR"):
-                del self.proteinReplacements[accessionName]
+        for tableNum in self.proteinReplacements.keys():
+            replacings = [key for key in self.proteinReplacements[tableNum]]
+            for replacing in replacings:
+                if replacing.startswith("RRRRR"):
+                    del self.proteinReplacements[tableNum][replacing]
 
     def ApplyProteinReplacements(self):
 
@@ -122,29 +129,22 @@ class AccessionTables:
                         accessions[accessionName] = unused
         return accessions
 
-    def GetProteinReplacementsGroupsPerTable(
-            self,
-            groupsPerTables: Dict[str, List[List[Tuple[str, float]]]],
-            accessionsWithMaxUnused: Dict[str, float]
-    ) -> None:
+    def GetProteinReplacementsGroupsPerTable(self) -> None:
         self.proteinReplacementsGroups = {}
-        for tableNum, table in groupsPerTables.items():
-            for group in table:
-                if len(group) == 1:
+        for tableNum, replacements in self.proteinReplacements.items():
+            for replaceable, replacing in replacements.items():
+                if replaceable == replacing:
                     continue
-
-                representativeAccessionName = group[0][0]
-                i = 1
-                while i < len(group):
-                    if(accessionsWithMaxUnused[group[i][0]] >
-                       accessionsWithMaxUnused[representativeAccessionName]):
-                        representativeAccessionName = group[i][0]
-                    i += 1
-
-                self.proteinReplacementsGroups[tableNum] = {
-                    representativeAccessionName:
-                        [accessionName for accessionName, unused in group
-                         if accessionName != representativeAccessionName]}
+                if replacing not in self.proteinReplacementsGroups:
+                    self.proteinReplacementsGroups[replacing] = {}
+                if(replaceable not in
+                   self.proteinReplacementsGroups[replacing]):
+                    self.proteinReplacementsGroups[replacing][replaceable] = {}
+                    for tableNumber in self.sortedTableNums:
+                        self.proteinReplacementsGroups[
+                            replacing][replaceable][tableNumber] = 0
+                self.proteinReplacementsGroups[
+                    replacing][replaceable][tableNum] = 1
 
     def GetProteinGroupsFromFile(
             self, filename: str) -> List[List[Tuple[str, float]]]:
@@ -243,7 +243,8 @@ def GenerateJointOutputFile(
         outFile.write("Accession\tFilename\tUnused\tseq_length_summ\t\
 counts\tSc_summ\tPsignal_summ\tSc_norm\tPsignal_norm\tSP_2\tseq_length")
         for accessionName, accessionTables in accessionsBunch.items():
-            for tableNum, accession in accessionTables.items():
+            for tableNum in sorted(accessionTables.keys()):
+                accession = accessionTables[tableNum]
                 outFile.write("\n{accession}\t{tableNum}\t{unused}\t\
 {seqlenSumm}\t{counts}\t{scSumm}\t{pSignalSumm}\t{scNorm}\t{pSignalNorm}\t\
 {sp2}\t{seqlen}".format(accession=accessionName,
@@ -265,8 +266,20 @@ def GenerateGroupsFile(outFilename: str,
         outFile.write(("Representative\tAccession" +
                        "\t{}" * len(accessionTables.sortedTableNums) +
                        '\n').format(*accessionTables.sortedTableNums))
-        for tableNum in accessionTables.sortedTableNums:
-            pass
+        for representativeAccessionName in \
+                accessionTables.proteinReplacementsGroups:
+            accession = (
+                accessionTables.proteinReplacementsGroups[
+                    representativeAccessionName])
+            outFile.write(representativeAccessionName)
+            for replaceableName in accession:
+                outFile.write(
+                    ("\t{}" +
+                     "\t{}" * len(accessionTables.sortedTableNums) +
+                     '\n').format(
+                         replaceableName,
+                         *[accession[replaceableName][key] for key in
+                           accessionTables.sortedTableNums]))
 
 
 def GenerateTableFileByField(
@@ -741,8 +754,6 @@ def GetReplacementsPerTable(
 def main():
     accessionTables = AccessionTables(INPUTPATH)
     accessionTables.ApplyProteinReplacements()
-    import json
-    print(json.dumps(accessionTables.proteinReplacementsGroups))
     inputParams = GetInput()
     accessionTables.seqDB = inputParams.seqDB
 

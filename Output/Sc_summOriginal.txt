@@ -1,7 +1,0 @@
-ID	Length	0.1	0.2	0.3	1.1	1.2	1.3	3.1	3.2	5.1	5.2
-Efra.gene24458_i0_length609.p1	202					158.0		211.0		271.0	187.0
-Efra.gene21131_i1_length711.p1	236					152.0				192.0	
-Efra.gene17127_i0_length880.p1	292						122.0	142.0	116.0	365.0	124.0
-Efra.gene1749_i1_length3021.p1	1007							185.0		359.0	171.0
-Efra.gene1853_i0_length2945.p1	968									140.0	
-Efra.gene14059_i2_length1041.p1	347									153.0	
