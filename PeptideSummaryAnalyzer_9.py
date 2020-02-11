@@ -1,5 +1,4 @@
 #!python3.7
-import json
 from typing import List, Dict, Union, Tuple
 from os import listdir, mkdir
 from os.path import exists
@@ -46,7 +45,7 @@ class AccessionTables:
     def __init__(self, inputDir=None):
         if inputDir is not None:
             self.ReadPeptideSummaries(inputDir)
-            self.sortedTableNums = sorted(self.peptideTables.keys())
+            self.sortedTableNums = self.GetSortedTableNums()
             self.RemoveReversedAccessionsFromTables()
 
             self.GetProteinSummaryReplacements(inputDir)
@@ -61,6 +60,9 @@ class AccessionTables:
             if "Peptide" in filename:
                 self.peptideTables[filename.split('_')[0]] = (
                     self.ReadTable(inputDir + '/' + filename))
+
+    def GetSortedTableNums(self) -> List[str]:
+        return sorted(self.peptideTables.keys(), key=lambda x: float(x))
 
     def RemoveReversedAccessionsFromTables(self):
 
@@ -80,11 +82,8 @@ class AccessionTables:
 
         groupsPerTables: Dict[str, List[List[Tuple[str, float]]]] = (
             self.GetProteinGroupsFromFiles(inputDir))
-        accessions: Dict[str, float] = (
+        accessions: Dict[str, Dict[str, Union[float, int]]] = (
             self.GetAccessionsWithMaxUnusedFromProteinGroups(groupsPerTables))
-        print(json.dumps(groupsPerTables,
-                         indent=4,
-                         separators=(", ", ": ")))
         self.proteinReplacements = (
             GetReplacementsPerTable(accessions, groupsPerTables))
 
@@ -118,15 +117,18 @@ class AccessionTables:
     def GetAccessionsWithMaxUnusedFromProteinGroups(
             self,
             groupsPerTables: Dict[str, List[List[Tuple[str, float]]]]
-    ) -> Dict[str, float]:
-        accessions: Dict[str, float] = {}
+    ) -> Dict[str, Dict[str, Union[float, int]]]:
+        accessions: Dict[str, Dict[str, Union[float, int]]] = {}
         for groups in groupsPerTables.values():
             for group in groups:
                 for accessionName, unused in group:
                     if accessionName not in accessions:
-                        accessions[accessionName] = unused
-                    elif unused > accessions[accessionName]:
-                        accessions[accessionName] = unused
+                        accessions[accessionName] = {
+                            "unused": unused,
+                            "occurences": 0}
+                    accessions[accessionName]["occurences"] += 1
+                    if unused > accessions[accessionName]["unused"]:
+                        accessions[accessionName]["unused"] = unused
         return accessions
 
     def GetProteinReplacementsGroupsPerTable(self) -> None:
@@ -152,6 +154,8 @@ class AccessionTables:
         groups: List[List[Tuple[str, float]]] = []
         for i in range(0, len(fileTable["N"])):
             if float(fileTable["Unused"][i]) != 0:
+                if len(groups):
+                    groups[-1].sort()
                 unused = float(fileTable["Unused"][i])
                 groups.append([])
             groups[-1].append((fileTable["Accession"][i],
@@ -243,7 +247,8 @@ def GenerateJointOutputFile(
         outFile.write("Accession\tFilename\tUnused\tseq_length_summ\t\
 counts\tSc_summ\tPsignal_summ\tSc_norm\tPsignal_norm\tSP_2\tseq_length")
         for accessionName, accessionTables in accessionsBunch.items():
-            for tableNum in sorted(accessionTables.keys()):
+            for tableNum in sorted(accessionTables.keys(),
+                                   key=lambda x: float(x)):
                 accession = accessionTables[tableNum]
                 outFile.write("\n{accession}\t{tableNum}\t{unused}\t\
 {seqlenSumm}\t{counts}\t{scSumm}\t{pSignalSumm}\t{scNorm}\t{pSignalNorm}\t\
@@ -714,20 +719,30 @@ def GetInput() -> Input:
 
 
 def GetRepresentativeAccessionForGroup(
-        accessionsWithMaxUnused: Dict[str, float],
+        accessionsWithMaxUnused: Dict[str, Dict[str, Union[float, int]]],
         group: List[Tuple[str, float]]) -> str:
 
-    representativeAccession: Tuple[str, float] = (
-        group[0][0], accessionsWithMaxUnused[group[0][0]])
-    for accessionName, unused in group:
-        if accessionsWithMaxUnused[accessionName] > representativeAccession[1]:
+    representativeAccession: Tuple[str,
+                                   Union[float, int],
+                                   Union[float, int]] = (
+        group[0][0],
+        accessionsWithMaxUnused[group[0][0]]["unused"],
+        accessionsWithMaxUnused[group[0][0]]["occurences"])
+    for accessionName, unused in sorted(group, key=lambda x: x[0]):
+        curAccession = accessionsWithMaxUnused[accessionName]
+        if(curAccession["unused"] > representativeAccession[1]  # type: ignore
+           or (
+               curAccession["unused"] == representativeAccession[1] and
+               curAccession["occurences"] >  # type: ignore
+               representativeAccession[2])):
             representativeAccession = (accessionName,
-                                       accessionsWithMaxUnused[accessionName])
+                                       curAccession["unused"],
+                                       curAccession["occurences"])
     return representativeAccession[0]
 
 
 def GetReplacementsForGroups(
-        accessionsWithMaxUnused: Dict[str, float],
+        accessionsWithMaxUnused: Dict[str, Dict[str, Union[float, int]]],
         groups: List[List[Tuple[str, float]]]
 ) -> Dict[str, str]:
 
@@ -741,7 +756,7 @@ def GetReplacementsForGroups(
 
 
 def GetReplacementsPerTable(
-        accessionsWithMaxUnused: Dict[str, float],
+        accessionsWithMaxUnused: Dict[str, Dict[str, Union[float, int]]],
         groupsPerTables: Dict[str, List[List[Tuple[str, float]]]]
 ) -> Dict[str, Dict[str, str]]:
     replacementsPerTable: Dict[str, Dict[str, str]] = {}
