@@ -43,23 +43,23 @@ class AccessionTables:
     sortedTableNums: List[str]
 
     def __init__(self, inputDir=None):
+        self.proteinReplacements = None
         if inputDir is not None:
             self.ReadPeptideSummaries(inputDir)
             self.sortedTableNums = self.GetSortedTableNums()
             self.RemoveReversedAccessionsFromTables()
-
-            self.GetProteinSummaryReplacements(inputDir)
-            self.RemoveReversedAccessionsFromProteinReplacements()
-
-            self.GetProteinReplacementsGroupsPerTable()
 
     def ReadPeptideSummaries(self, inputDir: str) -> None:
         """ Считывание всех PeptideSummary файлов в словарь """
         self.peptideTables = {}
         for filename in listdir(inputDir):
             if "Peptide" in filename:
-                self.peptideTables[filename.split('_')[0]] = (
+                tableNum = filename.split('_')[0]
+                self.peptideTables[tableNum] = (
                     self.ReadTable(inputDir + '/' + filename))
+                self.peptideTables[tableNum]["Accessions"] = [
+                    accession.split(';')[0] for accession in
+                    self.peptideTables[tableNum]["Accessions"]]
 
     def GetSortedTableNums(self) -> List[str]:
         return sorted(self.peptideTables.keys(), key=lambda x: float(x))
@@ -97,8 +97,8 @@ class AccessionTables:
 
     def ApplyProteinReplacements(self):
 
-        for tableName, table in self.peptideTables.items():
-            tableReplacements = self.proteinReplacements[tableName]
+        for tableNum, table in self.peptideTables.items():
+            tableReplacements = self.proteinReplacements[tableNum]
             for i in range(0, len(table["Accessions"])):
                 if table["Accessions"][i] in tableReplacements:
                     table["Accessions"][i] = (
@@ -267,24 +267,22 @@ counts\tSc_summ\tPsignal_summ\tSc_norm\tPsignal_norm\tSP_2\tseq_length")
 
 def GenerateGroupsFile(outFilename: str,
                        accessionTables: AccessionTables) -> None:
-    with open(outFilename, 'w') as outFile:
-        outFile.write(("Representative\tAccession" +
-                       "\t{}" * len(accessionTables.sortedTableNums) +
-                       '\n').format(*accessionTables.sortedTableNums))
-        for representativeAccessionName in \
-                accessionTables.proteinReplacementsGroups:
-            accession = (
-                accessionTables.proteinReplacementsGroups[
-                    representativeAccessionName])
-            outFile.write(representativeAccessionName)
-            for replaceableName in accession:
-                outFile.write(
-                    ("\t{}" +
-                     "\t{}" * len(accessionTables.sortedTableNums) +
-                     '\n').format(
-                         replaceableName,
-                         *[accession[replaceableName][key] for key in
-                           accessionTables.sortedTableNums]))
+    if accessionTables.proteinReplacements is not None:
+        with open(outFilename, 'w') as outFile:
+            outFile.write(("Representative\tAccession" +
+                           "\t{}" * len(accessionTables.sortedTableNums) +
+                           '\n').format(*accessionTables.sortedTableNums))
+            for representativeAccessionName, accession in \
+                    accessionTables.proteinReplacementsGroups.items():
+                outFile.write(representativeAccessionName)
+                for replaceableName, replaceable in accession.items():
+                    outFile.write(
+                        ("\t{}" +
+                         "\t{}" * len(accessionTables.sortedTableNums) +
+                         '\n').format(
+                             replaceableName,
+                             *[replaceable[key] for key in
+                               accessionTables.sortedTableNums]))
 
 
 def GenerateTableFileByField(
@@ -605,10 +603,10 @@ def RemoveAccessionsFromTableByBlacklist(peptideTable: Dict[str, List[str]],
         i += 1
 
 
-def TestConfDefaultCondition(confVal: int):
-    if float(confVal) >= 99.0:
+def TestConfDefaultCondition(confVal: float):
+    if confVal >= 99.0:
         return 2
-    if float(confVal) >= 95.0:
+    if confVal >= 95.0:
         return 1
     return 0
 
@@ -637,9 +635,10 @@ def ApplyDefaultConf(peptideTables: Dict[str, Dict[str, List[str]]]):
             curAccession = curTable["Accessions"][i].split(';')[0]
             if curAccession in blackList:
                 blackList[curAccession] += (
-                    TestConfDefaultCondition(int(curTable["Conf"][i])))
+                    TestConfDefaultCondition(float(curTable["Conf"][i])))
                 if blackList[curAccession] > 1:
                     del blackList[curAccession]
+            i += 1
         RemoveAccessionsFromTableByBlacklist(curTable, blackList)
     return peptideTables
 
@@ -695,22 +694,25 @@ def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
 
 def GetInput() -> Input:
     inputParams = Input()
-    if len(argv) == 9:
+    if len(argv) == 10:
         inputParams.whiteList = GetFileLines(argv[1])
         inputParams.blackList = GetFileLines(argv[2])
-        inputParams.seqDB = ReadSeqDB(argv[3])
-        inputParams.unused = Comparable.GetComparableClass(argv[4])
-        inputParams.contrib = Comparable.GetComparableClass(argv[5])
-        inputParams.conf = argv[6]
-        inputParams.minGroupsWithAccession = int(argv[7])
-        inputParams.maxGroupAbsence = int(argv[8])
+        inputParams.isProteinGroupFilter = (
+            True if argv[3].strip() == 'y' else False)
+        inputParams.seqDB = ReadSeqDB(argv[4])
+        inputParams.unused = Comparable(argv[5])
+        inputParams.contrib = Comparable(argv[6])
+        inputParams.conf = argv[7]
+        inputParams.minGroupsWithAccession = int(argv[8])
+        inputParams.maxGroupAbsence = int(argv[9])
     else:
         inputParams.whiteList = GetFileLines(input("Id file name: "))
         inputParams.blackList = GetFileLines(input("ID exclusion file name: "))
+        inputParams.isProteinGroupFilter = True if input(
+            "Protein group filter: ").strip() == 'y' else False
         inputParams.seqDB = ReadSeqDB(input("Database file name: "))
-        inputParams.unused = Comparable.GetComparableClass(input("Unused: "))
-        inputParams.contrib = Comparable.GetComparableClass(
-            input("Contribution: "))
+        inputParams.unused = Comparable(input("Unused: "))
+        inputParams.contrib = Comparable(input("Contribution: "))
         inputParams.conf = input("Confidence: ")
         inputParams.minGroupsWithAccession = int(input("Min groups with ID: "))
         inputParams.maxGroupAbsence = int(
@@ -768,12 +770,19 @@ def GetReplacementsPerTable(
 
 def main():
     accessionTables = AccessionTables(INPUTPATH)
-    accessionTables.ApplyProteinReplacements()
+
     inputParams = GetInput()
     accessionTables.seqDB = inputParams.seqDB
 
+    if inputParams.isProteinGroupFilter:
+        accessionTables.GetProteinSummaryReplacements(INPUTPATH)
+        accessionTables.RemoveReversedAccessionsFromProteinReplacements()
+        accessionTables.GetProteinReplacementsGroupsPerTable()
+        accessionTables.ApplyProteinReplacements()
+
     if inputParams.isDefaultConf:
         ApplyDefaultConf(accessionTables.peptideTables)
+
     ApplyParamsFilter(inputParams.unused,
                       inputParams.contrib,
                       inputParams.conf,
