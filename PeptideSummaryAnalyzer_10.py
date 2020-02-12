@@ -7,8 +7,6 @@ from Classes.ReadTable import ReadTable
 from Classes.Classes import Sequence, Comparable, Accession, Input
 from Classes.ProteinTables import ProteinTables
 
-# TODO: Доделать сортировку имён файлов
-
 INPUTPATH = "Input"
 
 """ peptideTables - словарь вида
@@ -49,8 +47,6 @@ class AccessionTables:
             self.sortedTableNums = self.GetSortedTableNums()
             self.RemoveReversedAccessionsFromTables()
 
-            self.GetProteinReplacementsGroupsPerTable()
-
     def ReadPeptideSummaries(self, inputDir: str) -> None:
         """ Считывание всех PeptideSummary файлов в словарь """
         self.peptideTables = {}
@@ -79,39 +75,14 @@ class AccessionTables:
                 for column in peptideTable.values():
                     del column[i:]
 
-    def RemoveReversedAccessionsFromProteinReplacements(self) -> None:
-
-        for tableNum in self.proteinReplacements.keys():
-            replacings = [key for key in self.proteinReplacements[tableNum]]
-            for replacing in replacings:
-                if replacing.startswith("RRRRR"):
-                    del self.proteinReplacements[tableNum][replacing]
-
-    def ApplyProteinReplacements(self):
+    def ApplyProteinReplacements(self, proteinTables: ProteinTables):
 
         for tableName, table in self.peptideTables.items():
-            tableReplacements = self.proteinReplacements[tableName]
+            tableReplacements = proteinTables.proteinReplacements[tableName]
             for i in range(0, len(table["Accessions"])):
                 if table["Accessions"][i] in tableReplacements:
                     table["Accessions"][i] = (
                         tableReplacements[table["Accessions"][i]])
-
-    def GetProteinReplacementsGroupsPerTable(self) -> None:
-        self.proteinReplacementsGroups = {}
-        for tableNum, replacements in self.proteinReplacements.items():
-            for replaceable, replacing in replacements.items():
-                if replaceable == replacing:
-                    continue
-                if replacing not in self.proteinReplacementsGroups:
-                    self.proteinReplacementsGroups[replacing] = {}
-                if(replaceable not in
-                   self.proteinReplacementsGroups[replacing]):
-                    self.proteinReplacementsGroups[replacing][replaceable] = {}
-                    for tableNumber in self.sortedTableNums:
-                        self.proteinReplacementsGroups[
-                            replacing][replaceable][tableNumber] = 0
-                self.proteinReplacementsGroups[
-                    replacing][replaceable][tableNum] = 1
 
     def GetAccessionsFromTable(
             self,
@@ -194,25 +165,25 @@ counts\tSc_summ\tPsignal_summ\tSc_norm\tPsignal_norm\tSP_2\tseq_length")
 
 
 def GenerateGroupsFile(outFilename: str,
-                       accessionTables: AccessionTables) -> None:
+                       proteinTables: ProteinTables) -> None:
     with open(outFilename, 'w') as outFile:
         outFile.write(("Representative\tAccession" +
-                       "\t{}" * len(accessionTables.sortedTableNums) +
-                       '\n').format(*accessionTables.sortedTableNums))
+                       "\t{}" * len(proteinTables.sortedTableNums) +
+                       '\n').format(*proteinTables.sortedTableNums))
         for representativeAccessionName in \
-                accessionTables.proteinReplacementsGroups:
+                proteinTables.proteinReplacementsGroups:
             accession = (
-                accessionTables.proteinReplacementsGroups[
+                proteinTables.proteinReplacementsGroups[
                     representativeAccessionName])
             outFile.write(representativeAccessionName)
             for replaceableName in accession:
                 outFile.write(
                     ("\t{}" +
-                     "\t{}" * len(accessionTables.sortedTableNums) +
+                     "\t{}" * len(proteinTables.sortedTableNums) +
                      '\n').format(
                          replaceableName,
                          *[accession[replaceableName][key] for key in
-                           accessionTables.sortedTableNums]))
+                           proteinTables.sortedTableNums]))
 
 
 def GenerateTableFileByField(
@@ -277,7 +248,8 @@ def GenerateOutputFiles(
         outputDirPath: str,
         filesSumms: Dict[str, Dict[str, float]],
         seqDB: Dict[str, Sequence],
-        accessionTables: AccessionTables) -> None:
+        accessionTables: AccessionTables,
+        proteinTables: ProteinTables) -> None:
 
     CreateDirIfNotExist(outputDirPath)
     accessionsBunch = GenerateAccessionsBunchOverAllTables(
@@ -300,7 +272,7 @@ def GenerateOutputFiles(
             accessionTables=accessionTables,
             outFilename=outputDirPath + '/' + filename)
 
-    GenerateGroupsFile(outputDirPath + '/' + "Groups.txt", accessionTables)
+    GenerateGroupsFile(outputDirPath + '/' + "Groups.txt", proteinTables)
 
     GenerateJointOutputFile(outputDirPath + '/' + "output.txt",
                             accessionsBunch,
@@ -649,46 +621,10 @@ def GetInput() -> Input:
     return inputParams
 
 
-def GetRepresentativeAccessionForGroup(
-        accessionsWithMaxUnused: Dict[str, Dict[str, Union[float, int]]],
-        group: List[Tuple[str, float]]) -> str:
-
-    representativeAccession: Tuple[str,
-                                   Union[float, int],
-                                   Union[float, int]] = (
-        group[0][0],
-        accessionsWithMaxUnused[group[0][0]]["unused"],
-        accessionsWithMaxUnused[group[0][0]]["occurences"])
-    for accessionName, unused in sorted(group, key=lambda x: x[0]):
-        curAccession = accessionsWithMaxUnused[accessionName]
-        if(curAccession["unused"] > representativeAccession[1]  # type: ignore
-           or (
-               curAccession["unused"] == representativeAccession[1] and
-               curAccession["occurences"] >  # type: ignore
-               representativeAccession[2])):
-            representativeAccession = (accessionName,
-                                       curAccession["unused"],
-                                       curAccession["occurences"])
-    return representativeAccession[0]
-
-
-def GetReplacementsForGroups(
-        accessionsWithMaxUnused: Dict[str, Dict[str, Union[float, int]]],
-        groups: List[List[Tuple[str, float]]]
-) -> Dict[str, str]:
-
-    replacements = {}
-    for group in groups:
-        representativeAccession = GetRepresentativeAccessionForGroup(
-            accessionsWithMaxUnused, group)
-        for accession, unused in group:
-            replacements[accession] = representativeAccession
-    return replacements
-
-
 def main():
     accessionTables = AccessionTables(INPUTPATH)
-    accessionTables.ApplyProteinReplacements()
+    proteinTables = ProteinTables(inputDir=INPUTPATH)
+    accessionTables.ApplyProteinReplacements(proteinTables)
     inputParams = GetInput()
     accessionTables.seqDB = inputParams.seqDB
 
@@ -719,7 +655,8 @@ def main():
     GenerateOutputFiles("Output/",
                         seqDB=inputParams.seqDB,
                         filesSumms=filesSumms,
-                        accessionTables=accessionTables)
+                        accessionTables=accessionTables,
+                        proteinTables=proteinTables)
 
 
 if __name__ == "__main__":
