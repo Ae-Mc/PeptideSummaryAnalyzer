@@ -1,134 +1,17 @@
 #!python3.7
 from typing import List, Dict, Union, Tuple
-from os import listdir, mkdir
+from os import mkdir
 from os.path import exists
 from sys import argv
-from Classes.ReadTable import ReadTable
-from Classes.Classes import Sequence, Comparable, Accession, Input
+from Classes.Sequence import Sequence
+from Classes.Comparable import Comparable
+from Classes.Accession import Accession
+from Classes.Input import Input
 from Classes.ProteinTables import ProteinTables
+from Classes.PeptideTables import PeptideTables
+from Classes.AccessionTables import AccessionTables
 
 INPUTPATH = "Input"
-
-""" peptideTables - словарь вида
-    {
-        "1.1": {
-            "Заголовок 1":  ["Значение 1", "Значение 2", ..., "Значение n1"],
-            "Заголовок 2":  ["Значение 1", "Значение 2", ..., "Значение n1"],
-            ..............................................................
-            "Заголовок N1": ["Значение 1", "Значение 2", ..., "Значение n1"]
-        },
-        "1.2": {
-            "Заголовок 1":  ["Значение 1", "Значение 2", ..., "Значение n2"],
-            "Заголовок 2":  ["Значение 1", "Значение 2", ..., "Значение n2"],
-            ..............................................................
-            "Заголовок N2": ["Значение 1", "Значение 2", ..., "Значение n2"]
-        },
-        ...,
-        "I-ый файл": {
-            "Заголовок 1":  ["Значение 1", "Значение 2", ..., "Значение nI"],
-            "Заголовок 2":  ["Значение 1", "Значение 2", ..., "Значение nI"],
-            ..............................................................
-            "Заголовок NI": ["Значение 1", "Значение 2", ..., "Значение nI"]
-        }
-    }
-"""
-
-
-class AccessionTables:
-
-    peptideTables: Dict[str, Dict[str, List[str]]]
-    accessionsPerTable: Dict[str, Dict[str, Accession]]
-    sortedTableNums: List[str]
-
-    def __init__(self, inputDir=None):
-        self.proteinReplacements = None
-        if inputDir is not None:
-            self.ReadPeptideSummaries(inputDir)
-            self.sortedTableNums = self.GetSortedTableNums()
-            self.RemoveReversedAccessionsFromTables()
-
-    def ReadPeptideSummaries(self, inputDir: str) -> None:
-        """ Считывание всех PeptideSummary файлов в словарь """
-        self.peptideTables = {}
-        for filename in listdir(inputDir):
-            if "Peptide" in filename:
-                tableNum = filename.split('_')[0]
-                self.peptideTables[tableNum] = (
-                    ReadTable(inputDir + '/' + filename))
-                self.peptideTables[tableNum]["Accessions"] = [
-                    accession.split(';')[0] for accession in
-                    self.peptideTables[tableNum]["Accessions"]]
-
-    def GetSortedTableNums(self) -> List[str]:
-        return sorted(self.peptideTables.keys(), key=lambda x: float(x))
-
-    def RemoveReversedAccessionsFromTables(self):
-
-        for peptideTable in self.peptideTables.values():
-            i = 0
-            while i < len(peptideTable["Accessions"]):
-                if peptideTable["Accessions"][i].startswith("RRRRR"):
-                    break
-                i += 1
-
-            if i < len(peptideTable["Accessions"]):
-                for column in peptideTable.values():
-                    del column[i:]
-
-    def ApplyProteinReplacements(self, proteinTables: ProteinTables):
-
-        for tableName, table in self.peptideTables.items():
-            tableReplacements = proteinTables.proteinReplacements[tableName]
-            for i in range(0, len(table["Accessions"])):
-                if table["Accessions"][i] in tableReplacements:
-                    table["Accessions"][i] = (
-                        tableReplacements[table["Accessions"][i]])
-
-    def GetAccessionsFromTable(
-            self,
-            peptideTable: Dict[str, List[str]]) -> Dict[str, Accession]:
-        """ Получаем unused, суммы значений Sc, Precursor Signal и сумму длинн
-        последовательностей и подсчитываем количество строк с одинаковым
-        Accession для каждого Accession """
-
-        accessions: Dict[str, Accession] = {}
-        i = 0
-        while i < len(peptideTable["Accessions"]):
-            curAccession = peptideTable["Accessions"][i].split(sep=';')[0]
-            if curAccession not in accessions:
-                accessions[curAccession] = Accession(name=curAccession)
-            accessions[curAccession].Counts += 1
-            accessions[curAccession].Unused = float(peptideTable["Unused"][i])
-            accessions[curAccession].ScSumm += float(peptideTable["Sc"][i])
-            accessions[curAccession].PSignalSumm += float(
-                peptideTable["PrecursorSignal"][i])
-            accessions[curAccession].SeqlenSumm += (
-                len(peptideTable["Sequence"][i]))
-            i += 1
-        return accessions
-
-    def CalculateNormParamsForAccessions(self: "AccessionTables",
-                                         accessions: Dict[str, Accession],
-                                         seqences: Dict[str, Sequence]):
-        for accession in accessions:
-            curAccession = accessions[accession]
-            curAccession.ScNorm = curAccession.ScSumm / seqences[accession].len
-            curAccession.PSignalNorm = (
-                curAccession.PSignalSumm / seqences[accession].len)
-
-    def GetAccessionsPerTable(
-            self,
-            seqences: Dict[str, Sequence]):
-        """ Получаем суммы значений Sc, Precursor Signal и сумму длинн
-        последовательностей для каждого Accession, а также нормализованные
-        значения Precursor Signal и Sc для каждого файла"""
-
-        self.accessionsPerTable: Dict[str, Dict[str, Accession]] = {}
-        for tableNum in self.peptideTables:
-            self.accessionsPerTable[tableNum] = (
-                self.GetAccessionsFromTable(self.peptideTables[tableNum]))
-            self.CalculateNormParamsForAccessions(
-                self.accessionsPerTable[tableNum], seqences)
 
 
 def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:
@@ -537,9 +420,10 @@ def ApplyDefaultConf(peptideTables: Dict[str, Dict[str, List[str]]]):
             curAccession = curTable["Accessions"][i]
             if curAccession in blackList:
                 blackList[curAccession] += (
-                    TestConfDefaultCondition(int(curTable["Conf"][i])))
+                    TestConfDefaultCondition(float(curTable["Conf"][i])))
                 if blackList[curAccession] > 1:
                     del blackList[curAccession]
+            i += 1
         RemoveAccessionsFromTableByBlacklist(curTable, blackList)
     return peptideTables
 
@@ -622,29 +506,29 @@ def GetInput() -> Input:
 
 
 def main():
-    accessionTables = AccessionTables(INPUTPATH)
+    peptideTables = PeptideTables(INPUTPATH)
     proteinTables = ProteinTables(inputDir=INPUTPATH)
-    accessionTables.ApplyProteinReplacements(proteinTables)
+    peptideTables.ApplyProteinReplacements(proteinTables)
     inputParams = GetInput()
-    accessionTables.seqDB = inputParams.seqDB
 
     if inputParams.isDefaultConf:
-        ApplyDefaultConf(accessionTables.peptideTables)
+        ApplyDefaultConf(peptideTables.peptideTables)
     ApplyParamsFilter(inputParams.unused,
                       inputParams.contrib,
                       inputParams.conf,
-                      accessionTables.peptideTables)
+                      peptideTables.peptideTables)
 
     if inputParams.whiteList:
-        ApplyWhiteList(accessionTables.peptideTables, inputParams.whiteList)
+        ApplyWhiteList(peptideTables.peptideTables, inputParams.whiteList)
 
-    accessionTables.GetAccessionsPerTable(inputParams.seqDB)
+    accessionTables = AccessionTables(inputParams.seqDB, peptideTables)
+    accessionTables.sortedTableNums = peptideTables.GetSortedTableNums()
     filesSumms = GetScPsigAndNormFilesSumm(accessionTables.accessionsPerTable)
 
     if inputParams.blackList:
-        ApplyBlackList(accessionTables.peptideTables, inputParams.blackList)
+        ApplyBlackList(peptideTables.peptideTables, inputParams.blackList)
 
-    accessionTables.GetAccessionsPerTable(inputParams.seqDB)
+    accessionTables.GetAccessionsPerTable(inputParams.seqDB, peptideTables)
     CalculateAccessionsNormRatios(accessionTables.accessionsPerTable,
                                   filesSumms)
 
