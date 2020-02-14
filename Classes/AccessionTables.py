@@ -38,9 +38,11 @@ class AccessionTables:
             i += 1
         return accessions
 
-    def CalculateNormParamsForAccessions(self: "AccessionTables",
-                                         accessions: Dict[str, Accession],
-                                         seqences: Dict[str, Sequence]):
+    def CalculateNormParamsForAccessions(
+            self: "AccessionTables",
+            accessions: Dict[str, Accession],
+            seqences: Dict[str, Sequence]):
+
         for accession in accessions:
             curAccession = accessions[accession]
             curAccession.ScNorm = curAccession.ScSumm / seqences[accession].len
@@ -62,3 +64,19 @@ class AccessionTables:
                     peptideTables.peptideTables[tableNum]))
             self.CalculateNormParamsForAccessions(
                 self.accessionsPerTable[tableNum], seqences)
+
+    def GenerateAccessionsBunchOverAllTables(
+            self) -> Dict[str, Dict[str, Accession]]:
+
+        accessions: Dict[str, Dict[str, Accession]] = {}
+        for tableName, table in self.accessionsPerTable.items():
+            for accessionName, accession in table.items():
+                if accessionName not in accessions:
+                    accessions[accessionName] = {}
+                accessions[accessionName][tableName] = accession
+        return accessions
+
+    def RemoveAccessionFromAllTables(self, accession: str) -> None:
+
+        for table in self.accessionsPerTable.values():
+            table.pop(accession, None)

@@ -1,7 +1,5 @@
 #!python3.7
-from typing import List, Dict, Union, Tuple
-from os import mkdir
-from os.path import exists
+from typing import List, Dict, Union
 from sys import argv
 from Classes.Sequence import Sequence
 from Classes.Comparable import Comparable
@@ -10,6 +8,7 @@ from Classes.Input import Input
 from Classes.ProteinTables import ProteinTables
 from Classes.PeptideTables import PeptideTables
 from Classes.AccessionTables import AccessionTables
+from Classes.Output import Output
 
 INPUTPATH = "Input"
 
@@ -18,149 +17,6 @@ def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:
     columns = [column for column in table]
     for column in columns:
         del table[column][rowNum]
-
-
-def GenerateJointOutputFile(
-        outFilename: str,
-        accessionsBunch: Dict[str, Dict[str, Accession]],
-        seqDB: Dict[str, Sequence]) -> None:
-
-    with open(outFilename, 'w') as outFile:
-        outFile.write("Accession\tFilename\tUnused\tseq_length_summ\t\
-counts\tSc_summ\tPsignal_summ\tSc_norm\tPsignal_norm\tSP_2\tseq_length")
-        for accessionName, accessionTables in accessionsBunch.items():
-            for tableNum in sorted(accessionTables.keys(),
-                                   key=lambda x: float(x)):
-                accession = accessionTables[tableNum]
-                outFile.write("\n{accession}\t{tableNum}\t{unused}\t\
-{seqlenSumm}\t{counts}\t{scSumm}\t{pSignalSumm}\t{scNorm}\t{pSignalNorm}\t\
-{sp2}\t{seqlen}".format(accession=accessionName,
-                        tableNum=tableNum,
-                        unused=accession.Unused,
-                        seqlenSumm=accession.SeqlenSumm,
-                        counts=accession.Counts,
-                        scSumm=accession.ScSumm,
-                        pSignalSumm=accession.PSignalSumm,
-                        scNorm=accession.ScNormToFileNormRatio,
-                        pSignalNorm=accession.PSignalNormToFileNormRatio,
-                        sp2=accession.PSignalAndScNormRatiosAverage,
-                        seqlen=seqDB[accessionName].len))
-
-
-def GenerateGroupsFile(outFilename: str,
-                       proteinTables: ProteinTables) -> None:
-    with open(outFilename, 'w') as outFile:
-        outFile.write(("Representative\tAccession" +
-                       "\t{}" * len(proteinTables.sortedTableNums) +
-                       '\n').format(*proteinTables.sortedTableNums))
-        for representativeAccessionName in \
-                proteinTables.proteinReplacementsGroups:
-            accession = (
-                proteinTables.proteinReplacementsGroups[
-                    representativeAccessionName])
-            outFile.write(representativeAccessionName)
-            for replaceableName in accession:
-                outFile.write(
-                    ("\t{}" +
-                     "\t{}" * len(proteinTables.sortedTableNums) +
-                     '\n').format(
-                         replaceableName,
-                         *[accession[replaceableName][key] for key in
-                           proteinTables.sortedTableNums]))
-
-
-def GenerateTableFileByField(
-        fieldName: str,
-        accessionsBunch: Dict[str, Dict[str, Accession]],
-        accessionTables: AccessionTables,
-        outFilename: str) -> None:
-
-    with open(outFilename, mode='w') as outFile:
-        outFile.write("Accession")
-        outFile.write((("\t{}" * len(accessionTables.sortedTableNums))).format(
-            *accessionTables.sortedTableNums))
-        for accession in accessionsBunch.keys():
-            outFile.write("\n" + accession)
-            for tableNum in accessionTables.sortedTableNums:
-                table = accessionTables.accessionsPerTable[tableNum]
-                if accession in table:
-                    outFile.write('\t{}'.format(
-                        table[accession].__dict__[fieldName]))
-                else:
-                    outFile.write('\t')
-
-
-def GenerateDescriptionFile(outputDirPath: str,
-                            accessionsBunch: Dict[str, Dict[str, Accession]],
-                            seqDB: Dict[str, Sequence]) -> None:
-    with open(outputDirPath + '/' + "description.txt", mode='w') as descFile:
-        descFile.write("Accession\tDescription")
-        for accession in accessionsBunch.keys():
-            if seqDB[accession].len:
-                descFile.write("\n{}\t{}".format(accession,
-                                                 seqDB[accession].desc))
-
-
-def GenerateAccessionsBunchOverAllTables(
-        accessionsPerTable: Dict[str, Dict[str, Accession]]
-) -> Dict[str, Dict[str, Accession]]:
-
-    accessions: Dict[str, Dict[str, Accession]] = {}
-    for tableName, table in accessionsPerTable.items():
-        for accessionName, accession in table.items():
-            if accessionName not in accessions:
-                accessions[accessionName] = {}
-            accessions[accessionName][tableName] = accession
-    return accessions
-
-
-def CreateDirIfNotExist(directoryPath: str) -> None:
-
-    pathLeftover = directoryPath
-    folderPath = ""
-    while(not exists(directoryPath)):
-        folderPath += pathLeftover.split('/')[0] + '/'
-        pathLeftover = '/'.join(pathLeftover.split('/')[1:])
-        try:
-            mkdir(folderPath)
-        except FileExistsError:
-            pass
-
-
-def GenerateOutputFiles(
-        outputDirPath: str,
-        filesSumms: Dict[str, Dict[str, float]],
-        seqDB: Dict[str, Sequence],
-        accessionTables: AccessionTables,
-        proteinTables: ProteinTables) -> None:
-
-    CreateDirIfNotExist(outputDirPath)
-    accessionsBunch = GenerateAccessionsBunchOverAllTables(
-        accessionTables.accessionsPerTable)
-    GenerateDescriptionFile(outputDirPath, accessionsBunch, seqDB)
-    fieldsToFiles: Tuple[Tuple[str, str], ...] = (
-        ("Counts", "counts.txt"),
-        ("ScNormToFileNormRatio", "Sc_norm.txt"),
-        ("ScSumm", "Sc_summ.txt"),
-        ("PSignalNormToFileNormRatio", "Psignal_norm.txt"),
-        ("PSignalSumm", "Psignal_summ.txt"),
-        ("PSignalAndScNormRatiosAverage", "SP_2.txt"),
-        ("SeqlenSumm", "seq_length_summ.txt"),
-        ("Unused", "unused.txt")
-    )
-    for field, filename in fieldsToFiles:
-        GenerateTableFileByField(
-            fieldName=field,
-            accessionsBunch=accessionsBunch,
-            accessionTables=accessionTables,
-            outFilename=outputDirPath + '/' + filename)
-
-    GenerateGroupsFile(outputDirPath + '/' + "Groups.txt", proteinTables)
-
-    GenerateJointOutputFile(outputDirPath + '/' + "output.txt",
-                            accessionsBunch,
-                            # accessionTables=accessionTables,
-                            seqDB=seqDB)
 
 
 def CountAccessionLackInGroup(
@@ -172,14 +28,6 @@ def CountAccessionLackInGroup(
         if accession not in accessionsPerTable[tableName]:
             groupAbsence += 1
     return groupAbsence
-
-
-def RemoveAccessionFromAllTables(
-        accession: str,
-        accessionsPerTable: Dict[str, Dict[str, Accession]]) -> None:
-
-    for table in accessionsPerTable.values():
-        accessionsPerTable.pop(accession, None)
 
 
 def CountGroupsWithAccession(
@@ -210,7 +58,7 @@ def GenerateGroupsBunch(
     return groups
 
 
-def ApplyGroupFilter(accessionsPerTable: Dict[str, Dict[str, Accession]],
+def ApplyGroupFilter(accessionTables: AccessionTables,
                      maxGroupAbsence: int,
                      minGroupsWithAccession: int):
     """ Применяем фильтер по группам
@@ -223,16 +71,17 @@ def ApplyGroupFilter(accessionsPerTable: Dict[str, Dict[str, Accession]],
     группы.
     """
 
-    groups: Dict[str, List[str]] = GenerateGroupsBunch(accessionsPerTable)
+    groups: Dict[str, List[str]] = GenerateGroupsBunch(
+        accessionTables.accessionsPerTable)
 
-    accessionBunch = GenerateAccessionsBunchOverAllTables(accessionsPerTable)
+    accessionBunch = accessionTables.GenerateAccessionsBunchOverAllTables()
     for accession in accessionBunch:
         if CountGroupsWithAccession(
                 groups,
                 accession,
                 maxGroupAbsence,
-                accessionsPerTable) < minGroupsWithAccession:
-            RemoveAccessionFromAllTables(accession, accessionsPerTable)
+                accessionTables.accessionsPerTable) < minGroupsWithAccession:
+            accessionTables.RemoveAccessionFromAllTables(accession)
 
 
 def CalculateAccessionsNormRatios(
@@ -532,15 +381,15 @@ def main():
     CalculateAccessionsNormRatios(accessionTables.accessionsPerTable,
                                   filesSumms)
 
-    ApplyGroupFilter(accessionTables.accessionsPerTable,
+    ApplyGroupFilter(accessionTables,
                      inputParams.maxGroupAbsence,
                      inputParams.minGroupsWithAccession)
 
-    GenerateOutputFiles("Output/",
-                        seqDB=inputParams.seqDB,
-                        filesSumms=filesSumms,
-                        accessionTables=accessionTables,
-                        proteinTables=proteinTables)
+    Output("Output/",
+           seqDB=inputParams.seqDB,
+           filesSumms=filesSumms,
+           accessionTables=accessionTables,
+           proteinTables=proteinTables)
 
 
 if __name__ == "__main__":
