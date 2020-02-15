@@ -84,7 +84,7 @@ class Output:
                   outFilename,
                   mode='w') as descFile:
             descFile.write("Accession\tDescription")
-            for accession in self.accessionsBunch.keys():
+            for accession in sorted(self.accessionsBunch.keys()):
                 if seqDB[accession].len:
                     descFile.write("\n{}\t{}".format(accession,
                                                      seqDB[accession].desc))
@@ -100,7 +100,7 @@ class Output:
             outFile.write((("\t{}" *
                             len(accessionTables.sortedTableNums))).format(
                 *accessionTables.sortedTableNums))
-            for accession in self.accessionsBunch.keys():
+            for accession in sorted(self.accessionsBunch.keys()):
                 outFile.write("\n" + accession)
                 for tableNum in accessionTables.sortedTableNums:
                     table = accessionTables.accessionsPerTable[tableNum]
@@ -120,11 +120,11 @@ class Output:
                            '\n').format(*proteinTables.sortedTableNums))
             for representativeAccessionName in \
                     proteinTables.proteinReplacementsGroups:
-                accession = (
+                accession: Dict[str, Dict[str, int]] = (
                     proteinTables.proteinReplacementsGroups[
                         representativeAccessionName])
                 outFile.write(representativeAccessionName)
-                for replaceableName in accession:
+                for replaceableName in sorted(accession.keys()):
                     outFile.write(
                         ("\t{}" +
                          "\t{}" * len(proteinTables.sortedTableNums) +
@@ -142,7 +142,8 @@ class Output:
             outFile.write("Accession\tFilename\tUnused\tseq_length_summ\t" +
                           "counts\tSc_summ\tPsignal_summ\tSc_norm\t" +
                           "Psignal_norm\tSP_2\tseq_length")
-            for accessionName, accessionTables in self.accessionsBunch.items():
+            for accessionName in sorted(self.accessionsBunch.keys()):
+                accessionTables = self.accessionsBunch[accessionName]
                 for tableNum in sorted(accessionTables.keys(),
                                        key=lambda x: float(x)):
                     accession = accessionTables[tableNum]
