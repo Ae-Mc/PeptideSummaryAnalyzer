@@ -1,6 +1,6 @@
 from typing import List, Dict, Union, Tuple
 from Classes.ReadTable import ReadTable
-from os import listdir
+from os import listdir, path
 
 
 class ProteinTables:
@@ -24,7 +24,7 @@ class ProteinTables:
         groupsPerTables: Dict[str, List[List[Tuple[str, float]]]] = (
             self.GetProteinGroupsFromFiles(inputDir))
         accessions: Dict[str, Dict[str, Union[float, int]]] = (
-            self.GetAccessionsWithMaxUnusedFromProteinGroups(groupsPerTables))
+            self.GetRepresentativeAccessionsFromGroups(groupsPerTables))
         self.proteinReplacements = (
             self.GetReplacementsPerTable(accessions, groupsPerTables))
 
@@ -43,10 +43,10 @@ class ProteinTables:
         for filename in listdir(inputDir):
             if filename.endswith("ProteinSummary.txt"):
                 groups[filename.split('_')[0]] = self.GetProteinGroupsFromFile(
-                    inputDir + '/' + filename)
+                    path.join(inputDir, filename))
         return groups
 
-    def GetAccessionsWithMaxUnusedFromProteinGroups(
+    def GetRepresentativeAccessionsFromGroups(
             self,
             groupsPerTables: Dict[str, List[List[Tuple[str, float]]]]
     ) -> Dict[str, Dict[str, Union[float, int]]]:
@@ -115,15 +115,22 @@ class ProteinTables:
     def GetProteinGroupsFromFile(
             self, filename: str) -> List[List[Tuple[str, float]]]:
         fileTable = ReadTable(filename)
+        return self.GetProteinGroupsFromTable(fileTable)
+
+    def GetProteinGroupsFromTable(
+            self,
+            table: Dict[str, List[str]]) -> List[List[Tuple[str, float]]]:
         groups: List[List[Tuple[str, float]]] = []
-        for i in range(0, len(fileTable["N"])):
-            if float(fileTable["Unused"][i]) != 0:
+        for i in range(0, len(table["Unused"])):
+            if float(table["Unused"][i]) != 0:
                 if len(groups):
                     groups[-1].sort()
-                unused = float(fileTable["Unused"][i])
+                unused = float(table["Unused"][i])
                 groups.append([])
-            groups[-1].append((fileTable["Accession"][i],
+            groups[-1].append((table["Accession"][i],
                                unused))
+        if len(groups):
+            groups[-1].sort()
         return groups
 
     def GetProteinReplacementsGroupsPerTable(self) -> None:

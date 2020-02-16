@@ -14,13 +14,17 @@ class Output:
 
     def __init__(
             self,
-            outputDirPath: str=None,
-            filesSumms: Dict[str, Dict[str, float]]=None,
-            seqDB: Dict[str, Sequence]=None,
-            accessionTables: AccessionTables=None,
-            proteinTables: ProteinTables=None) -> None:
+            outputDirPath: str = None,
+            filesSumms: Dict[str, Dict[str, float]] = None,
+            seqDB: Dict[str, Sequence] = None,
+            accessionTables: AccessionTables = None,
+            proteinTables: ProteinTables = None) -> None:
 
-        if outputDirPath is not None:
+        if(outputDirPath is not None and
+           filesSumms is not None and
+           seqDB is not None and
+           accessionTables is not None and
+           proteinTables is not None):
             self.GenerateOutputFiles(outputDirPath,
                                      filesSumms,
                                      seqDB,
@@ -118,8 +122,8 @@ class Output:
             outFile.write(("Representative\tAccession" +
                            "\t{}" * len(proteinTables.sortedTableNums) +
                            '\n').format(*proteinTables.sortedTableNums))
-            for representativeAccessionName in \
-                    proteinTables.proteinReplacementsGroups:
+            for representativeAccessionName in sorted(
+                    proteinTables.proteinReplacementsGroups):
                 accession: Dict[str, Dict[str, int]] = (
                     proteinTables.proteinReplacementsGroups[
                         representativeAccessionName])
@@ -142,8 +146,8 @@ class Output:
             outFile.write("Accession\tFilename\tUnused\tseq_length_summ\t" +
                           "counts\tSc_summ\tPsignal_summ\tSc_norm\t" +
                           "Psignal_norm\tSP_2\tseq_length")
-            for accessionName in sorted(self.accessionsBunch.keys()):
-                accessionTables = self.accessionsBunch[accessionName]
+            for accessionName, accessionTables in sorted(
+                    self.accessionsBunch.items()):
                 for tableNum in sorted(accessionTables.keys(),
                                        key=lambda x: float(x)):
                     accession = accessionTables[tableNum]
