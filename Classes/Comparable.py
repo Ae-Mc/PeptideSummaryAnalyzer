@@ -1,6 +1,3 @@
-from typing import Dict, List, Union
-
-
 def IsFloat(value):
     try:
         float(value)
@@ -8,7 +5,7 @@ def IsFloat(value):
     except (TypeError, ValueError):
         return False
 
-        
+
 # Класс для хранения параметров фильтра
 class Comparable:
     op: str

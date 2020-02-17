@@ -1,6 +1,6 @@
 from typing import List, Dict, Union, Tuple
-from Classes.ReadTable import ReadTable
 from os import listdir, path
+from Classes.ReadTable import ReadTable
 
 
 class ProteinTables:
@@ -8,7 +8,8 @@ class ProteinTables:
     proteinReplacementsGroups: Dict[str, Dict[str, Dict[str, int]]]
     sortedTableNums: List[str]
 
-    def __init__(self, inputDir=None):
+    def __init__(self, inputDir: str = None) -> None:
+
         if inputDir is not None:
             self.GetProteinSummaryReplacements(inputDir)
             self.sortedTableNums = sorted(

@@ -2,16 +2,23 @@ from typing import Dict, List
 from Classes.Accession import Accession
 from Classes.Sequence import Sequence
 from Classes.PeptideTables import PeptideTables
+from Classes.ColumnNames import ColumnNames
 
 
 class AccessionTables:
 
     accessionsPerTable: Dict[str, Dict[str, Accession]]
     sortedTableNums: List[str]
+    columnNames: ColumnNames
 
     def __init__(self,
                  seqDB: Dict[str, Sequence],
-                 peptideTables: PeptideTables) -> None:
+                 peptideTables: PeptideTables,
+                 columnNames: ColumnNames = None) -> None:
+        if columnNames is None:
+            self.columnNames = ColumnNames()
+        else:
+            self.columnNames = columnNames
         self.proteinReplacements = None
         self.GetAccessionsPerTable(seqDB, peptideTables)
 
@@ -24,17 +31,20 @@ class AccessionTables:
 
         accessions: Dict[str, Accession] = {}
         i = 0
-        while i < len(peptideTable["Accessions"]):
-            curAccession = peptideTable["Accessions"][i].split(sep=';')[0]
+        while i < len(peptideTable[self.columnNames.accession]):
+            curAccession = (
+                peptideTable[self.columnNames.accession][i].split(sep=';')[0])
             if curAccession not in accessions:
                 accessions[curAccession] = Accession(name=curAccession)
             accessions[curAccession].Counts += 1
-            accessions[curAccession].Unused = float(peptideTable["Unused"][i])
-            accessions[curAccession].ScSumm += float(peptideTable["Sc"][i])
+            accessions[curAccession].Unused = float(
+                peptideTable[self.columnNames.unused][i])
+            accessions[curAccession].ScSumm += float(
+                peptideTable[self.columnNames.sc][i])
             accessions[curAccession].PSignalSumm += float(
-                peptideTable["PrecursorSignal"][i])
+                peptideTable[self.columnNames.precursorSignal][i])
             accessions[curAccession].SeqlenSumm += (
-                len(peptideTable["Sequence"][i]))
+                len(peptideTable[self.columnNames.sequence][i]))
             i += 1
         return accessions
 
@@ -80,3 +90,7 @@ class AccessionTables:
 
         for table in self.accessionsPerTable.values():
             table.pop(accession, None)
+
+    def SetColumnNames(self, columnNames: ColumnNames):
+
+        self.columnNames = columnNames

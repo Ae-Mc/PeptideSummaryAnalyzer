@@ -1,6 +1,3 @@
-from typing import Dict, List, Union
-
-
 class Accession:
     Unused: float
     ScSumm: float

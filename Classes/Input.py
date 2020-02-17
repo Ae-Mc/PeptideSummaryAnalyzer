@@ -14,6 +14,7 @@ class Input:
     blackList: Union[List[str], None]
     minGroupsWithAccession: int
     maxGroupAbsence: int
+    proteinPilotVersion: str
 
     @property
     def conf(self):

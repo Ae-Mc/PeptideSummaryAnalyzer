@@ -8,6 +8,7 @@ from Classes.Input import Input
 from Classes.ProteinTables import ProteinTables
 from Classes.PeptideTables import PeptideTables
 from Classes.AccessionTables import AccessionTables
+from Classes.ColumnNames import ColumnNames
 from Classes.Output import Output
 
 INPUTPATH = "Input"
@@ -156,15 +157,17 @@ def GetScPsigAndNormFilesSumm(
 
 
 def ApplyWhiteList(peptideTables: Dict[str, Dict[str, List[str]]],
-                   whiteList: List[str]):
+                   whiteList: List[str],
+                   columnNames: ColumnNames):
     """ Удаляем из всех таблиц все id, отсутствующие в белом списке """
 
     for tableNum in peptideTables:
         curTable = peptideTables[tableNum]
-        curTableLen = len(curTable["Accessions"])
+        curTableLen = len(curTable[columnNames.accession])
         i = 0
         while i < curTableLen:
-            if curTable["Accessions"][i].split(';')[0] not in whiteList:
+            if (curTable[columnNames.accession][i].split(';')[0] not in
+                    whiteList):
                 RemoveRow(curTable, i)
                 i -= 1
                 curTableLen -= 1
@@ -172,15 +175,16 @@ def ApplyWhiteList(peptideTables: Dict[str, Dict[str, List[str]]],
 
 
 def ApplyBlackList(peptideTables: Dict[str, Dict[str, List[str]]],
-                   blackList: List[str]):
+                   blackList: List[str],
+                   columnNames: ColumnNames):
     """ Удаляем из всех таблиц все id, находящиеся в чёрном списке """
 
     for tableNum in peptideTables:
         curTable = peptideTables[tableNum]
-        curTableLen = len(curTable["Accessions"])
+        curTableLen = len(curTable[columnNames.accession])
         i = 0
         while i < curTableLen:
-            if curTable["Accessions"][i].split(';')[0] in blackList:
+            if curTable[columnNames.accession][i].split(';')[0] in blackList:
                 RemoveRow(curTable, i)
                 i -= 1
                 curTableLen -= 1
@@ -192,10 +196,14 @@ def TestUnusedContribConfParams(unused: Comparable,
                                 conf: Comparable,
                                 peptideTable: Dict[str, List[str]],
                                 tableNum: str,
-                                tableRowNum: int):
-    if(unused.compare(peptideTable["Unused"][tableRowNum], tableNum) and
-       contrib.compare(peptideTable["Contrib"][tableRowNum], tableNum) and
-       conf.compare(peptideTable["Conf"][tableRowNum], tableNum)):
+                                tableRowNum: int,
+                                columnNames: ColumnNames):
+    if(unused.compare(
+        peptideTable[columnNames.unused][tableRowNum], tableNum) and
+       contrib.compare(
+           peptideTable[columnNames.contribution][tableRowNum], tableNum) and
+       conf.compare(
+           peptideTable[columnNames.confidence][tableRowNum], tableNum)):
         return True
     return False
 
@@ -203,7 +211,8 @@ def TestUnusedContribConfParams(unused: Comparable,
 def ApplyParamsFilter(unused: Comparable,
                       contrib: Comparable,
                       conf: Comparable,
-                      peptideTables: Dict[str, Dict[str, List[str]]]) -> dict:
+                      peptideTables: Dict[str, Dict[str, List[str]]],
+                      columnNames: ColumnNames) -> dict:
     """ Применяем фильтры, завязанные на параметры unused, contib, conf.
 
     Возвращаем словарь с уже применёнными фильрами.
@@ -211,12 +220,12 @@ def ApplyParamsFilter(unused: Comparable,
 
     for tableNum in peptideTables:
         curTable = peptideTables[tableNum]
-        curTableLen = len(curTable["Unused"])
+        curTableLen = len(curTable[columnNames.unused])
         i = 0
 
         while i < curTableLen:
-            if not TestUnusedContribConfParams(unused, contrib, conf,
-                                               curTable, tableNum, i):
+            if not TestUnusedContribConfParams(
+                    unused, contrib, conf, curTable, tableNum, i, columnNames):
                 RemoveRow(curTable, i)
                 i -= 1
                 curTableLen -= 1
@@ -226,11 +235,12 @@ def ApplyParamsFilter(unused: Comparable,
 
 
 def RemoveAccessionsFromTableByBlacklist(peptideTable: Dict[str, List[str]],
-                                         blackList: Dict[str, int]) -> None:
+                                         blackList: Dict[str, int],
+                                         columnNames: ColumnNames) -> None:
     i = 0
-    curTableLen = len(peptideTable["Accessions"])
+    curTableLen = len(peptideTable[columnNames.accession])
     while i < curTableLen:
-        if(peptideTable["Accessions"][i].split(';')[0] in blackList):
+        if(peptideTable[columnNames.accession][i].split(';')[0] in blackList):
             RemoveRow(peptideTable, i)
             curTableLen -= 1
             i -= 1
@@ -245,36 +255,38 @@ def TestConfDefaultCondition(confVal: float):
     return 0
 
 
-def GenerateTableAccessionsBunch(peptideTable: Dict[str, List[str]]):
+def GenerateTableAccessionsBunch(peptideTable: Dict[str, List[str]],
+                                 columnNames: ColumnNames):
     accessionBunch: Dict[str, int] = {}
-    for accession in peptideTable["Accessions"]:
+    for accession in peptideTable[columnNames.accession]:
         if accession not in accessionBunch:
             accessionBunch[accession] = 0
     return accessionBunch
 
 
-def ApplyDefaultConf(peptideTables: Dict[str, Dict[str, List[str]]]):
+def ApplyDefaultConf(peptideTables: Dict[str, Dict[str, List[str]]],
+                     columnNames: ColumnNames) -> None:
     """ default-условие: Accession учитывается, если хотя бы одна
     из строк с ним имеет Conf >= 99 или минимум две строки имеют
     Conf >= 95"""
 
     for tableNum in peptideTables:
         curTable = peptideTables[tableNum]
-        curTableLen = len(curTable["Unused"])
+        curTableLen = len(curTable[columnNames.unused])
         # Заносим все Accession в список Accession для удаления
         # В процессе чтения списка записи из него будут удаляться
-        blackList = GenerateTableAccessionsBunch(curTable)
+        blackList = GenerateTableAccessionsBunch(curTable, columnNames)
         i = 0
         while i < curTableLen:
-            curAccession = curTable["Accessions"][i]
+            curAccession = curTable[columnNames.accession][i]
             if curAccession in blackList:
                 blackList[curAccession] += (
-                    TestConfDefaultCondition(float(curTable["Conf"][i])))
+                    TestConfDefaultCondition(
+                        float(curTable[columnNames.confidence][i])))
                 if blackList[curAccession] > 1:
                     del blackList[curAccession]
             i += 1
-        RemoveAccessionsFromTableByBlacklist(curTable, blackList)
-    return peptideTables
+        RemoveAccessionsFromTableByBlacklist(curTable, blackList, columnNames)
 
 
 def GetFileLines(filename: str) -> Union[List[str], None]:
@@ -327,18 +339,21 @@ def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
 
 def GetInput() -> Input:
     inputParams = Input()
-    if len(argv) == 10:
-        inputParams.whiteList = GetFileLines(argv[1])
-        inputParams.blackList = GetFileLines(argv[2])
+    if len(argv) == 11:
+        inputParams.proteinPilotVersion = argv[1]
+        inputParams.whiteList = GetFileLines(argv[2])
+        inputParams.blackList = GetFileLines(argv[3])
         inputParams.isProteinGroupFilter = (
-            True if argv[3].strip() == 'y' else False)
-        inputParams.seqDB = ReadSeqDB(argv[4])
-        inputParams.unused = Comparable(argv[5])
-        inputParams.contrib = Comparable(argv[6])
-        inputParams.conf = argv[7]
-        inputParams.minGroupsWithAccession = int(argv[8])
-        inputParams.maxGroupAbsence = int(argv[9])
+            True if argv[4].strip() == 'y' else False)
+        inputParams.seqDB = ReadSeqDB(argv[5])
+        inputParams.unused = Comparable(argv[6])
+        inputParams.contrib = Comparable(argv[7])
+        inputParams.conf = argv[8]
+        inputParams.minGroupsWithAccession = int(argv[9])
+        inputParams.maxGroupAbsence = int(argv[10])
     else:
+        inputParams.proteinPilotVersion = input(
+            "ProteinPilot Version (4 or 5): ")
         inputParams.whiteList = GetFileLines(input("Id file name: "))
         inputParams.blackList = GetFileLines(input("ID exclusion file name: "))
         inputParams.isProteinGroupFilter = True if input(
@@ -354,27 +369,36 @@ def GetInput() -> Input:
 
 
 def main():
-    peptideTables = PeptideTables(INPUTPATH)
+    inputParams = GetInput()
+    columnNames = ColumnNames()
+    if inputParams.proteinPilotVersion == '5':
+        columnNames = ColumnNames(precursorSignal="Intensity (Peptide)")
+
+    peptideTables = PeptideTables(inputDir=INPUTPATH, columnNames=columnNames)
     proteinTables = ProteinTables(inputDir=INPUTPATH)
     peptideTables.ApplyProteinReplacements(proteinTables)
-    inputParams = GetInput()
 
     if inputParams.isDefaultConf:
-        ApplyDefaultConf(peptideTables.peptideTables)
+        ApplyDefaultConf(peptideTables.peptideTables, columnNames)
     ApplyParamsFilter(inputParams.unused,
                       inputParams.contrib,
                       inputParams.conf,
-                      peptideTables.peptideTables)
+                      peptideTables.peptideTables,
+                      columnNames)
 
     if inputParams.whiteList:
-        ApplyWhiteList(peptideTables.peptideTables, inputParams.whiteList)
+        ApplyWhiteList(peptideTables.peptideTables,
+                       inputParams.whiteList,
+                       columnNames)
 
     accessionTables = AccessionTables(inputParams.seqDB, peptideTables)
     accessionTables.sortedTableNums = peptideTables.GetSortedTableNums()
     filesSumms = GetScPsigAndNormFilesSumm(accessionTables.accessionsPerTable)
 
     if inputParams.blackList:
-        ApplyBlackList(peptideTables.peptideTables, inputParams.blackList)
+        ApplyBlackList(peptideTables.peptideTables,
+                       inputParams.blackList,
+                       columnNames)
 
     accessionTables.GetAccessionsPerTable(inputParams.seqDB, peptideTables)
     CalculateAccessionsNormRatios(accessionTables.accessionsPerTable,
