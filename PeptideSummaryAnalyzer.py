@@ -97,10 +97,13 @@ def CalculateAccessionsNormRatios(
         for accession in curAccessionTable:
             curAccession = curAccessionTable[accession]
             curAccession.ScNormToFileNormRatio = (
-                curAccession.ScNorm / curSumm["ScNorm"])
+                (curAccession.ScNorm /
+                 curSumm["ScNorm"]) if curSumm["ScNorm"] != 0
+                else 0)
             curAccession.PSignalNormToFileNormRatio = (
-                curAccession.PSignalNorm /
-                curSumm["PSignalNorm"])
+                (curAccession.PSignalNorm /
+                 curSumm["PSignalNorm"]) if curSumm["PSignalNorm"] != 0
+                else 0)
             curAccession.PSignalAndScNormRatiosAverage = (
                 (curAccession.ScNormToFileNormRatio +
                  curAccession.PSignalNormToFileNormRatio) / 2)
@@ -375,7 +378,7 @@ def main():
         columnNames = ColumnNames(precursorSignal="Intensity (Peptide)")
 
     peptideTables = PeptideTables(inputDir=INPUTPATH, columnNames=columnNames)
-    proteinTables = ProteinTables(inputDir=INPUTPATH)
+    proteinTables = ProteinTables(INPUTPATH, unsafeReadTableFlag=True)
     peptideTables.ApplyProteinReplacements(proteinTables)
 
     if inputParams.isDefaultConf:
@@ -391,7 +394,9 @@ def main():
                        inputParams.whiteList,
                        columnNames)
 
-    accessionTables = AccessionTables(inputParams.seqDB, peptideTables)
+    accessionTables = AccessionTables(inputParams.seqDB,
+                                      peptideTables,
+                                      columnNames=columnNames)
     accessionTables.sortedTableNums = peptideTables.GetSortedTableNums()
     filesSumms = GetScPsigAndNormFilesSumm(accessionTables.accessionsPerTable)
 

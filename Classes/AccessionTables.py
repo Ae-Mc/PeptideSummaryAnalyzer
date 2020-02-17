@@ -22,6 +22,22 @@ class AccessionTables:
         self.proteinReplacements = None
         self.GetAccessionsPerTable(seqDB, peptideTables)
 
+    def GetAccessionsPerTable(
+            self,
+            seqences: Dict[str, Sequence],
+            peptideTables: PeptideTables) -> None:
+        """ Получаем суммы значений Sc, Precursor Signal и сумму длинн
+        последовательностей для каждого Accession, а также нормализованные
+        значения Precursor Signal и Sc для каждого файла"""
+
+        self.accessionsPerTable: Dict[str, Dict[str, Accession]] = {}
+        for tableNum in peptideTables.peptideTables:
+            self.accessionsPerTable[tableNum] = (
+                self.GetAccessionsFromTable(
+                    peptideTables.peptideTables[tableNum]))
+            self.CalculateNormParamsForAccessions(
+                self.accessionsPerTable[tableNum], seqences)
+
     def GetAccessionsFromTable(
             self,
             peptideTable: Dict[str, List[str]]) -> Dict[str, Accession]:
@@ -41,8 +57,9 @@ class AccessionTables:
                 peptideTable[self.columnNames.unused][i])
             accessions[curAccession].ScSumm += float(
                 peptideTable[self.columnNames.sc][i])
-            accessions[curAccession].PSignalSumm += float(
-                peptideTable[self.columnNames.precursorSignal][i])
+            accessions[curAccession].PSignalSumm += (
+                float(peptideTable[self.columnNames.precursorSignal][i]) if
+                peptideTable[self.columnNames.precursorSignal][i] != '' else 0)
             accessions[curAccession].SeqlenSumm += (
                 len(peptideTable[self.columnNames.sequence][i]))
             i += 1
@@ -58,22 +75,6 @@ class AccessionTables:
             curAccession.ScNorm = curAccession.ScSumm / seqences[accession].len
             curAccession.PSignalNorm = (
                 curAccession.PSignalSumm / seqences[accession].len)
-
-    def GetAccessionsPerTable(
-            self,
-            seqences: Dict[str, Sequence],
-            peptideTables: PeptideTables) -> None:
-        """ Получаем суммы значений Sc, Precursor Signal и сумму длинн
-        последовательностей для каждого Accession, а также нормализованные
-        значения Precursor Signal и Sc для каждого файла"""
-
-        self.accessionsPerTable: Dict[str, Dict[str, Accession]] = {}
-        for tableNum in peptideTables.peptideTables:
-            self.accessionsPerTable[tableNum] = (
-                self.GetAccessionsFromTable(
-                    peptideTables.peptideTables[tableNum]))
-            self.CalculateNormParamsForAccessions(
-                self.accessionsPerTable[tableNum], seqences)
 
     def GenerateAccessionsBunchOverAllTables(
             self) -> Dict[str, Dict[str, Accession]]:

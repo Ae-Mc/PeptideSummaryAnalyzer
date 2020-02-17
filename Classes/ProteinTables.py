@@ -7,8 +7,13 @@ class ProteinTables:
     proteinReplacements: Dict[str, Dict[str, str]]
     proteinReplacementsGroups: Dict[str, Dict[str, Dict[str, int]]]
     sortedTableNums: List[str]
+    unsafeReadTableFlag: bool
 
-    def __init__(self, inputDir: str = None) -> None:
+    def __init__(self,
+                 inputDir: str = None,
+                 unsafeReadTableFlag: bool = False) -> None:
+
+        self.unsafeReadTableFlag = unsafeReadTableFlag
 
         if inputDir is not None:
             self.GetProteinSummaryReplacements(inputDir)
@@ -29,14 +34,6 @@ class ProteinTables:
         self.proteinReplacements = (
             self.GetReplacementsPerTable(accessions, groupsPerTables))
 
-    def RemoveReversedAccessionsFromProteinReplacements(self) -> None:
-
-        for tableNum in self.proteinReplacements.keys():
-            replacings = [key for key in self.proteinReplacements[tableNum]]
-            for replacing in replacings:
-                if replacing.startswith("RRRRR"):
-                    del self.proteinReplacements[tableNum][replacing]
-
     def GetProteinGroupsFromFiles(
             self, inputDir: str) -> Dict[str, List[List[Tuple[str, float]]]]:
 
@@ -46,6 +43,19 @@ class ProteinTables:
                 groups[filename.split('_')[0]] = self.GetProteinGroupsFromFile(
                     path.join(inputDir, filename))
         return groups
+
+    def GetProteinGroupsFromFile(
+            self, filename: str) -> List[List[Tuple[str, float]]]:
+        fileTable = ReadTable(filename, unsafeFlag=self.unsafeReadTableFlag)
+        return self.GetProteinGroupsFromTable(fileTable)
+
+    def RemoveReversedAccessionsFromProteinReplacements(self) -> None:
+
+        for tableNum in self.proteinReplacements.keys():
+            replacings = [key for key in self.proteinReplacements[tableNum]]
+            for replacing in replacings:
+                if replacing.startswith("RRRRR"):
+                    del self.proteinReplacements[tableNum][replacing]
 
     def GetRepresentativeAccessionsFromGroups(
             self,
@@ -112,11 +122,6 @@ class ProteinTables:
                                            curAccession["unused"],
                                            curAccession["occurences"])
         return representativeAccession[0]
-
-    def GetProteinGroupsFromFile(
-            self, filename: str) -> List[List[Tuple[str, float]]]:
-        fileTable = ReadTable(filename)
-        return self.GetProteinGroupsFromTable(fileTable)
 
     def GetProteinGroupsFromTable(
             self,

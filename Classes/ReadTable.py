@@ -1,9 +1,16 @@
 from typing import Dict, List
 
 
-def ReadTable(tableFilename: str, sep='\t') -> Dict[str, List[str]]:
+def ReadTable(tableFilename: str,
+              sep: str = '\t',
+              unsafeFlag: bool = False) -> Dict[str, List[str]]:
     """ Считываем файл в словарь, где ключом является заголовок, а
-    значением — список значений в столбце """
+    значением — список значений в столбце.
+
+    Если unsafeFlag выставлен в True, то во всех строках после разбиения по
+    табуляции элементы выходящие за пределы списка columns (его длина равна
+    количеству заголовков) будут удаляться.
+    """
 
     with open(tableFilename) as tempFile:
         strings = tempFile.read().split('\n')
@@ -13,11 +20,18 @@ def ReadTable(tableFilename: str, sep='\t') -> Dict[str, List[str]]:
 
         for column in columns:
             table[column] = []
+
         for string in strings[1:]:
             if len(string.strip()):
                 i = 0
                 for value in string.split(sep):
-                    table[columns[i]].append(value)
+                    if unsafeFlag:
+                        if i < len(columns):
+                            table[columns[i]].append(value)
+                        else:
+                            break
+                    else:
+                        table[columns[i]].append(value)
                     i += 1
 
         return table
