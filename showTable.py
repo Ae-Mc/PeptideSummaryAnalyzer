@@ -152,12 +152,36 @@ if len(argv) > 1:
         if filename.endswith("PeptideSummary.txt"):
             fileTable = ReadTable(filename)
             columnsToDelete = [
-                "N", "Total", "%Cov", "%Cov(50)", "%Cov(95)", "Used", "Names",
-                "Annotation", "Modifications", "Cleavages", "dMass", "Prec MW",
-                "Prec m/z", "Theor MW", "Theor m/z", "Theor z", "Spectrum",
-                "Time", "PrecursorElution"]
+                "N",
+                "Total",
+                "%Cov",
+                "%Cov(50)",
+                "%Cov(95)",
+                "Used",
+                "Names",
+                "Annotation",
+                "Modifications",
+                "Cleavages",
+                "dMass",
+                "Prec MW",
+                "Prec m/z",
+                "Theor MW",
+                "Theor m/z",
+                "Theor z",
+                "Spectrum",
+                "Time",
+                "PrecursorElution",
+                "ProteinModifications",
+                "Obs MW",
+                "Obs m/z",
+                "Acq Time",
+                "PrecursorIntensityAcquisition",
+                "Apex Time (Peptide)",
+                "Elution Peak Width (Peptide)",
+                "MS2Counts"]
             for columnName in columnsToDelete:
-                del fileTable[columnName]
+                if columnName in fileTable:
+                    del fileTable[columnName]
             for i in range(0, len(fileTable["Accessions"])):
                 fileTable["Accessions"][i] = (
                     fileTable["Accessions"][i].split(';')[0])
