@@ -323,7 +323,6 @@ def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
             i += 1
 
         return seqDB
-    return None
 
 
 def GetInput() -> Input:
