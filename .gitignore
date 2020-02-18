@@ -33,6 +33,9 @@ MANIFEST
 *.manifest
 *.spec
 
+# Vim swap files
+*.swp
+
 # Ctags files
 tags
 TAGS
