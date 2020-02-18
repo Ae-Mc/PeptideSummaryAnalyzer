@@ -35,13 +35,10 @@ class PeptideTables:
     columnNames: ColumnNames
 
     def __init__(self,
-                 inputDir: str = None,
-                 columnNames: ColumnNames = None):
+                 columnNames: ColumnNames,
+                 inputDir: str = None):
 
-        if columnNames is None:
-            self.SetColumnNames(ColumnNames())
-        else:
-            self.SetColumnNames(columnNames)
+        self.SetColumnNames(columnNames)
 
         if inputDir is not None:
             self.ReadPeptideSummaries(inputDir)

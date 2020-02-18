@@ -377,7 +377,7 @@ def main():
     if inputParams.proteinPilotVersion == '5':
         columnNames = ColumnNames(precursorSignal="Intensity (Peptide)")
 
-    peptideTables = PeptideTables(inputDir=INPUTPATH, columnNames=columnNames)
+    peptideTables = PeptideTables(columnNames, inputDir=INPUTPATH)
     proteinTables = ProteinTables(INPUTPATH, unsafeReadTableFlag=True)
     peptideTables.ApplyProteinReplacements(proteinTables)
 
