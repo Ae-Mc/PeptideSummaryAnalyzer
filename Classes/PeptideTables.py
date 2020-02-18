@@ -36,7 +36,7 @@ class PeptideTables:
 
     def __init__(self,
                  columnNames: ColumnNames,
-                 inputDir: str = None):
+                 inputDir: str = None) -> None:
 
         self.SetColumnNames(columnNames)
 
