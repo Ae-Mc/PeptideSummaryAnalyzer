@@ -38,6 +38,7 @@ MANIFEST
 
 # Ctags files
 tags
+tags.temp
 TAGS
 
 # Archives
