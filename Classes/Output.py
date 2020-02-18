@@ -11,6 +11,8 @@ class Output:
 
     outputDirPath: str
     accessionsBunch: Dict[str, Dict[str, Accession]]
+    seqDB: Dict[str, Sequence]
+    accessionTables: AccessionTables
 
     def __init__(
             self,
@@ -25,47 +27,42 @@ class Output:
            seqDB is not None and
            accessionTables is not None and
            proteinTables is not None):
-            self.GenerateOutputFiles(outputDirPath,
-                                     filesSumms,
-                                     seqDB,
-                                     accessionTables,
+            self.seqDB: Dict[str, Sequence] = seqDB
+            self.outputDirPath: str = outputDirPath
+            self.accessionTables: AccessionTables = accessionTables
+            self.GenerateOutputFiles(filesSumms,
                                      proteinTables)
 
     def GenerateOutputFiles(
             self,
-            outputDirPath: str,
             filesSumms: Dict[str, Dict[str, float]],
-            seqDB: Dict[str, Sequence],
-            accessionTables: AccessionTables,
             proteinTables: ProteinTables) -> None:
-
-        self.outputDirPath = outputDirPath
 
         self.CreateDirIfNotExist()
         self.accessionsBunch = (
-            accessionTables.GenerateAccessionsBunchOverAllTables())
-        self.GenerateDescriptionFile(seqDB)
+            self.accessionTables.GenerateAccessionsBunchOverAllTables())
+        self.GenerateDescriptionFile(outFilename="description.txt")
+
+        self.GenerateScSummFile("Sc_summ.txt")
 
         fieldsToFiles: Tuple[Tuple[str, str], ...] = (
             ("Counts", "counts.txt"),
             ("ScNormToFileNormRatio", "Sc_norm.txt"),
-            ("ScSumm", "Sc_summ.txt"),
             ("PSignalNormToFileNormRatio", "Psignal_norm.txt"),
             ("PSignalSumm", "Psignal_summ.txt"),
             ("PSignalAndScNormRatiosAverage", "SP_2.txt"),
             ("SeqlenSumm", "seq_length_summ.txt"),
             ("Unused", "unused.txt")
         )
+
         for field, filename in fieldsToFiles:
             self.GenerateTableFileByField(
                 fieldName=field,
-                accessionTables=accessionTables,
                 outFilename=filename)
 
         self.GenerateGroupsFile("Groups.txt", proteinTables)
 
-        self.GenerateJointOutputFile("output.txt",
-                                     seqDB=seqDB)
+        self.GenerateJointOutputFile("output.txt")
 
     def CreateDirIfNotExist(self) -> None:
 
@@ -81,33 +78,50 @@ class Output:
 
     def GenerateDescriptionFile(
             self,
-            seqDB: Dict[str, Sequence],
-            outFilename: str = "description.txt") -> None:
+            outFilename: str) -> None:
         with open(self.outputDirPath +
                   '/' +
                   outFilename,
                   mode='w') as descFile:
             descFile.write("Accession\tDescription")
             for accession in sorted(self.accessionsBunch.keys()):
-                if seqDB[accession].len:
-                    descFile.write("\n{}\t{}".format(accession,
-                                                     seqDB[accession].desc))
+                if self.seqDB[accession].len:
+                    descFile.write("\n{}\t{}".format(
+                        accession, self.seqDB[accession].desc))
+
+    def GenerateScSummFile(self, outFilename: str) -> None:
+        with open(self.outputDirPath +
+                  '/' +
+                  outFilename,
+                  mode='w') as scSummFile:
+            scSummFile.write(
+                "Accession\tSequence length" +
+                ("\t{}" * len(self.accessionTables.sortedTableNums)).format(
+                    *self.accessionTables.sortedTableNums))
+            for accession in sorted(self.accessionsBunch.keys()):
+                scSummFile.write(f"\n{accession}" +
+                                 f"\t{self.seqDB[accession].len}")
+                for tableNum in self.accessionTables.sortedTableNums:
+                    table = self.accessionTables.accessionsPerTable[tableNum]
+                    if accession in table:
+                        scSummFile.write(f"\t{table[accession].ScSumm}")
+                    else:
+                        scSummFile.write('\t')
 
     def GenerateTableFileByField(
             self,
             fieldName: str,
-            accessionTables: AccessionTables,
             outFilename: str) -> None:
 
         with open(self.outputDirPath + '/' + outFilename, mode='w') as outFile:
             outFile.write("Accession")
-            outFile.write((("\t{}" *
-                            len(accessionTables.sortedTableNums))).format(
-                *accessionTables.sortedTableNums))
+            outFile.write(
+                ("\t{}" * len(self.accessionTables.sortedTableNums)).format(
+                    *self.accessionTables.sortedTableNums))
             for accession in sorted(self.accessionsBunch.keys()):
                 outFile.write("\n" + accession)
-                for tableNum in accessionTables.sortedTableNums:
-                    table = accessionTables.accessionsPerTable[tableNum]
+                for tableNum in self.accessionTables.sortedTableNums:
+                    table = self.accessionTables.accessionsPerTable[tableNum]
                     if accession in table:
                         outFile.write('\t{}'.format(
                             table[accession].__dict__[fieldName]))
@@ -139,8 +153,7 @@ class Output:
 
     def GenerateJointOutputFile(
             self,
-            outFilename: str,
-            seqDB: Dict[str, Sequence]) -> None:
+            outFilename: str) -> None:
 
         with open(self.outputDirPath + '/' + outFilename, 'w') as outFile:
             outFile.write("Accession\tFilename\tUnused\tseq_length_summ\t" +
@@ -166,4 +179,4 @@ class Output:
                              scNorm=accession.ScNormToFileNormRatio,
                              pSignalNorm=accession.PSignalNormToFileNormRatio,
                              sp2=accession.PSignalAndScNormRatiosAverage,
-                             seqlen=seqDB[accessionName].len))
+                             seqlen=self.seqDB[accessionName].len))
