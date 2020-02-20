@@ -347,7 +347,7 @@ def GetInput() -> Input:
         inputParams.whiteList = GetFileLines(argv[2])
         inputParams.blackList = GetFileLines(argv[3])
         inputParams.isProteinGroupFilter = (
-            True if argv[4].strip() == 'y' else False)
+            True if argv[4].strip().lower() == 'y' else False)
         inputParams.seqDB = ReadSeqDB(argv[5])
         inputParams.unused = Comparable(argv[6])
         inputParams.contrib = Comparable(argv[7])
@@ -357,10 +357,15 @@ def GetInput() -> Input:
     else:
         inputParams.proteinPilotVersion = input(
             "ProteinPilot Version (4 or 5): ")
-        inputParams.whiteList = GetFileLines(input("Id file name: "))
-        inputParams.blackList = GetFileLines(input("ID exclusion file name: "))
-        inputParams.isProteinGroupFilter = True if input(
-            "Protein group filter: ").strip() == 'y' else False
+        inputParams.whiteList = GetFileLines(input("Id listfile name: "))
+        inputParams.blackList = GetFileLines(
+            input("ID exclusion list file name: "))
+        inputParams.isProteinGroupFilter = (
+            True if (
+                input(
+                    "Protein group filter (Y or N): "
+                ).strip().lower() == 'y')
+            else False)
         inputParams.seqDB = ReadSeqDB(input("Database file name: "))
         inputParams.unused = Comparable(input("Unused: "))
         inputParams.contrib = Comparable(input("Contribution: "))
@@ -378,8 +383,10 @@ def main():
         columnNames = ColumnNames(precursorSignal="Intensity (Peptide)")
 
     peptideTables = PeptideTables(columnNames, inputDir=INPUTPATH)
-    proteinTables = ProteinTables(INPUTPATH, unsafeReadTableFlag=True)
-    peptideTables.ApplyProteinReplacements(proteinTables)
+    proteinTables = None
+    if inputParams.isProteinGroupFilter:
+        proteinTables = ProteinTables(INPUTPATH, unsafeReadTableFlag=True)
+        peptideTables.ApplyProteinReplacements(proteinTables)
 
     if inputParams.isDefaultConf:
         ApplyDefaultConf(peptideTables.peptideTables, columnNames)

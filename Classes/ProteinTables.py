@@ -143,8 +143,6 @@ class ProteinTables:
         self.proteinReplacementsGroups = {}
         for tableNum, replacements in self.proteinReplacements.items():
             for replaceable, replacing in replacements.items():
-                if replaceable == replacing:
-                    continue
                 if replacing not in self.proteinReplacementsGroups:
                     self.proteinReplacementsGroups[replacing] = {}
                 if(replaceable not in

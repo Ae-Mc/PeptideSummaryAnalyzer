@@ -17,7 +17,7 @@ for filename in os.listdir("./OutputOriginal"):
         line = 1
         character = 0
         for i in range(0, len(originalFileContent)):
-            if i == '\n':
+            if newFileContent[i] == '\n':
                 line += 1
                 character = 0
             character += 1

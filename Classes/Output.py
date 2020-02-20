@@ -25,13 +25,13 @@ class Output:
         if(outputDirPath is not None and
            filesSumms is not None and
            seqDB is not None and
-           accessionTables is not None and
-           proteinTables is not None):
+           accessionTables is not None):
             self.seqDB: Dict[str, Sequence] = seqDB
             self.outputDirPath: str = outputDirPath
             self.accessionTables: AccessionTables = accessionTables
-            self.GenerateOutputFiles(filesSumms,
-                                     proteinTables)
+            if proteinTables is not None:
+                self.GenerateOutputFiles(filesSumms,
+                                         proteinTables)
 
     def GenerateOutputFiles(
             self,
@@ -48,8 +48,8 @@ class Output:
         fieldsToFiles: Tuple[Tuple[str, str], ...] = (
             ("Counts", "counts.txt"),
             ("ScNormToFileNormRatio", "Sc_norm.txt"),
-            ("PSignalNormToFileNormRatio", "Psignal_norm.txt"),
-            ("PSignalSumm", "Psignal_summ.txt"),
+            ("PSignalNormToFileNormRatio", "Pep_intensity_norm.txt"),
+            ("PSignalSumm", "Pep_intensity_summ.txt"),
             ("PSignalAndScNormRatiosAverage", "SP_2.txt"),
             ("SeqlenSumm", "seq_length_summ.txt"),
             ("Unused", "unused.txt")
@@ -136,20 +136,25 @@ class Output:
             outFile.write(("Representative\tAccession" +
                            "\t{}" * len(proteinTables.sortedTableNums) +
                            '\n').format(*proteinTables.sortedTableNums))
-            for representativeAccessionName in sorted(
-                    proteinTables.proteinReplacementsGroups):
-                accession: Dict[str, Dict[str, int]] = (
-                    proteinTables.proteinReplacementsGroups[
-                        representativeAccessionName])
-                outFile.write(representativeAccessionName)
-                for replaceableName in sorted(accession.keys()):
+            for representativeAccessionName, accession in sorted(
+                    proteinTables.proteinReplacementsGroups.items()):
+                if len(accession) > 1:
                     outFile.write(
-                        ("\t{}" +
-                         "\t{}" * len(proteinTables.sortedTableNums) +
+                        f"{representativeAccessionName}\t\t" +
+                        ("\t{}" * len(proteinTables.sortedTableNums) +
                          '\n').format(
-                             replaceableName,
-                             *[accession[replaceableName][key] for key in
-                               proteinTables.sortedTableNums]))
+                             *[val for val in sorted(accession[
+                                 representativeAccessionName].items())]))
+                    for replaceableName in sorted(accession.keys()):
+                        if replaceableName == representativeAccessionName:
+                            continue
+                        outFile.write(
+                            ("\t{}" +
+                             "\t{}" * len(proteinTables.sortedTableNums) +
+                             '\n').format(
+                                 replaceableName,
+                                 *[accession[replaceableName][key] for key in
+                                   proteinTables.sortedTableNums]))
 
     def GenerateJointOutputFile(
             self,
@@ -157,8 +162,8 @@ class Output:
 
         with open(self.outputDirPath + '/' + outFilename, 'w') as outFile:
             outFile.write("Accession\tFilename\tUnused\tseq_length_summ\t" +
-                          "counts\tSc_summ\tPsignal_summ\tSc_norm\t" +
-                          "Psignal_norm\tSP_2\tseq_length")
+                          "counts\tSc_summ\tPep_intensity__summ\tSc_norm\t" +
+                          "Pep_intensity__norm\tSP_2\tseq_length")
             for accessionName, accessionTables in sorted(
                     self.accessionsBunch.items()):
                 for tableNum in sorted(accessionTables.keys(),

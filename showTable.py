@@ -1,3 +1,4 @@
+#!python3.7
 from typing import List, Dict
 from sys import argv
 from Classes.ReadTable import ReadTable
