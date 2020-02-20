@@ -140,10 +140,10 @@ class Output:
                     proteinTables.proteinReplacementsGroups.items()):
                 if len(accession) > 1:
                     outFile.write(
-                        f"{representativeAccessionName}\t\t" +
+                        f"{representativeAccessionName}\t" +
                         ("\t{}" * len(proteinTables.sortedTableNums) +
                          '\n').format(
-                             *[val for val in sorted(accession[
+                             *[vals[1] for vals in sorted(accession[
                                  representativeAccessionName].items())]))
                     for replaceableName in sorted(accession.keys()):
                         if replaceableName == representativeAccessionName:
