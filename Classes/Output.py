@@ -143,8 +143,11 @@ class Output:
                         f"{representativeAccessionName}\t" +
                         ("\t{}" * len(proteinTables.sortedTableNums) +
                          '\n').format(
-                             *[vals[1] for vals in sorted(accession[
-                                 representativeAccessionName].items())]))
+                             *(map(
+                                 lambda key:
+                                 accession[representativeAccessionName][key],
+                                 proteinTables.sortedTableNums))
+                         ))
                     for replaceableName in sorted(accession.keys()):
                         if replaceableName == representativeAccessionName:
                             continue

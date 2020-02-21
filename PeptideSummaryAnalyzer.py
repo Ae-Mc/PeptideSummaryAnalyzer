@@ -357,7 +357,7 @@ def GetInput() -> Input:
     else:
         inputParams.proteinPilotVersion = input(
             "ProteinPilot Version (4 or 5): ")
-        inputParams.whiteList = GetFileLines(input("Id listfile name: "))
+        inputParams.whiteList = GetFileLines(input("Id list file name: "))
         inputParams.blackList = GetFileLines(
             input("ID exclusion list file name: "))
         inputParams.isProteinGroupFilter = (

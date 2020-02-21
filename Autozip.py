@@ -8,5 +8,5 @@ with zipfile.ZipFile("PeptideSummaryAnalyzer.zip",
                      zipfile.ZIP_STORED) as archive:
     archive.write("PeptideSummaryAnalyzer.py")
     for filename in listdir("Classes"):
-        if not filename.startswith("__"):
+        if not filename.startswith("__") and not filename.startswith("."):
             archive.write(join("Classes", filename))

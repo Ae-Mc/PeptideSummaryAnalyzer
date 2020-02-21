@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, IO
 
 
 def ReadTable(tableFilename: str,
@@ -12,27 +12,30 @@ def ReadTable(tableFilename: str,
     количеству заголовков) будут удаляться.
     """
 
-    with open(tableFilename) as tempFile:
-        strings = tempFile.read().split('\n')
-        tempFile.close()
-        table: Dict[str, List[str]] = {}
-        columns = strings[0].split(sep)
+    with open(tableFilename) as inFile:
+        return ReadTableFromFileObj(inFile, sep, unsafeFlag)
 
-        for column in columns:
-            table[column] = []
 
-        for string in strings[1:]:
-            if len(string.strip()):
-                i = 0
-                for value in string.split(sep):
-                    if unsafeFlag:
-                        if i < len(columns):
-                            table[columns[i]].append(value)
-                        else:
-                            break
-                    else:
+def ReadTableFromFileObj(inFile: IO[str], sep: str, unsafeFlag: bool):
+    strings = inFile.read().split('\n')
+    inFile.close()
+    table: Dict[str, List[str]] = {}
+    columns = strings[0].split(sep)
+
+    for column in columns:
+        table[column] = []
+
+    for string in strings[1:]:
+        if len(string.strip()):
+            i = 0
+            for value in string.split(sep):
+                if unsafeFlag:
+                    if i < len(columns):
                         table[columns[i]].append(value)
-                    i += 1
+                    else:
+                        break
+                else:
+                    table[columns[i]].append(value)
+                i += 1
 
-        return table
-    return None
+    return table
