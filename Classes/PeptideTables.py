@@ -82,8 +82,8 @@ class PeptideTables:
 
     def ApplyProteinReplacements(self, proteinTables: ProteinTables):
 
-        for tableName, table in self.peptideTables.items():
-            tableReplacements = proteinTables.proteinReplacements[tableName]
+        for tableNum, table in self.peptideTables.items():
+            tableReplacements = proteinTables.proteinReplacements[tableNum]
             for i in range(0, len(table[self.columnNames.accession])):
                 if table[self.columnNames.accession][i] in tableReplacements:
                     table[self.columnNames.accession][i] = (tableReplacements[

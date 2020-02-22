@@ -16,11 +16,11 @@ class ProteinTables:
         self.unsafeReadTableFlag = unsafeReadTableFlag
 
         if inputDir is not None:
-            self.GetProteinSummaryReplacements(inputDir)
             self.sortedTableNums = sorted(
                 [filename.split('_')[0] for filename in listdir(inputDir)
                     if filename.endswith("ProteinSummary.txt")],
                 key=lambda x: float(x))
+            self.GetProteinSummaryReplacements(inputDir)
             self.RemoveReversedAccessionsFromProteinReplacements()
             self.GetProteinReplacementsGroupsPerTable()
 

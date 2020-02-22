@@ -86,7 +86,7 @@ class Table:
             self.LoadFile(filename)
 
     def LoadFile(self, filename: str):
-        table = ReadTable(filename)
+        table = ReadTable(filename, unsafeFlag=True)
         self.LoadTable(table)
 
     def LoadTable(self, table: Dict[str, List[str]]):
