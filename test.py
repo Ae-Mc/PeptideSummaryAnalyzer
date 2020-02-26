@@ -1,11 +1,11 @@
-#!python3.7
+#!/bin/env python3
 import os
 
 if "Output" in os.listdir():
     for filename in os.listdir("./Output"):
         os.remove(f"./Output/{filename}")
 
-os.system('python3.7 PeptideSummaryAnalyzer.py "5" "" "IDexcl.txt" ' +
+os.system('/bin/env python3 PeptideSummaryAnalyzer.py "5" "" "IDexcl.txt" ' +
           '"y" "EFRA_cont.fasta" ">=0.3" "" "default" 1 3')
 ERRORFLAG = False
 

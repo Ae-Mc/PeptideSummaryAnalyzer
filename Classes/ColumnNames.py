@@ -20,3 +20,12 @@ class ColumnNames:
 
         for columnClassicName, columnName in kwargs.items():
             self.__dict__[columnClassicName] = columnName
+
+    def GetColumnNamesList(self):
+        return [self.accession,
+                self.precursorSignal,
+                self.sc,
+                self.unused,
+                self.sequence,
+                self.confidence,
+                self.contribution]

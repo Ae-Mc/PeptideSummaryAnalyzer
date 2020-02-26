@@ -1,6 +1,7 @@
 from typing import List, Dict, Union, Tuple
 from os import listdir, path
 from Classes.ReadTable import ReadTable
+from Classes.Sequence import Sequence
 
 
 class ProteinTables:
@@ -8,31 +9,34 @@ class ProteinTables:
     proteinReplacementsGroups: Dict[str, Dict[str, Dict[str, int]]]
     sortedTableNums: List[str]
     unsafeReadTableFlag: bool
+    seqDB: Dict[str, Sequence]
 
     def __init__(self,
-                 inputDir: str = None,
-                 unsafeReadTableFlag: bool = False) -> None:
+                 inputDir: str,
+                 seqDB: Dict[str, Sequence],
+                 unsafeReadTableFlag: bool) -> None:
 
         self.unsafeReadTableFlag = unsafeReadTableFlag
+        self.seqDB = seqDB
 
-        if inputDir is not None:
-            self.sortedTableNums = sorted(
-                [filename.split('_')[0] for filename in listdir(inputDir)
-                    if filename.endswith("ProteinSummary.txt")],
-                key=lambda x: float(x))
-            self.GetProteinSummaryReplacements(inputDir)
-            self.RemoveReversedAccessionsFromProteinReplacements()
-            self.GetProteinReplacementsGroupsPerTable()
+        self.sortedTableNums = sorted(
+            [filename.split('_')[0] for filename in listdir(inputDir)
+                if filename.endswith("ProteinSummary.txt")],
+            key=lambda x: float(x))
+
+        self.GetProteinSummaryReplacements(inputDir)
+        self.GetProteinReplacementsGroupsPerTable()
 
     def GetProteinSummaryReplacements(
             self, inputDir: str):
 
         groupsPerTables: Dict[str, List[List[Tuple[str, float]]]] = (
             self.GetProteinGroupsFromFiles(inputDir))
-        accessions: Dict[str, Dict[str, Union[float, int]]] = (
+        representativeAccessions: Dict[str, Dict[str, Union[float, int]]] = (
             self.GetRepresentativeAccessionsFromGroups(groupsPerTables))
-        self.proteinReplacements = (
-            self.GetReplacementsPerTable(accessions, groupsPerTables))
+        self.proteinReplacements = self.GetReplacementsPerTable(
+            representativeAccessions,
+            groupsPerTables)
 
     def GetProteinGroupsFromFiles(
             self, inputDir: str) -> Dict[str, List[List[Tuple[str, float]]]]:
@@ -47,15 +51,29 @@ class ProteinTables:
     def GetProteinGroupsFromFile(
             self, filename: str) -> List[List[Tuple[str, float]]]:
         fileTable = ReadTable(filename, unsafeFlag=self.unsafeReadTableFlag)
-        return self.GetProteinGroupsFromTable(fileTable)
+        return self.GetProteinGroupsAndRemoveReversedAccessionsFromTable(
+            fileTable)
 
-    def RemoveReversedAccessionsFromProteinReplacements(self) -> None:
+    def GetProteinGroupsAndRemoveReversedAccessionsFromTable(
+            self,
+            table: Dict[str, List[str]]) -> List[List[Tuple[str, float]]]:
+        groups: List[List[Tuple[str, float]]] = []
+        for i in range(0, len(table["Unused"])):
+            if table["Accession"][i].startswith("RRRRR"):
+                if len(groups):
+                    groups[-1].sort()
+                break
 
-        for tableNum in self.proteinReplacements.keys():
-            replacings = [key for key in self.proteinReplacements[tableNum]]
-            for replacing in replacings:
-                if replacing.startswith("RRRRR"):
-                    del self.proteinReplacements[tableNum][replacing]
+            if float(table["Unused"][i]) != 0:
+                if len(groups):
+                    groups[-1].sort()
+                unused = float(table["Unused"][i])
+                groups.append([])
+            groups[-1].append((table["Accession"][i], unused))
+
+        if len(groups):
+            groups[-1].sort()
+        return groups
 
     def GetRepresentativeAccessionsFromGroups(
             self,
@@ -68,8 +86,7 @@ class ProteinTables:
                     if accessionName not in accessions:
                         accessions[accessionName] = {
                             "unused": unused,
-                            "occurences": 0}
-                    accessions[accessionName]["occurences"] += 1
+                            "seqLen": self.seqDB[accessionName].len}
                     if unused > accessions[accessionName]["unused"]:
                         accessions[accessionName]["unused"] = unused
         return accessions
@@ -109,35 +126,18 @@ class ProteinTables:
                                        Union[float, int]] = (
             group[0][0],
             accessionsWithMaxUnused[group[0][0]]["unused"],
-            accessionsWithMaxUnused[group[0][0]]["occurences"])
+            accessionsWithMaxUnused[group[0][0]]["seqLen"])
         for accessionName, unused in sorted(group, key=lambda x: x[0]):
             curAccession = accessionsWithMaxUnused[accessionName]
             if(curAccession["unused"] >  # type: ignore
                representativeAccession[1]
                or (
                    curAccession["unused"] == representativeAccession[1] and
-                   curAccession["occurences"] >  # type: ignore
-                   representativeAccession[2])):
+                   curAccession["seqLen"] > representativeAccession[2])):
                 representativeAccession = (accessionName,
                                            curAccession["unused"],
-                                           curAccession["occurences"])
+                                           curAccession["seqLen"])
         return representativeAccession[0]
-
-    def GetProteinGroupsFromTable(
-            self,
-            table: Dict[str, List[str]]) -> List[List[Tuple[str, float]]]:
-        groups: List[List[Tuple[str, float]]] = []
-        for i in range(0, len(table["Unused"])):
-            if float(table["Unused"][i]) != 0:
-                if len(groups):
-                    groups[-1].sort()
-                unused = float(table["Unused"][i])
-                groups.append([])
-            groups[-1].append((table["Accession"][i],
-                               unused))
-        if len(groups):
-            groups[-1].sort()
-        return groups
 
     def GetProteinReplacementsGroupsPerTable(self) -> None:
         self.proteinReplacementsGroups = {}
@@ -148,8 +148,8 @@ class ProteinTables:
                 if(replaceable not in
                    self.proteinReplacementsGroups[replacing]):
                     self.proteinReplacementsGroups[replacing][replaceable] = {}
-                    for tableNumber in self.sortedTableNums:
+                    for tableNum in self.sortedTableNums:
                         self.proteinReplacementsGroups[
-                            replacing][replaceable][tableNumber] = 0
+                            replacing][replaceable][tableNum] = 0
                 self.proteinReplacementsGroups[
                     replacing][replaceable][tableNum] = 1

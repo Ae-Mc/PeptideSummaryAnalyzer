@@ -49,12 +49,16 @@ class PeptideTables:
     def ReadPeptideSummaries(self, inputDir: str) -> None:
         """ Считывание всех PeptideSummary файлов в словарь """
 
-        self.peptideTables = {}
+        self.peptideTables: Dict[str, Dict[str, List[str]]] = {}
         for filename in listdir(inputDir):
             if "Peptide" in filename:
                 tableNum = filename.split('_')[0]
                 self.peptideTables[tableNum] = (
                     ReadTable(inputDir + '/' + filename))
+                curTableColumnNames = list(self.peptideTables[tableNum].keys())
+                for columnName in curTableColumnNames:
+                    if columnName not in self.columnNames.GetColumnNamesList():
+                        del self.peptideTables[tableNum][columnName]
 
     def GetSortedTableNums(self) -> List[str]:
         return sorted(self.peptideTables.keys(), key=lambda x: float(x))

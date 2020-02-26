@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/bin/env python3
 import unittest
 from io import StringIO
 from typing import Dict, List, Tuple, Any
@@ -12,7 +12,7 @@ class ProteinTablesTest(unittest.TestCase):
     error: str
 
     def setUp(self):
-        self.proteinTables = ProteinTables()
+        self.proteinTables = ProteinTables(None, None, None)
 
     def testGetProteinGroupsFromTable(self) -> None:
         table: Dict[str, List[str]] = {

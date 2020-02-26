@@ -1,4 +1,4 @@
-#!python3.7
+#!/bin/env python3
 from typing import List, Dict, Union
 from sys import argv
 from Classes.Sequence import Sequence
@@ -357,7 +357,7 @@ def GetInput() -> Input:
     else:
         inputParams.proteinPilotVersion = input(
             "ProteinPilot Version (4 or 5): ")
-        inputParams.whiteList = GetFileLines(input("Id list file name: "))
+        inputParams.whiteList = GetFileLines(input("ID list file name: "))
         inputParams.blackList = GetFileLines(
             input("ID exclusion list file name: "))
         inputParams.isProteinGroupFilter = (
@@ -385,7 +385,9 @@ def main():
     peptideTables = PeptideTables(columnNames, inputDir=INPUTPATH)
     proteinTables = None
     if inputParams.isProteinGroupFilter:
-        proteinTables = ProteinTables(INPUTPATH, unsafeReadTableFlag=True)
+        proteinTables = ProteinTables(INPUTPATH,
+                                      inputParams.seqDB,
+                                      unsafeReadTableFlag=True)
         peptideTables.ApplyProteinReplacements(proteinTables)
 
     if inputParams.isDefaultConf:
