@@ -1,4 +1,4 @@
-#!python3.7
+#!/bin/env python3
 import zipfile
 from os import listdir
 from os.path import join

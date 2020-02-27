@@ -1,7 +1,7 @@
 #!/bin/env python3
 import unittest
 from io import StringIO
-from typing import Dict, List, Tuple, Any
+from typing import List, Tuple, Any
 from Classes.ProteinTables import ProteinTables
 from Classes.ReadTable import ReadTableFromFileObj
 
@@ -15,7 +15,7 @@ class ProteinTablesTest(unittest.TestCase):
         self.proteinTables = ProteinTables(None, None, None)
 
     def testGetProteinGroupsFromTable(self) -> None:
-        table: Dict[str, List[str]] = {
+        self.proteinTables.rawProteinTables["0.1"] = {
             "Unused": [
                 "10",    "0",     "0",     "2",     "0",     "0"
             ],
@@ -23,12 +23,14 @@ class ProteinTablesTest(unittest.TestCase):
                 "Acc01", "Acc02", "Acc03", "Acc06", "Acc05", "Acc04"
             ]}
 
-        result: List[List[Tuple[Any, ...]]] = [
-            [("Acc01", 10.0), ("Acc02", 10.0), ("Acc03", 10.0)],
-            [("Acc04", 02.0), ("Acc05", 02.0), ("Acc06", 02.0)]
-        ]
-        self.assertListEqual(
-            self.proteinTables.GetProteinGroupsFromTable(table), result)
+        result: List[List[Tuple[Any, ...]]] = {
+            "0.1": [
+                ["Acc01", "Acc02", "Acc03"],
+                ["Acc04", "Acc05", "Acc06"]
+            ]}
+        self.assertDictEqual(
+            self.proteinTables.GetPureGroupsListsFromRawTables(),
+            result)
 
 
 class ReadTableTest(unittest.TestCase):

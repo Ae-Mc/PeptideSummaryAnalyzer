@@ -1,200 +1,277 @@
-Representative	Accession	0.1	0.2	0.3	1.1	1.2	1.3	3.1	3.2	5.1	5.2	5.3	7.1	7.2	7.3	10.1	10.2	10.3	12.1	12.2	12.3
-Efra.gene10048_i0_length1308.p1	Efra.gene34797_i0_length420.p1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0
-	Efra.gene6780_i0_length1629.p1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0
-	Efra.gene6959_i0_length1608.p1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0
-Efra.gene10049_i0_length1308.p1	Efra.gene9364_i0_length1362.p1	0	1	0	0	0	0	1	0	0	0	0	1	0	0	1	0	1	0	0	0
-Efra.gene10189_i0_length1293.p1	Efra.gene12044_i0_length1158.p1	0	0	0	0	0	0	0	0	1	1	0	0	0	0	0	0	0	0	0	0
-	Efra.gene12044_i1_length1026.p1	0	0	0	0	0	0	0	0	1	1	0	0	0	0	0	0	0	0	0	0
-Efra.gene10803_i4_length1062.p1	Efra.gene10803_i2_length1215.p1	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	1	0	0	1	0
-	Efra.gene40609_i0_length369.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0
-	Efra.gene40609_i1_length267.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0
-Efra.gene10913_i0_length1239.p1	Efra.gene11878_i0_length1170.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0
-	Efra.gene13387_i0_length1080.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0
-	Efra.gene6991_i0_length1602.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0
-	Efra.gene7037_i0_length1599.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0
-	Efra.gene8265_i0_length1467.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0
-	Efra.gene9190_i0_length1380.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0
-	Efra.gene9230_i0_length1374.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0
-	Efra.gene9528_i0_length1350.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0
-	Efra.gene9825_i0_length1326.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0
-Efra.gene10979_i0_length1233.p1	Efra.gene14059_i0_length852.p1	0	0	0	0	0	0	0	0	1	0	0	1	0	1	1	0	0	0	1	0
-	Efra.gene27610_i0_length534.p1	0	0	0	0	0	0	0	0	1	0	0	1	0	1	1	0	0	0	1	0
-Efra.gene10979_i3_length1134.p1	Efra.gene10979_i1_length633.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0
-	Efra.gene10979_i2_length504.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0
-	Efra.gene14817_i1_length748.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0
-	Efra.gene14817_i2_length996.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0
-	Efra.gene56636_i1_length297.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0
-Efra.gene1160_i1_length3549.p1	Efra.gene1160_i2_length1035.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
-Efra.gene11804_i0_length1173.p1	Efra.gene11804_i10_length924.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	0	0	0	0	0
-	Efra.gene11804_i12_length444.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0
-	Efra.gene11804_i13_length462.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0
-	Efra.gene11804_i5_length1131.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	0	0	0	0	0
-	Efra.gene11804_i6_length627.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0
-Efra.gene12044_i0_length1158.p1	Efra.gene12044_i1_length1026.p1	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0
-Efra.gene12182_i0_length1149.p1	Efra.gene10979_i0_length1233.p1	0	0	0	0	0	0	1	1	0	0	1	0	0	0	0	1	1	1	0	0
-	Efra.gene10979_i1_length633.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	0	0	0
-	Efra.gene10979_i2_length504.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	0	0	0
-	Efra.gene10979_i3_length1134.p1	0	0	0	0	0	1	0	1	1	0	0	1	0	1	1	0	0	0	1	0
-	Efra.gene14059_i0_length852.p1	0	0	0	0	0	0	1	1	0	0	1	0	0	0	0	1	1	1	0	0
-	Efra.gene14817_i1_length748.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	0	0	0
-	Efra.gene14817_i2_length996.p1	0	0	0	0	0	1	0	1	1	0	0	1	0	1	1	0	0	0	1	0
-	Efra.gene27610_i0_length534.p1	0	0	0	0	0	0	1	1	0	0	1	0	0	0	0	1	1	1	0	0
-	Efra.gene34981_i0_length420.p1	0	0	0	0	0	1	0	1	1	0	0	1	0	1	1	0	0	0	1	0
-	Efra.gene56636_i1_length297.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	0	0	0
-Efra.gene12442_i0_length1134.p1	Efra.gene10979_i1_length633.p1	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	0	0	0	0
-	Efra.gene10979_i3_length1134.p1	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	0	0	0	0
-	Efra.gene12442_i1_length459.p1	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	0	0	0	0
-	Efra.gene14817_i1_length748.p1	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	0	0	0	0
-	Efra.gene14817_i2_length996.p1	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	0	0	0	0
-	Efra.gene15592_i0_length957.p1	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	0	0	0	0
-Efra.gene1287_i0_length3423.p1	Efra.gene5067_i0_length1875.p1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-Efra.gene13951_i0_length1044.p1	Efra.gene21094_i0_length468.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	1	0	0	0	0	1
-	Efra.gene21094_i2_length714.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	1	0	0	0	0	1
-Efra.gene14059_i2_length1041.p1	Efra.gene10979_i0_length1233.p1	0	1	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene10979_i1_length633.p1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene10979_i2_length504.p1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene10979_i3_length1134.p1	0	1	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene12182_i0_length1149.p1	0	1	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene12280_i0_length1146.p1	0	1	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene12442_i0_length1134.p1	0	1	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene12819_i0_length1113.p1	0	1	1	1	1	1	0	1	0	1	0	0	0	0	0	0	0	0	0	0
-	Efra.gene14059_i0_length852.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
-	Efra.gene14059_i1_length735.p1	0	0	1	0	1	1	0	1	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene14605_i0_length1011.p1	0	0	1	0	1	1	0	1	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene14817_i1_length748.p1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene37608_i0_length393.p1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene56636_i1_length297.p1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene71089_i0_length264.p1	0	0	0	0	1	1	0	1	0	0	0	0	0	0	0	0	0	0	0	0
-Efra.gene14246_i0_length1029.p1	Efra.gene14678_i0_length1005.p1	0	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-Efra.gene14418_i2_length1020.p1	Efra.gene14418_i0_length315.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1
-	Efra.gene14418_i3_length396.p1	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
-Efra.gene14545_i2_length960.p1	Efra.gene14545_i3_length1014.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0
-Efra.gene15236_i1_length690.p1	Efra.gene23469_i0_length639.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0
-Efra.gene15484_i0_length963.p1	Efra.gene35010_i0_length420.p1	1	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene52472_i0_length312.p1	1	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene9742_i0_length1332.p1	1	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene9742_i3_length630.p1	1	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-Efra.gene16536_i2_length909.p1	Efra.gene16536_i3_length315.p1	1	1	0	1	1	1	1	1	1	1	1	1	1	1	1	1	1	0	1	1
-Efra.gene16539_i1_length909.p1	Efra.gene16539_i2_length336.p1	0	0	0	1	0	0	0	0	0	0	0	0	1	1	0	1	1	0	1	0
-	Efra.gene16539_i3_length783.p1	0	0	0	1	0	0	0	0	0	0	0	0	1	1	0	1	1	0	1	0
-	Efra.gene36847_i0_length399.p1	0	0	0	0	0	0	1	0	0	0	0	0	1	1	1	0	0	1	0	0
-Efra.gene17127_i0_length880.p1	Efra.gene17127_i2_length381.p1	0	1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene17127_i5_length441.p1	0	1	0	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene17127_i6_length777.p1	1	1	0	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene30370_i0_length483.p1	0	1	0	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene59164_i0_length291.p1	0	1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-Efra.gene17127_i6_length777.p1	Efra.gene38443_i0_length387.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
-Efra.gene18044_i0_length837.p1	Efra.gene18044_i2_length618.p1	0	0	0	0	0	0	0	0	0	0	1	0	1	1	0	0	0	0	0	1
-	Efra.gene20065_i0_length753.p1	0	0	0	0	0	0	1	0	0	0	1	1	1	1	1	0	0	0	0	1
-Efra.gene18178_i0_length831.p1	Efra.gene19703_i0_length765.p1	0	0	0	0	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
-Efra.gene18564_i2_length720.p1	Efra.gene18564_i1_length813.p1	0	1	1	1	1	1	1	1	0	0	0	0	0	0	0	1	0	1	0	1
-	Efra.gene19022_i0_length285.p1	0	1	1	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene19022_i1_length795.p1	0	1	1	1	1	1	1	1	1	1	1	1	1	0	1	1	1	1	1	1
-Efra.gene18573_i0_length813.p1	Efra.gene18573_i2_length783.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0
-	Efra.gene18573_i3_length798.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0
-	Efra.gene18573_i4_length789.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0
-	Efra.gene18573_i5_length813.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0
-Efra.gene19055_i1_length792.p1	Efra.gene19055_i3_length734.p1	0	0	1	0	0	0	0	0	1	0	0	1	0	0	0	0	0	0	0	0
-Efra.gene19992_i0_length618.p1	Efra.gene19992_i1_length756.p1	0	0	0	0	0	0	1	0	1	0	0	1	0	1	1	0	1	1	0	0
-	Efra.gene2026_i0_length2352.p1	0	0	0	0	0	0	1	0	1	0	0	1	0	1	1	0	1	1	0	0
-	Efra.gene24911_i0_length598.p1	0	0	0	0	0	0	1	0	1	0	0	1	0	1	1	0	1	1	0	0
-	Efra.gene24911_i1_length486.p1	0	0	0	0	0	0	1	0	1	0	0	1	0	1	1	0	1	1	0	0
-	Efra.gene30211_i0_length477.p1	0	0	0	0	0	0	1	0	1	0	0	1	0	1	1	0	1	1	0	0
-	Efra.gene30211_i1_length486.p1	0	0	0	0	0	0	1	0	1	0	0	1	0	1	1	0	1	1	0	0
-	Efra.gene31452_i0_length465.p1	0	0	0	0	0	0	1	0	1	0	0	1	0	1	1	0	1	1	0	0
-	Efra.gene32476_i0_length450.p1	0	0	0	0	0	0	1	0	1	0	0	1	0	1	1	0	1	1	0	0
-	Efra.gene6007_i1_length1710.p1	0	0	0	0	0	0	1	0	1	0	0	1	0	1	1	0	1	1	0	0
-Efra.gene20233_i0_length744.p1	Efra.gene20233_i2_length690.p1	1	0	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
-	Efra.gene20233_i3_length579.p1	1	0	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
-Efra.gene21131_i1_length711.p1	Efra.gene23746_i0_length630.p1	1	0	0	1	0	1	0	0	0	0	0	0	0	0	0	0	0	1	0	1
-Efra.gene21137_i1_length711.p1	Efra.gene21137_i0_length372.p1	0	0	0	1	1	0	1	0	0	1	0	1	0	0	1	0	0	0	0	0
-Efra.gene21360_i0_length705.p1	Efra.gene13177_i0_length1092.p1	0	0	0	0	0	0	0	0	0	1	0	0	0	0	1	0	0	1	0	0
-	Efra.gene14893_i0_length993.p1	0	0	0	0	0	0	0	0	0	1	0	0	0	0	1	0	0	1	0	0
-	Efra.gene17291_i0_length873.p1	0	0	0	0	0	0	0	0	0	1	0	0	0	0	1	0	0	1	0	0
-	Efra.gene20875_i0_length720.p1	0	0	0	0	0	0	0	0	0	1	0	0	0	0	1	0	0	1	0	0
-	Efra.gene21847_i0_length687.p1	0	0	0	0	0	0	0	0	0	1	0	0	0	0	1	0	0	1	0	0
-Efra.gene22328_i1_length673.p1	Efra.gene35823_i0_length411.p1	0	0	0	1	1	1	0	1	0	1	1	1	1	1	0	1	1	1	1	1
-Efra.gene22719_i0_length660.p1	Efra.gene22719_i1_length585.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	0	1	0	0	0
-	Efra.gene25247_i0_length591.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	0	1	0	0	0
-	Efra.gene2834_i6_length2439.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	0	1	0	0	0
-Efra.gene25562_i0_length582.p1	Efra.gene52462_i0_length312.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0
-	Efra.gene8928_i0_length1401.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0
-	Efra.gene9056_i0_length1392.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0
-Efra.gene25800_i0_length528.p1	Efra.gene25800_i2_length576.p1	0	0	0	1	0	1	1	0	1	1	1	1	1	1	1	1	1	1	1	1
-	Efra.gene29528_i1_length495.p1	0	0	0	1	0	1	1	0	1	1	1	1	1	1	1	1	1	1	1	1
-	Efra.gene29637_i0_length495.p1	0	0	0	1	0	1	1	0	1	1	1	1	1	1	1	1	1	1	1	1
-	Efra.gene31924_i2_length459.p1	0	0	0	1	0	1	1	0	1	1	1	1	1	1	1	1	1	1	1	1
-Efra.gene2594_i0_length2565.p1	Efra.gene2594_i1_length564.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0
-Efra.gene25963_i0_length570.p1	Efra.gene12052_i0_length1158.p1	0	0	0	0	0	0	0	0	0	0	0	1	0	1	1	0	0	0	0	1
-	Efra.gene20166_i0_length747.p1	0	0	0	0	0	0	0	0	0	0	0	1	0	1	1	0	0	0	0	1
-	Efra.gene20359_i0_length741.p1	0	0	0	0	0	0	0	0	0	0	0	1	0	1	1	0	0	0	0	1
-	Efra.gene22143_i0_length678.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	0	0	0	0	1
-Efra.gene25967_i0_length570.p1	Efra.gene25967_i1_length321.p1	0	0	0	1	1	1	1	1	1	1	1	1	1	1	1	1	0	0	1	0
-	Efra.gene25967_i2_length219.p1	0	0	0	1	1	1	1	1	1	1	1	1	0	1	1	1	0	0	1	0
-Efra.gene26194_i2_length522.p1	Efra.gene14447_i5_length935.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene1948_i3_length1167.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
-Efra.gene26421_i0_length561.p1	Efra.gene23068_i0_length651.p1	0	0	0	1	0	0	1	0	0	0	0	0	0	0	0	0	0	1	0	0
-	Efra.gene23511_i1_length639.p1	0	0	0	1	1	1	1	1	1	1	1	1	0	1	1	1	1	1	1	1
-Efra.gene26595_i0_length555.p1	Efra.gene26595_i1_length225.p1	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-Efra.gene26600_i0_length555.p1	Efra.gene26600_i1_length225.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
-Efra.gene26700_i0_length552.p1	Efra.gene26700_i1_length468.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	1	0	0	0
-Efra.gene26810_i2_length552.p1	Efra.gene26810_i1_length543.p1	0	0	0	0	0	0	1	0	0	0	1	0	0	0	0	0	0	0	0	0
-Efra.gene26841_i0_length549.p1	Efra.gene31742_i1_length237.p1	0	0	1	1	1	0	0	0	0	0	0	0	0	1	0	1	1	0	1	1
-	Efra.gene31742_i2_length462.p1	0	0	1	1	1	0	0	0	0	0	0	0	0	1	0	1	1	0	1	1
-Efra.gene27331_i1_length540.p1	Efra.gene22225_i2_length411.p1	0	0	0	1	1	1	1	1	1	1	1	1	1	0	1	1	1	1	1	1
-	Efra.gene22225_i4_length296.p1	0	0	0	1	1	1	1	1	1	1	1	1	1	0	1	1	1	1	1	1
-	Efra.gene27331_i0_length345.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0
-	Efra.gene37076_i0_length399.p1	0	0	0	1	1	1	1	1	1	1	1	1	1	0	1	1	1	1	1	1
-Efra.gene27645_i0_length348.p1	Efra.gene27645_i1_length534.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
-	Efra.gene56109_i0_length300.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
-Efra.gene2834_i0_length2466.p1	Efra.gene2834_i1_length594.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	1	0	0	1
-	Efra.gene2834_i2_length480.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	1	0	0	1
-Efra.gene29879_i0_length489.p1	Efra.gene40264_i0_length372.p1	0	0	0	0	0	0	1	0	1	0	1	1	1	0	1	1	0	1	0	1
-	Efra.gene40264_i1_length210.p1	0	0	0	0	0	0	1	0	1	0	1	1	1	0	1	1	0	0	0	1
-Efra.gene31799_i1_length459.p1	Efra.gene31799_i2_length405.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0
-	Efra.gene31799_i3_length378.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0
-	Efra.gene49431_i0_length324.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0
-Efra.gene33821_i0_length432.p1	Efra.gene69555_i0_length267.p1	0	0	0	0	0	0	0	1	1	1	0	0	1	0	0	0	0	0	0	0
-Efra.gene34755_i0_length421.p1	Efra.gene34755_i1_length384.p1	0	0	0	0	0	0	0	0	1	0	1	0	0	1	1	0	1	0	0	1
-	Efra.gene40169_i0_length372.p1	0	0	0	0	0	0	0	0	1	0	1	0	0	1	1	0	1	0	0	1
-Efra.gene34789_i0_length420.p1	Efra.gene60545_i1_length273.p1	0	1	0	1	1	1	1	1	1	1	1	0	1	1	1	1	1	0	1	0
-Efra.gene39766_i1_length327.p1	Efra.gene105995_i0_length219.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0
-	Efra.gene39766_i0_length375.p1	0	0	0	0	0	0	0	1	0	0	1	0	0	1	0	0	1	0	0	1
-	Efra.gene45084_i0_length342.p1	0	0	0	0	0	0	0	1	0	0	1	0	0	1	0	0	1	0	0	1
-Efra.gene399_i0_length4974.p1	Efra.gene399_i1_length261.p1	0	1	0	1	1	1	0	1	0	1	1	0	1	0	0	1	1	0	1	0
-Efra.gene41171_i0_length356.p1	Efra.gene33593_i0_length435.p1	0	0	0	0	1	1	0	1	1	1	1	1	1	0	1	1	0	0	1	1
-	Efra.gene41171_i1_length366.p1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
-Efra.gene47379_i0_length333.p1	Efra.gene42958_i0_length354.p1	0	0	1	0	0	0	0	1	0	1	1	1	1	1	0	1	1	0	1	0
-Efra.gene49354_i0_length324.p1	Efra.gene28361_i0_length519.p1	1	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-Efra.gene49456_i0_length210.p1	Efra.gene1749_i7_length714.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	1	0	0	0
-Efra.gene49456_i1_length324.p1	Efra.gene49456_i0_length210.p1	0	0	0	1	0	0	1	0	1	1	1	1	0	0	0	0	0	1	0	1
-Efra.gene60021_i0_length288.p1	Efra.gene67852_i0_length270.p1	0	0	0	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-Efra.gene7268_i0_length1571.p1	Efra.gene7268_i1_length1323.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
-Efra.gene7302_i0_length1566.p1	Efra.gene7302_i1_length468.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
-Efra.gene7558_i0_length1539.p1	Efra.gene32297_i0_length453.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene7558_i1_length516.p1	0	0	0	0	0	0	0	0	0	0	0	1	1	1	0	0	1	0	0	0
-	Efra.gene7558_i2_length1074.p1	0	0	0	0	1	0	1	1	1	0	0	1	1	1	1	1	1	1	1	1
-	Efra.gene8157_i0_length1479.p1	0	0	0	0	0	0	0	1	1	0	1	1	1	1	0	0	1	0	0	0
-	Efra.gene8882_i0_length1407.p1	0	0	0	0	0	0	0	1	1	0	1	1	1	1	0	0	1	0	0	0
-	Efra.gene9519_i0_length1350.p1	0	0	0	0	0	0	0	1	0	0	1	0	0	0	0	0	0	0	0	0
-	Efra.gene9826_i0_length1326.p1	0	0	0	0	1	0	1	1	1	0	0	1	1	1	1	1	1	1	1	1
-Efra.gene82151_i0_length228.p1	Efra.gene82151_i1_length246.p1	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	1	0	0	0
-Efra.gene8227_i0_length1470.p1	Efra.gene8227_i1_length654.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
-	Efra.gene8227_i2_length432.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
-	Efra.gene8227_i3_length267.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0
-Efra.gene8230_i0_length1470.p1	Efra.gene11320_i0_length1209.p1	0	0	0	0	0	0	0	0	1	0	0	1	0	0	0	1	0	0	0	0
-	Efra.gene18398_i0_length822.p1	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene3452_i0_length2256.p1	0	0	0	0	0	0	0	0	1	0	0	1	0	0	0	1	0	0	0	0
-	Efra.gene4246_i0_length2055.p1	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene5821_i0_length1752.p1	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene8230_i3_length1185.p1	0	0	0	0	0	0	1	0	1	0	1	1	1	1	1	1	1	1	1	1
-Efra.gene8953_i1_length1399.p1	Efra.gene8953_i0_length1038.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	1	0	0	0	0	0
-Efra.gene9182_i0_length1380.p1	Efra.gene10049_i0_length1308.p1	1	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-	Efra.gene9364_i0_length1362.p1	0	0	1	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0
-cont|0001|KER	cont|0004|KER	0	1	0	0	0	1	0	0	1	0	1	1	0	0	0	0	0	1	0	0
-	cont|0005|KER	0	1	0	0	0	1	0	0	1	0	0	1	0	0	0	0	0	1	0	0
-	cont|0006|KER	0	1	0	0	0	1	0	0	1	0	0	1	0	0	0	0	0	1	0	0
-	cont|0008|KER	0	1	0	0	0	1	0	0	1	0	1	1	0	0	0	0	0	1	0	0
-	cont|0011|KER	0	1	0	0	0	1	0	0	1	0	1	1	0	0	0	0	0	1	0	0
-cont|0007|K2C1_HUMAN	cont|0009|KER	1	1	1	1	1	1	1	1	1	0	1	1	0	0	0	0	1	1	0	0
-	cont|0010|KER	1	1	1	1	1	1	1	1	1	0	1	1	0	0	0	0	1	1	0	0
+Representative	Accession	0.1	0.2	0.3	0.4	1.1	1.2	1.3	1.4	3.1	3.2	3.4	5.1	5.2	5.3	5.4	7.1	7.2	7.3	10.1	10.2	10.3	12.1	12.2	12.3
+Efra.gene10049_i0_length1308.p1		0	0	1	0	0	0	1	1	1	1	1	0	1	1	1	1	1	0	0	1	1	0	0	1
+	Efra.gene9182_i0_length1380.p1	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene9364_i0_length1362.p1	0	0	0	0	0	0	0	0	1	0	1	0	0	0	1	1	0	0	0	0	1	0	0	1
+Efra.gene10803_i4_length1062.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene10803_i2_length1215.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene10979_i0_length1233.p1		0	0	0	0	0	0	0	0	1	0	1	1	1	0	1	1	1	0	1	1	0	1	1	1
+	Efra.gene10979_i1_length633.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene10979_i2_length504.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene10979_i3_length1134.p1	0	0	0	0	0	0	0	0	0	0	1	0	1	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene12182_i0_length1149.p1	0	0	0	0	0	0	0	0	1	0	1	0	1	0	1	1	1	0	1	1	0	1	1	1
+	Efra.gene14059_i0_length852.p1	0	0	0	0	0	0	0	0	1	0	0	1	1	0	1	1	1	0	1	1	0	1	0	1
+	Efra.gene14817_i1_length748.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene14817_i2_length996.p1	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene27610_i0_length534.p1	0	0	0	0	0	0	0	0	1	0	0	1	1	0	1	1	1	0	1	1	0	1	0	1
+	Efra.gene34981_i0_length420.p1	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene56636_i1_length297.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene10979_i3_length1134.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene14817_i2_length996.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene1160_i1_length3549.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene1160_i2_length1035.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene12182_i0_length1149.p1		0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	1	0	0	0	0	0	1
+	Efra.gene10979_i3_length1134.p1	0	0	0	0	0	0	0	0	0	1	0	1	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene14059_i0_length852.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene14817_i2_length996.p1	0	0	0	0	0	0	0	0	0	1	0	1	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene27610_i0_length534.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene34981_i0_length420.p1	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene12442_i0_length1134.p1		0	0	0	0	0	1	1	0	1	1	0	1	1	1	0	0	0	0	0	0	0	0	0	1
+	Efra.gene10979_i1_length633.p1	0	0	0	0	0	0	0	0	1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene10979_i3_length1134.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene12442_i1_length459.p1	0	0	0	0	0	0	0	0	1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene14817_i1_length748.p1	0	0	0	0	0	0	0	0	1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene14817_i2_length996.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene15592_i0_length957.p1	0	0	0	0	0	0	0	0	1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene1287_i0_length3423.p1		0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene5067_i0_length1875.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene13951_i0_length1044.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene21094_i0_length468.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene21094_i2_length714.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene14059_i2_length1041.p1		0	0	1	0	1	1	1	1	1	1	0	1	1	1	1	1	1	1	1	1	1	1	0	1
+	Efra.gene10979_i0_length1233.p1	0	0	1	1	1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene10979_i1_length633.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene10979_i2_length504.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene10979_i3_length1134.p1	0	0	1	0	1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene12182_i0_length1149.p1	0	0	1	0	1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene12280_i0_length1146.p1	0	0	1	0	1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene12442_i0_length1134.p1	0	0	1	0	1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene12819_i0_length1113.p1	0	0	1	0	1	1	1	1	0	0	0	0	1	0	1	0	0	0	0	0	0	0	0	1
+	Efra.gene14059_i0_length852.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene14059_i1_length735.p1	0	0	0	0	0	1	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene14605_i0_length1011.p1	0	0	0	0	0	1	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene14817_i1_length748.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene37608_i0_length393.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene56636_i1_length297.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene71089_i0_length264.p1	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene14246_i0_length1029.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene14678_i0_length1005.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene14418_i2_length1020.p1		0	0	0	0	0	0	0	0	0	0	1	1	1	0	1	1	1	0	1	0	1	0	0	1
+	Efra.gene14418_i0_length315.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene15113_i1_length981.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene18332_i0_length825.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene16475_i0_length912.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene16640_i0_length906.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene16730_i0_length900.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene16899_i0_length891.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene17064_i0_length885.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene17137_i0_length879.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene17242_i0_length876.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene17348_i0_length870.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene17599_i0_length858.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene17725_i0_length852.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene18122_i0_length834.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene18240_i0_length828.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene19130_i0_length789.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene20858_i0_length723.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene22245_i0_length675.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene22314_i0_length675.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene22496_i0_length669.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene23983_i0_length624.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene24801_i0_length603.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene24811_i0_length600.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene24924_i0_length597.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene25052_i0_length594.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene31147_i0_length471.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene32610_i0_length447.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene50962_i0_length318.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene51901_i0_length312.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene16536_i2_length909.p1		0	0	1	0	0	0	0	0	1	1	0	0	1	0	0	1	1	0	0	0	0	0	0	1
+	Efra.gene16536_i3_length315.p1	0	0	0	0	0	0	0	0	1	1	0	0	1	0	0	1	1	0	0	0	0	0	0	1
+Efra.gene16539_i1_length909.p1		0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	1	0	0	0	0	1	0	1
+	Efra.gene16539_i2_length336.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	1
+	Efra.gene16539_i3_length783.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	1
+	Efra.gene36847_i0_length399.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	1	0	0	0	0	1	0	1
+Efra.gene16539_i3_length783.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene16539_i2_length336.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene17127_i0_length880.p1		0	0	0	0	0	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+	Efra.gene17127_i2_length381.p1	0	0	0	0	0	1	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene17127_i5_length441.p1	0	0	0	0	0	1	0	1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene17127_i6_length777.p1	0	0	0	0	0	1	0	1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene30370_i0_length483.p1	0	0	0	0	0	1	0	1	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene59164_i0_length291.p1	0	0	0	0	0	1	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene17127_i6_length777.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene38443_i0_length387.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene18044_i0_length837.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene18044_i2_length618.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene20065_i0_length753.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene18178_i0_length831.p1		0	0	0	0	0	0	1	0	1	0	1	1	1	0	1	1	0	1	0	1	0	0	0	1
+	Efra.gene19703_i0_length765.p1	0	0	0	0	0	0	1	0	1	0	1	1	1	0	1	1	0	1	0	1	0	0	0	1
+Efra.gene18564_i2_length720.p1		0	0	0	0	1	1	1	0	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+	Efra.gene18564_i1_length813.p1	0	0	0	0	1	1	1	0	1	1	1	0	0	0	1	0	0	0	0	1	0	1	0	1
+	Efra.gene19022_i0_length285.p1	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene19022_i1_length795.p1	0	0	0	0	1	1	1	0	1	1	1	1	1	1	1	1	1	0	1	1	1	1	1	1
+Efra.gene19055_i1_length792.p1		0	0	0	0	0	0	0	0	0	0	1	0	0	0	1	1	0	0	0	0	0	0	0	1
+	Efra.gene19055_i3_length734.p1	0	0	0	0	0	0	0	0	0	0	1	0	0	0	1	1	0	0	0	0	0	0	0	1
+Efra.gene19562_i0_length771.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene19562_i1_length420.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene36012_i0_length408.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene20233_i0_length744.p1		0	0	0	0	1	0	0	0	1	1	0	0	1	0	1	1	1	0	0	0	0	1	0	1
+	Efra.gene20233_i2_length690.p1	0	0	0	0	1	0	0	0	1	1	0	0	1	0	1	1	1	0	0	0	0	1	0	1
+	Efra.gene20233_i3_length579.p1	0	0	0	0	1	0	0	0	1	1	0	0	1	0	1	1	1	0	0	0	0	1	0	1
+Efra.gene2026_i0_length2352.p1		0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	1	0	1
+	Efra.gene19992_i0_length618.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	1	0	1
+	Efra.gene19992_i1_length756.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	1	0	1
+	Efra.gene24911_i0_length598.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	1	0	1
+	Efra.gene24911_i1_length486.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	1	0	1
+	Efra.gene30211_i0_length477.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	1	0	1
+	Efra.gene30211_i1_length486.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	1	0	1
+	Efra.gene31452_i0_length465.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	1	0	1
+	Efra.gene32476_i0_length450.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	1	0	1
+	Efra.gene6007_i1_length1710.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	1	0	1
+Efra.gene21131_i1_length711.p1		0	0	0	0	1	1	1	0	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
+	Efra.gene23746_i0_length630.p1	0	0	0	0	1	0	1	0	0	0	1	0	0	0	1	0	0	0	0	0	0	1	0	1
+Efra.gene21137_i1_length711.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	0	1	1	0	0	0	1
+	Efra.gene21137_i0_length372.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1	0	0	1	0	0	0	1
+Efra.gene21360_i0_length705.p1		0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene13177_i0_length1092.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene14893_i0_length993.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene17291_i0_length873.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene20875_i0_length720.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene21847_i0_length687.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene22328_i1_length673.p1		0	0	0	0	0	0	0	0	1	1	0	1	1	1	1	1	1	0	1	1	1	1	0	1
+	Efra.gene35823_i0_length411.p1	0	0	0	0	0	0	0	0	1	1	0	0	1	1	1	1	1	0	0	1	0	1	0	1
+Efra.gene23511_i1_length639.p1		0	0	0	0	0	1	0	1	1	1	1	1	1	0	1	1	1	0	1	1	0	1	1	1
+	Efra.gene23068_i0_length651.p1	0	0	0	0	0	0	0	1	1	0	0	0	0	0	1	0	0	0	0	0	0	1	0	1
+	Efra.gene26421_i0_length561.p1	0	0	0	0	0	1	0	1	1	1	1	1	1	0	1	1	1	0	1	1	0	1	1	1
+Efra.gene25800_i2_length576.p1		0	0	0	0	0	0	0	0	1	0	0	0	1	0	0	1	1	0	0	0	0	1	0	1
+	Efra.gene25800_i0_length528.p1	0	0	0	0	0	0	0	0	1	0	0	0	1	0	0	1	1	0	0	0	0	1	0	1
+	Efra.gene29528_i1_length495.p1	0	0	0	0	0	0	0	0	1	0	0	0	1	0	0	1	1	0	0	0	0	1	0	1
+	Efra.gene29637_i0_length495.p1	0	0	0	0	0	0	0	0	1	0	0	0	1	0	0	1	1	0	0	0	0	1	0	1
+	Efra.gene31924_i2_length459.p1	0	0	0	0	0	0	0	0	1	0	0	0	1	0	0	1	1	0	0	0	0	1	0	1
+Efra.gene25967_i0_length570.p1		0	0	0	0	0	1	1	0	1	0	0	1	0	0	0	1	1	0	1	0	0	0	0	1
+	Efra.gene25967_i1_length321.p1	0	0	0	0	0	1	1	0	1	0	0	1	0	0	0	1	1	0	1	0	0	0	0	1
+	Efra.gene25967_i2_length219.p1	0	0	0	0	0	1	1	0	1	0	0	1	0	0	0	1	0	0	1	0	0	0	0	1
+Efra.gene26194_i2_length522.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	1
+	Efra.gene14447_i5_length935.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene1948_i3_length1167.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene26595_i0_length555.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene26595_i1_length225.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene26700_i0_length552.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene26700_i1_length468.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene26810_i1_length543.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene28977_i0_length507.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene26810_i2_length552.p1		0	0	0	0	0	0	0	0	1	1	0	0	1	0	0	1	1	0	0	0	0	1	0	1
+	Efra.gene26810_i1_length543.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene27331_i1_length540.p1		0	0	0	0	1	0	1	0	1	1	1	1	1	0	1	1	1	0	0	0	1	1	0	1
+	Efra.gene22225_i2_length411.p1	0	0	0	0	1	0	1	0	1	0	1	1	1	0	1	0	1	0	0	0	1	1	0	1
+	Efra.gene22225_i4_length296.p1	0	0	0	0	1	0	1	0	1	0	1	1	1	0	1	0	1	0	0	0	1	1	0	1
+	Efra.gene27331_i0_length345.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene37076_i0_length399.p1	0	0	0	0	1	0	1	0	1	0	1	1	1	0	1	0	1	0	0	0	1	1	0	1
+Efra.gene27645_i1_length534.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene27645_i0_length348.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene56109_i0_length300.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene28257_i0_length519.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene28811_i0_length510.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene2834_i0_length2466.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene2834_i1_length594.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene2834_i2_length480.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene2834_i6_length2439.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene22719_i0_length660.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene22719_i1_length585.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene25247_i0_length591.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene28361_i0_length519.p1		0	0	0	0	0	0	0	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene49354_i0_length324.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene29879_i0_length489.p1		0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	1	0	0	0	0	0	0	0	1
+	Efra.gene40264_i0_length372.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	1	0	0	0	0	0	0	0	1
+	Efra.gene40264_i1_length210.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	1	0	0	0	0	0	0	0	1
+Efra.gene31742_i2_length462.p1		0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene26841_i0_length549.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene31742_i1_length237.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene329_i3_length5301.p1		0	0	0	0	0	0	0	0	1	1	0	1	1	1	1	1	1	1	1	1	1	1	0	1
+	Efra.gene330_i0_length5295.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene33593_i0_length435.p1		0	0	0	0	0	0	1	0	0	1	0	1	1	0	0	1	1	0	1	1	0	0	0	1
+	Efra.gene41171_i0_length356.p1	0	0	0	0	0	0	1	0	0	1	0	1	1	0	0	1	1	0	1	1	0	0	0	1
+	Efra.gene41171_i1_length366.p1	0	0	0	0	0	0	1	0	0	1	0	1	1	0	0	1	1	0	1	1	0	0	0	1
+Efra.gene34755_i1_length384.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene34755_i0_length421.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene40169_i0_length372.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene34789_i0_length420.p1		0	0	0	0	0	0	0	0	1	0	0	0	1	0	0	0	1	0	0	0	0	0	0	1
+	Efra.gene60545_i1_length273.p1	0	0	0	0	0	0	0	0	1	0	0	0	1	0	0	0	1	0	0	0	0	0	0	1
+Efra.gene38041_i0_length390.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene45869_i0_length339.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene39766_i0_length375.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene39766_i1_length327.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene45084_i0_length342.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene399_i0_length4974.p1		0	0	0	0	1	0	1	0	0	1	0	1	1	0	0	0	1	0	0	0	1	0	0	1
+	Efra.gene399_i1_length261.p1	0	0	0	0	1	0	1	0	0	1	0	1	1	0	0	0	1	0	0	0	1	0	0	1
+Efra.gene41171_i0_length356.p1		0	0	0	0	1	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene41171_i1_length366.p1	0	0	0	0	1	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene47379_i0_length333.p1		0	1	0	1	0	0	0	1	0	1	1	0	1	0	1	0	0	0	0	0	0	0	0	1
+	Efra.gene42958_i0_length354.p1	0	0	0	0	0	0	0	0	0	1	1	0	1	0	1	0	0	0	0	0	0	0	0	1
+Efra.gene49456_i1_length324.p1		0	0	0	0	0	0	0	0	1	0	0	1	1	0	0	1	1	0	1	0	0	1	0	1
+	Efra.gene1749_i7_length714.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene49456_i0_length210.p1	0	0	0	0	0	0	0	0	1	0	0	1	1	0	0	1	1	0	1	0	0	1	0	1
+Efra.gene60021_i0_length288.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene67852_i0_length270.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene6780_i0_length1629.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene10048_i0_length1308.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene34797_i0_length420.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene6959_i0_length1608.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene69555_i0_length267.p1		0	0	0	0	0	0	0	0	0	0	0	1	1	0	0	0	1	0	0	0	0	0	0	1
+	Efra.gene33821_i0_length432.p1	0	0	0	0	0	0	0	0	0	0	0	1	1	0	0	0	1	0	0	0	0	0	0	1
+Efra.gene6991_i0_length1602.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene10913_i0_length1239.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene7037_i0_length1599.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene8265_i0_length1467.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene9190_i0_length1380.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene9230_i0_length1374.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene9528_i0_length1350.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene9825_i0_length1326.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene7302_i0_length1566.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene7302_i1_length468.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene7558_i0_length1539.p1		0	0	0	0	0	0	0	0	1	0	0	1	0	0	0	0	1	0	0	1	1	1	1	1
+	Efra.gene32297_i0_length453.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene7558_i1_length516.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	1
+	Efra.gene7558_i2_length1074.p1	0	0	0	0	0	0	0	0	1	0	0	1	0	0	0	0	1	0	0	1	1	1	1	1
+	Efra.gene8157_i0_length1479.p1	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	1	0	0	0	0	0	0	1
+	Efra.gene8882_i0_length1407.p1	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	1	0	0	0	0	0	0	1
+	Efra.gene9519_i0_length1350.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene9826_i0_length1326.p1	0	0	0	0	0	0	0	0	1	0	0	1	0	0	0	0	1	0	0	1	1	1	1	1
+Efra.gene82151_i1_length246.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene82151_i0_length228.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene8227_i0_length1470.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene8227_i1_length654.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene8227_i2_length432.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene8230_i0_length1470.p1		0	0	0	0	0	0	0	0	1	0	0	1	0	0	0	1	1	0	0	0	0	0	0	1
+	Efra.gene11320_i0_length1209.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	1
+	Efra.gene18398_i0_length822.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene3452_i0_length2256.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	1
+	Efra.gene4246_i0_length2055.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene5821_i0_length1752.p1	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene8230_i3_length1185.p1	0	0	0	0	0	0	0	0	1	0	0	1	0	0	0	1	1	0	0	0	0	0	0	1
+Efra.gene8928_i0_length1401.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene25562_i0_length582.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene52462_i0_length312.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene9056_i0_length1392.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene8953_i1_length1399.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	1
+	Efra.gene8953_i0_length1038.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene9182_i0_length1380.p1		0	1	1	0	0	0	0	1	1	1	0	1	1	0	1	0	1	0	0	0	0	0	0	1
+	Efra.gene9364_i0_length1362.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	1
+Efra.gene9603_i0_length1344.p1		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene11618_i0_length1188.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene14946_i0_length990.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene65267_i0_length276.p1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Efra.gene9742_i0_length1332.p1		0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene15484_i0_length963.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene35010_i0_length420.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene52472_i0_length312.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	Efra.gene9742_i3_length630.p1	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+cont|0009|KER		0	0	1	0	1	0	1	1	1	1	0	1	0	1	0	1	0	0	0	0	0	0	0	1
+	cont|0007|K2C1_HUMAN	0	0	1	0	1	0	1	0	1	1	0	1	0	1	0	1	0	0	0	0	0	0	0	1
+	cont|0010|KER	0	0	1	0	1	0	1	1	1	1	0	1	0	1	0	1	0	0	0	0	0	0	0	1
+cont|0011|KER		0	0	0	0	0	0	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	cont|0001|KER	0	0	0	0	0	0	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	cont|0004|KER	0	0	0	0	0	0	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	cont|0005|KER	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	cont|0006|KER	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+	cont|0008|KER	0	0	0	0	0	0	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1

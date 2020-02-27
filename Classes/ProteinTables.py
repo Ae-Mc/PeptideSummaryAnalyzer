@@ -5,8 +5,10 @@ from Classes.Sequence import Sequence
 
 
 class ProteinTables:
+    rawProteinTables: Dict[str, Dict[str, List[str]]]
     proteinReplacements: Dict[str, Dict[str, str]]
     proteinReplacementsGroups: Dict[str, Dict[str, Dict[str, int]]]
+    interimGroupsLists: Dict[str, List[List[str]]]
     sortedTableNums: List[str]
     unsafeReadTableFlag: bool
     seqDB: Dict[str, Sequence]
@@ -24,35 +26,37 @@ class ProteinTables:
                 if filename.endswith("ProteinSummary.txt")],
             key=lambda x: float(x))
 
-        self.GetProteinSummaryReplacements(inputDir)
+        self.GetRawPeptideTables(inputDir)
+        self.GetProteinSummaryReplacements()
         self.GetProteinReplacementsGroupsPerTable()
 
-    def GetProteinSummaryReplacements(
-            self, inputDir: str):
+    def GetRawPeptideTables(self, inputDir: str):
+        self.rawProteinTables = {}
+        for filename in listdir(inputDir):
+            if filename.endswith("ProteinSummary.txt"):
+                tableNum = filename.split('_')[0]
+                self.rawProteinTables[tableNum] = ReadTable(
+                    path.join(inputDir, filename),
+                    unsafeFlag=self.unsafeReadTableFlag)
 
+    def GetProteinSummaryReplacements(
+            self):
         groupsPerTables: Dict[str, List[List[Tuple[str, float]]]] = (
-            self.GetProteinGroupsFromFiles(inputDir))
-        representativeAccessions: Dict[str, Dict[str, Union[float, int]]] = (
-            self.GetRepresentativeAccessionsFromGroups(groupsPerTables))
+            self.GetProteinGroupsFromFiles())
+        accessionsWithMaxUnused: Dict[str, Dict[str, Union[float, int]]] = (
+            self.GetAccessionsMaxUnusedBunch())
         self.proteinReplacements = self.GetReplacementsPerTable(
-            representativeAccessions,
+            accessionsWithMaxUnused,
             groupsPerTables)
 
     def GetProteinGroupsFromFiles(
-            self, inputDir: str) -> Dict[str, List[List[Tuple[str, float]]]]:
-
+            self) -> Dict[str, List[List[Tuple[str, float]]]]:
         groups: Dict[str, List[List[Tuple[str, float]]]] = {}
-        for filename in listdir(inputDir):
-            if filename.endswith("ProteinSummary.txt"):
-                groups[filename.split('_')[0]] = self.GetProteinGroupsFromFile(
-                    path.join(inputDir, filename))
+        for tableNum, table in self.rawProteinTables.items():
+            groups[tableNum] = (
+                self.GetProteinGroupsAndRemoveReversedAccessionsFromTable(
+                    table))
         return groups
-
-    def GetProteinGroupsFromFile(
-            self, filename: str) -> List[List[Tuple[str, float]]]:
-        fileTable = ReadTable(filename, unsafeFlag=self.unsafeReadTableFlag)
-        return self.GetProteinGroupsAndRemoveReversedAccessionsFromTable(
-            fileTable)
 
     def GetProteinGroupsAndRemoveReversedAccessionsFromTable(
             self,
@@ -75,20 +79,25 @@ class ProteinTables:
             groups[-1].sort()
         return groups
 
-    def GetRepresentativeAccessionsFromGroups(
-            self,
-            groupsPerTables: Dict[str, List[List[Tuple[str, float]]]]
-    ) -> Dict[str, Dict[str, Union[float, int]]]:
+    def GetAccessionsMaxUnusedBunch(
+            self) -> Dict[str, Dict[str, Union[float, int]]]:
         accessions: Dict[str, Dict[str, Union[float, int]]] = {}
-        for groups in groupsPerTables.values():
-            for group in groups:
-                for accessionName, unused in group:
-                    if accessionName not in accessions:
-                        accessions[accessionName] = {
-                            "unused": unused,
-                            "seqLen": self.seqDB[accessionName].len}
-                    if unused > accessions[accessionName]["unused"]:
-                        accessions[accessionName]["unused"] = unused
+        for table in self.rawProteinTables.values():
+            i = 0
+            while i < len(table["Unused"]):
+                if float(table["Unused"][i]) != 0.0:
+                    unused = float(table["Unused"][i])
+
+                accessionName = table["Accession"][i]
+                if accessionName.startswith("RRRRR"):
+                    break
+                if accessionName not in accessions:
+                    accessions[accessionName] = {
+                        "unused": unused,
+                        "seqLen": self.seqDB[accessionName].len}
+                if unused > accessions[accessionName]["unused"]:
+                    accessions[accessionName]["unused"] = unused
+                i += 1
         return accessions
 
     def GetReplacementsPerTable(
@@ -111,7 +120,8 @@ class ProteinTables:
         replacements = {}
         for group in groups:
             representativeAccession = self.GetRepresentativeAccessionForGroup(
-                accessionsWithMaxUnused, group)
+                accessionsWithMaxUnused,
+                list(map(lambda x: x[0], group)))
             for accession, unused in group:
                 replacements[accession] = representativeAccession
         return replacements
@@ -119,19 +129,16 @@ class ProteinTables:
     def GetRepresentativeAccessionForGroup(
             self,
             accessionsWithMaxUnused: Dict[str, Dict[str, Union[float, int]]],
-            group: List[Tuple[str, float]]) -> str:
-
+            group: List[str]) -> str:
         representativeAccession: Tuple[str,
                                        Union[float, int],
                                        Union[float, int]] = (
-            group[0][0],
-            accessionsWithMaxUnused[group[0][0]]["unused"],
-            accessionsWithMaxUnused[group[0][0]]["seqLen"])
-        for accessionName, unused in sorted(group, key=lambda x: x[0]):
+            group[0],
+            accessionsWithMaxUnused[group[0]]["unused"],
+            accessionsWithMaxUnused[group[0]]["seqLen"])
+        for accessionName in sorted(group):
             curAccession = accessionsWithMaxUnused[accessionName]
-            if(curAccession["unused"] >  # type: ignore
-               representativeAccession[1]
-               or (
+            if(curAccession["unused"] > representativeAccession[1] or (
                    curAccession["unused"] == representativeAccession[1] and
                    curAccession["seqLen"] > representativeAccession[2])):
                 representativeAccession = (accessionName,
@@ -140,16 +147,79 @@ class ProteinTables:
         return representativeAccession[0]
 
     def GetProteinReplacementsGroupsPerTable(self) -> None:
-        self.proteinReplacementsGroups = {}
-        for tableNum, replacements in self.proteinReplacements.items():
-            for replaceable, replacing in replacements.items():
-                if replacing not in self.proteinReplacementsGroups:
-                    self.proteinReplacementsGroups[replacing] = {}
-                if(replaceable not in
-                   self.proteinReplacementsGroups[replacing]):
-                    self.proteinReplacementsGroups[replacing][replaceable] = {}
-                    for tableNum in self.sortedTableNums:
-                        self.proteinReplacementsGroups[
-                            replacing][replaceable][tableNum] = 0
-                self.proteinReplacementsGroups[
-                    replacing][replaceable][tableNum] = 1
+        groupsPerTables: Dict[str, List[List[str]]] = (
+            self.GetPureGroupsListsFromRawTables())
+        accessionsWithMaxUnused: Dict[str, Dict[str, Union[float, int]]] = (
+            self.GetAccessionsMaxUnusedBunch())
+        groupsPerTablesWithRepresentativeAccessions = (
+            self.GetGroupsPerTablesWithRepresentativeAccessions(
+                accessionsWithMaxUnused, groupsPerTables))
+        accessionsPresenceBunch = self.GetAccessionsPresenceBunch()
+        self.proteinReplacementsGroups = (
+            self.ConvertGroupsPerTableToTablesPerAccession(
+                groupsPerTablesWithRepresentativeAccessions,
+                accessionsPresenceBunch))
+
+    def GetPureGroupsListsFromRawTables(self) -> Dict[str, List[List[str]]]:
+        groupsPerTables: Dict[str, List[List[str]]] = {}
+        for tableNum, table in self.rawProteinTables.items():
+            groupsPerTables[tableNum] = []
+            for i in range(len(table["Unused"])):
+                if table["Accession"][i].startswith("RRRRR"):
+                    break
+                if float(table["Unused"][i]) != 0.0:
+                    groupsPerTables[tableNum].append([])
+                    if len(groupsPerTables[tableNum]):
+                        groupsPerTables[tableNum][-1].sort()
+
+                groupsPerTables[tableNum][-1].append(table["Accession"][i])
+                i += 1
+            if len(groupsPerTables[tableNum]):
+                groupsPerTables[tableNum][-1].sort()
+        return groupsPerTables
+
+    def GetGroupsPerTablesWithRepresentativeAccessions(
+            self,
+            accessionsWithMaxUnused: Dict[str, Dict[str, Union[float, int]]],
+            groupsPerTables: Dict[str, List[List[str]]]
+    ) -> Dict[str, Dict[str, List[str]]]:
+        groupsPerTablesWithRepresentativeAccessions: Dict[
+            str, Dict[str, List[str]]] = {}
+        for tableNum, groups in groupsPerTables.items():
+            groupsPerTablesWithRepresentativeAccessions[tableNum] = {}
+            curTable = groupsPerTablesWithRepresentativeAccessions[tableNum]
+            for group in groups:
+                curTable[self.GetRepresentativeAccessionForGroup(
+                    accessionsWithMaxUnused, group)] = group
+        return groupsPerTablesWithRepresentativeAccessions
+
+    def GetAccessionsPresenceBunch(self) -> Dict[str, Dict[str, int]]:
+        accessionsPresenceBunch: Dict[str, Dict[str, int]] = {}
+        for tableNum, table in self.rawProteinTables.items():
+            for i in range(len(table["Accession"])):
+                accessionName = table["Accession"][i]
+                if accessionName not in accessionsPresenceBunch:
+                    accessionsPresenceBunch[accessionName] = {
+                        tableNumber: 0 for tableNumber in self.sortedTableNums
+                    }
+                accessionsPresenceBunch[accessionName][tableNum] = 1
+        return accessionsPresenceBunch
+
+    def ConvertGroupsPerTableToTablesPerAccession(
+            self,
+            groupsPerTablesWithRepresentativeAccessions: Dict[
+                str, Dict[str, List[str]]],
+            accessionsPresenceBunch: Dict[str, Dict[str, int]]
+    ) -> Dict[str, Dict[str, Dict[str, int]]]:
+        groupsWithRepresentativeAccession: Dict[
+            str, Dict[str, Dict[str, int]]] = {}
+        for tableNum, groups in (
+                groupsPerTablesWithRepresentativeAccessions.items()):
+            for representativeAccession, group in groups.items():
+                groupsWithRepresentativeAccession[representativeAccession] = {}
+                curAccessionGroup = (
+                    groupsWithRepresentativeAccession[representativeAccession])
+                for accession in group:
+                    curAccessionGroup[accession] = (
+                        accessionsPresenceBunch[accession])
+        return groupsWithRepresentativeAccession
