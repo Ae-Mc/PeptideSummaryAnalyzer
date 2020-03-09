@@ -5,7 +5,7 @@ from Classes.Sequence import Sequence
 from Classes.Comparable import Comparable
 from Classes.Accession import Accession
 from Classes.Input import Input
-from Classes.ProteinTables import ProteinTables
+from Classes.ProteinDB import ProteinDB
 from Classes.PeptideTables import PeptideTables
 from Classes.AccessionTables import AccessionTables
 from Classes.ColumnNames import ColumnNames
@@ -305,7 +305,7 @@ def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
     """ Считывание последовательностей из файла
 
     Считывание длин последовательностей из файла БД с последовательностями в
-    словарь классов Sequence вида {"Accession"} = Sequence """
+    словарь классов Sequence вида {"Accession": Sequence} """
 
     with open(seqDBFilename) as seqDBFile:
         strings = seqDBFile.read().split('\n')
@@ -385,10 +385,13 @@ def main():
     peptideTables = PeptideTables(columnNames, inputDir=INPUTPATH)
     proteinTables = None
     if inputParams.isProteinGroupFilter:
-        proteinTables = ProteinTables(INPUTPATH,
-                                      inputParams.seqDB,
-                                      unsafeReadTableFlag=True)
-        peptideTables.ApplyProteinReplacements(proteinTables)
+        proteinTables = ProteinDB(INPUTPATH,
+                                  inputParams.seqDB,
+                                  unsafeReadTableFlag=True)
+        proteinTables.ReadDBFromFolder()
+        proteinTables.CalculateRepresentatives()
+        peptideTables.ApplyProteinReplacements(
+                proteinTables.GetAccessionsReplacementsPerTable())
 
     if inputParams.isDefaultConf:
         ApplyDefaultConf(peptideTables.peptideTables, columnNames)

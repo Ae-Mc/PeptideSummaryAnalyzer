@@ -1,7 +1,6 @@
 from os import listdir
 from typing import Dict, List
 from Classes.ReadTable import ReadTable
-from Classes.ProteinTables import ProteinTables
 from Classes.ColumnNames import ColumnNames
 
 """ peptideTables - словарь вида
@@ -84,10 +83,11 @@ class PeptideTables:
                 accession.split(';')[0] for accession in table[
                     self.columnNames.accession]]
 
-    def ApplyProteinReplacements(self, proteinTables: ProteinTables):
+    def ApplyProteinReplacements(
+            self, proteinReplacements: Dict[str, Dict[str, str]]):
 
         for tableNum, table in self.peptideTables.items():
-            tableReplacements = proteinTables.proteinReplacements[tableNum]
+            tableReplacements = proteinReplacements[tableNum]
             for i in range(0, len(table[self.columnNames.accession])):
                 if table[self.columnNames.accession][i] in tableReplacements:
                     table[self.columnNames.accession][i] = (tableReplacements[

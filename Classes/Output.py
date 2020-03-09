@@ -2,7 +2,7 @@ from typing import Dict, Tuple
 from os import mkdir
 from os.path import exists
 from Classes.AccessionTables import AccessionTables
-from Classes.ProteinTables import ProteinTables
+from Classes.ProteinDB import ProteinDB
 from Classes.Sequence import Sequence
 from Classes.Accession import Accession
 
@@ -16,27 +16,23 @@ class Output:
 
     def __init__(
             self,
-            outputDirPath: str = None,
-            filesSumms: Dict[str, Dict[str, float]] = None,
-            seqDB: Dict[str, Sequence] = None,
-            accessionTables: AccessionTables = None,
-            proteinTables: ProteinTables = None) -> None:
+            outputDirPath: str,
+            filesSumms: Dict[str, Dict[str, float]],
+            seqDB: Dict[str, Sequence],
+            accessionTables: AccessionTables,
+            proteinTables: ProteinDB) -> None:
 
-        if(outputDirPath is not None and
-           filesSumms is not None and
-           seqDB is not None and
-           accessionTables is not None):
-            self.seqDB: Dict[str, Sequence] = seqDB
-            self.outputDirPath: str = outputDirPath
-            self.accessionTables: AccessionTables = accessionTables
-            if proteinTables is not None:
-                self.GenerateOutputFiles(filesSumms,
-                                         proteinTables)
+        self.seqDB: Dict[str, Sequence] = seqDB
+        self.outputDirPath: str = outputDirPath
+        self.accessionTables: AccessionTables = accessionTables
+        if proteinTables is not None:
+            self.GenerateOutputFiles(filesSumms,
+                                     proteinTables)
 
     def GenerateOutputFiles(
             self,
             filesSumms: Dict[str, Dict[str, float]],
-            proteinTables: ProteinTables) -> None:
+            proteinDB: ProteinDB) -> None:
 
         self.CreateDirIfNotExist()
         self.accessionsBunch = (
@@ -60,7 +56,16 @@ class Output:
                 fieldName=field,
                 outFilename=filename)
 
-        self.GenerateGroupsFile("Groups.txt", proteinTables)
+        self.GenerateGroupsFile(
+                "ProteinGroups.txt",
+                proteinDB.GetGroupsInOutputFormat(
+                    proteinDB.proteinGroupsPerTable),
+                proteinDB)
+        self.GenerateGroupsFile(
+                "DifficultCases.txt",
+                proteinDB.GetGroupsInOutputFormat(
+                    proteinDB.difficultCases),
+                proteinDB)
 
         self.GenerateJointOutputFile("output.txt")
 
@@ -131,33 +136,35 @@ class Output:
     def GenerateGroupsFile(
             self,
             outFilename: str,
-            proteinTables: ProteinTables) -> None:
+            groups: Dict[str, Dict[str, Dict[str, int]]],
+            proteinDB: ProteinDB) -> None:
         with open(self.outputDirPath + '/' + outFilename, 'w') as outFile:
             outFile.write(("Representative\tAccession" +
-                           "\t{}" * len(proteinTables.sortedTableNums) +
-                           '\n').format(*proteinTables.sortedTableNums))
-            for representativeAccessionName, accession in sorted(
-                    proteinTables.proteinReplacementsGroups.items()):
-                if len(accession) > 1:
+                           "\t{}" * len(proteinDB.GetSortedTableNums()) +
+                           '\n').format(*proteinDB.GetSortedTableNums()))
+            for representativeAccessionName, accessions in sorted(
+                    groups.items()):
+                if len(accessions) > 1:
                     outFile.write(
                         f"{representativeAccessionName}\t" +
-                        ("\t{}" * len(proteinTables.sortedTableNums) +
+                        ("\t{}" * len(proteinDB.GetSortedTableNums()) +
                          '\n').format(
                              *(map(
                                  lambda key:
-                                 accession[representativeAccessionName][key],
-                                 proteinTables.sortedTableNums))
-                         ))
-                    for replaceableName in sorted(accession.keys()):
+                                 accessions[representativeAccessionName][key],
+                                 proteinDB.GetSortedTableNums()))
+                             ))
+                    for replaceableName in sorted(accessions.keys()):
                         if replaceableName == representativeAccessionName:
                             continue
                         outFile.write(
                             ("\t{}" +
-                             "\t{}" * len(proteinTables.sortedTableNums) +
+                             "\t{}" * len(proteinDB.GetSortedTableNums()) +
                              '\n').format(
                                  replaceableName,
-                                 *[accession[replaceableName][key] for key in
-                                   proteinTables.sortedTableNums]))
+                                 *[accessions[replaceableName][key] for key in
+                                     proteinDB.GetSortedTableNums()]
+                                 ))
 
     def GenerateJointOutputFile(
             self,
