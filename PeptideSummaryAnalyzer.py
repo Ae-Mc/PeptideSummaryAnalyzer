@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/usr/bin/env python3
 from typing import List, Dict, Union
 from sys import argv
 from Classes.Sequence import Sequence

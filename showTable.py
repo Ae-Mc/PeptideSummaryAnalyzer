@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/usr/bin/env python3
 from typing import List, Dict
 from sys import argv
 from Classes.ReadTable import ReadTable

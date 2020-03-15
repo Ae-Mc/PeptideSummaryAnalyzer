@@ -1,6 +1,5 @@
-#!/bin/env python3
+#!/usr/bin/env python3
 import unittest
-from Tests.ProteinTablesTest import ProteinTablesTest  # noqa: 401
 from Tests.ReadTableTest import ReadTableTest  # noqa: 401
 from Tests.ProteinDBTest import ProteinDBTest  # noqa: 401
 

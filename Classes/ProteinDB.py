@@ -5,7 +5,8 @@ from Classes.ProteinAccessionWithMaxUnused import ProteinAccessionWithMaxUnused
 from Classes.ProteinGroup import ProteinGroup
 from Classes.ReadTable import ReadTable
 from Classes.Sequence import Sequence
-from Classes.Errors import AccessionNotFoundError
+from Classes.Errors import (
+        AccessionNotFoundError, RepresentativeAccessionNotFoundError)
 
 
 class ProteinDB:
@@ -76,24 +77,33 @@ class ProteinDB:
         return accessionsBunch
 
     def CalculateRepresentatives(self) -> None:
-        accessionsBunch = self.GetAccessionsBunch()
-        for tableNum, table in self.proteinGroupsPerTable.items():
-            for group in table:
-                self._CalculateRepresentativeForGroup(
-                        tableNum, accessionsBunch, group)
+        self._CalculateRepresentativesForGroupsWithMultipleAccessions()
+        self._CalculateRepresentativesForGroupsWithSingleAccession()
 
-    def _CalculateRepresentativeForGroup(
+    def _CalculateRepresentativesForGroupsWithMultipleAccessions(
+            self) -> None:
+        accessionsBunch = self.GetAccessionsBunch()
+        table: List[ProteinGroup]
+        for tableNum, table in self.proteinGroupsPerTable.items():
+            group: ProteinGroup
+            for group in table:
+                if len(group.accessions) > 1:
+                    self._CalculateReprForGroupWithMultipleAccessions(
+                            tableNum, accessionsBunch, group)
+
+    def _CalculateReprForGroupWithMultipleAccessions(
             self,
             tableNum: str,
             accessionsBunch: Dict[str, ProteinAccessionWithMaxUnused],
             group: ProteinGroup):
 
-        candidates = self._GetCandidatesForGroup(group, accessionsBunch)
-        group.representativeAccession = self._GetRepresentativeFromCandidates(
-                candidates)
+        candidates = self._GetCandidatesForGroupWithMultipleAccessions(
+                group, accessionsBunch)
+        group.representativeAccession = (
+                self._GetRepresentativeFromCandidates(candidates))
         self._AddGroupToDifficultCases(group, tableNum, candidates)
 
-    def _GetCandidatesForGroup(
+    def _GetCandidatesForGroupWithMultipleAccessions(
             self,
             group: ProteinGroup,
             accessionsBunch: Dict[str, ProteinAccessionWithMaxUnused]
@@ -167,6 +177,49 @@ class ProteinDB:
                     except KeyError:
                         self.difficultCases[tableNum] = [group]
 
+    def _CalculateRepresentativesForGroupsWithSingleAccession(
+            self) -> None:
+        accessionsBunch = self.GetAccessionsBunch()
+        table: List[ProteinGroup]
+        for tableNum, table in self.proteinGroupsPerTable.items():
+            group: ProteinGroup
+            for group in table:
+                if len(group.accessions) == 1:
+                    self._CalculateReprForGroupWithSingleAccession(
+                            tableNum, accessionsBunch, group)
+
+    def _CalculateReprForGroupWithSingleAccession(
+            self,
+            tableNum: str,
+            accessionsBunch: Dict[str, ProteinAccessionWithMaxUnused],
+            group: ProteinGroup):
+        candidates = self._GetCandidatesForGroupWithSingleAccession(
+                group, accessionsBunch)
+        group.representativeAccession = (
+                self._GetRepresentativeFromCandidates(candidates))
+        self._AddGroupToDifficultCases(group, tableNum, candidates)
+
+    def _GetCandidatesForGroupWithSingleAccession(
+            self,
+            group: ProteinGroup,
+            accessionsBunch: Dict[str, ProteinAccessionWithMaxUnused]
+            ) -> List[ProteinAccessionWithMaxUnused]:
+        representativeAccession: ProteinAccessionWithMaxUnused = (
+                accessionsBunch[group.accessions[0]])
+        for table in self.proteinGroupsPerTable.values():
+            tableGroup: ProteinGroup
+            for tableGroup in filter(
+                    lambda x: True if len(x.accessions) > 1 else False, table):
+                if tableGroup.representativeAccession is None:
+                    raise RepresentativeAccessionNotFoundError(group)
+                if (representativeAccession.name in tableGroup.accessions and
+                        accessionsBunch[
+                            tableGroup.representativeAccession].unused >
+                        representativeAccession.unused):
+                    representativeAccession = (
+                        accessionsBunch[tableGroup.representativeAccession])
+        return [representativeAccession]
+
     def GetAccessionsReplacementsPerTable(self) -> Dict[str, Dict[str, str]]:
         replacements: Dict[str, Dict[str, str]] = {}
         for tableNum, table in self.proteinGroupsPerTable.items():
@@ -180,6 +233,10 @@ class ProteinDB:
                     replacements[tableNum][accession] = (
                             group.representativeAccession)
         return replacements
+
+    def GetAccessionsReplacementsForTable(
+            self, tableNum: str):
+        group: ProteinGroup
 
     def GetGroupsInOutputFormat(
             self,

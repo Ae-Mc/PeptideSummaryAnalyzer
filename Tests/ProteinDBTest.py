@@ -127,7 +127,7 @@ class ProteinDBTest(unittest.TestCase):
                     "1.2": [
                         ProteinGroup(2.0, ["A"],      "A"),
                         ProteinGroup(4.0, ["B", "C"], "B"),
-                        ProteinGroup(1.0, ["D"],      "D"),
+                        ProteinGroup(1.0, ["D"],      "E"),
                         ProteinGroup(2.0, ["E"],      "E")],
                     "1.3": [
                         ProteinGroup(2.0, ["B"],      "B"),
@@ -156,7 +156,7 @@ class ProteinDBTest(unittest.TestCase):
                     "A": "A",
                     "B": "B",
                     "C": "B",
-                    "D": "D",
+                    "D": "E",
                     "E": "E"},
                 "1.3": {
                     "B": "B",
