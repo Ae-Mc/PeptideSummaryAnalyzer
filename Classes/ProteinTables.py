@@ -21,7 +21,7 @@ class ProteinTables:
 
         self.sortedTableNums = sorted(
             [filename.split('_')[0] for filename in listdir(inputDir)
-                if filename.endswith("ProteinSummary.txt")],
+                if "protein" in filename.lower()],
             key=lambda x: float(x))
 
         self.GetProteinSummaryReplacements(inputDir)
@@ -43,7 +43,7 @@ class ProteinTables:
 
         groups: Dict[str, List[List[Tuple[str, float]]]] = {}
         for filename in listdir(inputDir):
-            if filename.endswith("ProteinSummary.txt"):
+            if "protein" in filename.lower():
                 groups[filename.split('_')[0]] = self.GetProteinGroupsFromFile(
                     path.join(inputDir, filename))
         return groups
