@@ -13,7 +13,7 @@ class ProteinDB:
 
     inputDir: str
     proteinGroupsPerTable: Dict[str, List[ProteinGroup]]
-    difficultCases: Dict[str, List[ProteinGroup]]  # Filename: [ProteinGroups]
+    difficultCases: Dict[str, List[ProteinGroup]]  # Filename: [ProteinGroup]
     NecessaryColumns: List[str] = ["Unused", "Accession"]
     seqDB: Dict[str, Sequence]
     unsafeReadTableFlag: bool
