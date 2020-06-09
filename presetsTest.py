@@ -11,63 +11,77 @@ presetsFolder = "Presets"
 INPUTPATH = ""
 
 
-def TestPresetFile(presetFileLines: List[str]):
-    neccessaryStringParts = [
-        ("ProteinPilot", "ProteinPilot Version"),
-        ("ID list file", "ID whitelist"),
-        ("ID exclusion list", "ID blacklist"),
-        ("Protein group filter", "Protein group filter"),
-        ("Database", "Database"),
-        ("Unused", "Unused"),
-        ("Contribution", "Contribution"),
-        ("Confidence", "Confidence"),
-        ("Min groups", "Min groups"),
-        ("Max missing values", "Max missing values per group")
-    ]
+class Preset:
+    folder: str
 
-    i = 0
-    for stringPart, description in neccessaryStringParts:
-        if stringPart.lower() not in presetFileLines[i].lower():
-            raise IOError(description)
-        i += 1
+    def __init__(self, folder: str):
+        self.folder = folder
 
-
-def GetSettingsFromFolder(folder: str):
-    settings: Input = Input()
-    with open(path.join(folder, "preset.txt")) as presetFile:
-        presetFileLines = presetFile.read().split("\n")
+    def Run(self) -> None:
         try:
-            TestPresetFile(presetFileLines)
-        except IOError as e:
-            print(f"Error reading preset {path.split(folder)[1]} "
-                  f"{e.args[0]}")
-            exit()
-        presetFileValues = [
-            line.split(':')[1].strip() for line in presetFileLines
-            if len(line.strip()) > 0]
+            print(self.folder)
+            proteinMain(self.settings)
+        except Exception as e:
+            print(f"Error running preset {self.folder}")
+            raise e
+        self.TestResult()
 
-    settings.proteinPilotVersion = presetFileValues[0]
-    settings.blackList = GetFileLines(presetFileValues[1])
-    settings.whiteList = GetFileLines(presetFileValues[2])
-    settings.isProteinGroupFilter = presetFileValues[3].lower()
-    settings.seqDB = ReadSeqDB(path.join(folder, presetFileValues[4]))
-    settings.unused = Comparable(presetFileValues[5])
-    settings.contrib = Comparable(presetFileValues[6])
-    settings.conf = presetFileValues[7]
-    settings.minGroupsWithAccession = int(presetFileValues[8])
-    settings.maxGroupAbsence = int(presetFileValues[9])
-    return settings
+    def ReadSettings(self) -> None:
+        self.settings: Input = Input()
+        self.settings.inputPath = path.join(self.folder, "Input")
+        with open(path.join(self.folder, "preset.txt")) as presetFile:
+            presetFileLines = presetFile.read().split("\n")
+            try:
+                self.TestPresetFile(presetFileLines)
+            except IOError as e:
+                print(f"Error reading preset {path.split(self.folder)[1]} "
+                      f"{e.args[0]}")
+                exit()
+            presetFileValues = [
+                line.split(':')[1].strip() for line in presetFileLines
+                if len(line.strip()) > 0]
 
+        self.settings.proteinPilotVersion = presetFileValues[0]
+        self.settings.blackList = GetFileLines(presetFileValues[1])
+        self.settings.whiteList = GetFileLines(presetFileValues[2])
+        self.settings.isProteinGroupFilter = presetFileValues[3].lower()
+        self.settings.seqDB = ReadSeqDB(
+            path.join(self.folder, presetFileValues[4]))
+        self.settings.unused = Comparable(presetFileValues[5])
+        self.settings.contrib = Comparable(presetFileValues[6])
+        self.settings.conf = presetFileValues[7]
+        self.settings.minGroupsWithAccession = int(presetFileValues[8])
+        self.settings.maxGroupAbsence = int(presetFileValues[9])
 
-def RunPreset(presetFolder: str):
-    settings: Input = GetSettingsFromFolder(presetFolder)
-    settings.inputPath = path.join(presetFolder, "Input")
-    try:
-        print(presetFolder)
-        proteinMain(settings)
-    except Exception as e:
-        print(f"Error running preset {presetFolder}")
-        raise e
+    def TestPresetFile(self, presetFileLines: List[str]) -> None:
+        neccessaryStringParts = [
+            ("ProteinPilot", "ProteinPilot Version"),
+            ("ID list file", "ID whitelist"),
+            ("ID exclusion list", "ID blacklist"),
+            ("Protein group filter", "Protein group filter"),
+            ("Database", "Database"),
+            ("Unused", "Unused"),
+            ("Contribution", "Contribution"),
+            ("Confidence", "Confidence"),
+            ("Min groups", "Min groups"),
+            ("Max missing values", "Max missing values per group")
+        ]
+
+        i = 0
+        for stringPart, description in neccessaryStringParts:
+            if stringPart.lower() not in presetFileLines[i].lower():
+                raise IOError(description)
+            i += 1
+
+    def TestResult(self):
+        presetOutputDir = path.join(
+            path.split(self.settings.inputPath)[0], "TrueOutput")
+        for filename in listdir(presetOutputDir):
+            try:
+                with open(path.join("Output", filename)):
+                    print(path.join("Output", filename))
+            except FileNotFoundError:
+                print(f"Error! File \"{filename}\" not found!")
 
 
 def GetPresetsFolders(presetFolder: str):
@@ -80,9 +94,11 @@ def GetPresetsFolders(presetFolder: str):
 
 def main():
     presetsFolders = GetPresetsFolders(presetsFolder)
-    RunPreset(presetsFolders[4])
-    # for folder in presetsFolders:
-    #     RunPreset(folder)
+    # RunPreset(presetsFolders[4])
+    for folder in presetsFolders:
+        preset = Preset(folder)
+        preset.ReadSettings()
+        preset.Run()
 
 
 if __name__ == "__main__":
