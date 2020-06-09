@@ -92,8 +92,7 @@ def CalculateAccessionsNormRatios(
     for tableNum in tableSumms:
         curSumm = tableSumms[tableNum]
         curAccessionTable = accessionsPerTable[tableNum]
-        for accession in curAccessionTable:
-            curAccession = curAccessionTable[accession]
+        for accession, curAccession in curAccessionTable.items():
             curAccession.ScNormToFileNormRatio = (
                 (curAccession.ScNorm /
                  curSumm["ScNorm"]) if curSumm["ScNorm"] != 0
@@ -118,20 +117,20 @@ def GetScPsigAndNormFilesSumm(
     {
         "1.1": {
             "ScSumm": S1,
-            "pSignalSumm": P1,
+            "PSignalSumm": P1,
             "ScNorm: SN1,
             "PSignalNorm": PN1
         },
         "1.2": {
             "ScSumm": S2,
-            "pSignalSumm": P2,
+            "PSignalSumm": P2,
             "ScNorm: SN2,
             "PSignalNorm": PN2
         },
         ...,
         "n-ый файл": {
             "ScSumm": Sn,
-            "pSignalSumm": Pn,
+            "PSignalSumm": Pn,
             "ScNorm: SNn,
             "PSignalNorm": PNn
         }
@@ -140,8 +139,7 @@ def GetScPsigAndNormFilesSumm(
 
     fileSumms: Dict[str, Dict[str, Union[float, int]]] = {}
 
-    for tableNum in accessionsPerTable:
-        curTable = accessionsPerTable[tableNum]
+    for tableNum, curTable in accessionsPerTable.items():
         fileSumms[tableNum] = {}
         curSumm = fileSumms[tableNum]
         curSumm["ScSumm"] = 0
