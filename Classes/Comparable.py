@@ -18,25 +18,7 @@ class Comparable:
             self.op: str = op
             self.val: str = val
         else:
-            paramString = op.strip()
-            self.op = ''.join([ch for ch in paramString if ch in "!=<>"])
-
-            paramString = paramString[len(self.op):].strip()
-            if IsFloat(paramString):
-                self.val = float(paramString)
-            elif len(self.op) and len(paramString):
-                with open(paramString) as paramStringFile:
-                    strings = (
-                        paramStringFile.read().replace(' ', '\t').split('\n'))
-                    paramStrings = {}
-                    for string in strings:
-                        string = string.strip()
-                        if len(string):
-                            paramStrings[string.split('\t')[0]] = (
-                                string.split('\t')[1])
-                    self.val = paramStrings
-            else:
-                self.val = None
+            self.GetComparable(op)
 
     @property
     def val(self):
@@ -77,6 +59,8 @@ class Comparable:
                         paramStrings[string.split('\t')[0]] = (
                             string.split('\t')[1])
                 self.val = paramStrings
+        else:
+            self.val = None
 
     def compare(self, value, filename: str) -> bool:
         if self.__float:
