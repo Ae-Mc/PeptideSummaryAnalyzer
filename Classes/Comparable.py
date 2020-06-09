@@ -92,3 +92,9 @@ class Comparable:
                     comparable=self.val[filename]))
             else:
                 return True
+
+    def __str__(self):
+        return f"{self.op} {self.val}"
+
+    def __repr__(self):
+        return f"{self.op} {self.val}"
