@@ -427,7 +427,6 @@ def main():
 
     Output("Output/",
            seqDB=inputParams.seqDB,
-           filesSumms=filesSumms,
            accessionTables=accessionTables,
            proteinTables=proteinTables)
 

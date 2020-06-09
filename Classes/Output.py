@@ -18,7 +18,6 @@ class Output:
     def __init__(
             self,
             outputDirPath: str,
-            filesSumms: Dict[str, Dict[str, float]],
             seqDB: Dict[str, Sequence],
             accessionTables: AccessionTables,
             proteinTables: ProteinDB = None) -> None:
@@ -30,7 +29,6 @@ class Output:
 
     def GenerateOutputFiles(
             self,
-            filesSumms: Dict[str, Dict[str, float]],
             proteinDB: ProteinDB = None) -> None:
 
         self.CreateDirIfNotExist()
