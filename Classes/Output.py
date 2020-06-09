@@ -1,6 +1,5 @@
 from typing import Dict, Tuple, List
-from os import mkdir
-from os.path import exists
+from os import mkdir, path
 from Classes.AccessionTables import AccessionTables
 from Classes.ProteinDB import ProteinDB
 from Classes.Sequence import Sequence
@@ -77,7 +76,7 @@ class Output:
 
         pathLeftover = self.outputDirPath
         folderPath = ""
-        while(not exists(self.outputDirPath)):
+        while(not path.exists(self.outputDirPath)):
             folderPath += pathLeftover.split('/')[0] + '/'
             pathLeftover = '/'.join(pathLeftover.split('/')[1:])
             try:
@@ -88,10 +87,7 @@ class Output:
     def GenerateDescriptionFile(
             self,
             outFilename: str) -> None:
-        with open(self.outputDirPath +
-                  '/' +
-                  outFilename,
-                  mode='w') as descFile:
+        with open(path.join(self.outputDirPath, outFilename), 'w') as descFile:
             descFile.write("Accession\tDescription")
             for accession in sorted(self.accessionsBunch.keys()):
                 if self.seqDB[accession].len:
@@ -99,10 +95,8 @@ class Output:
                         accession, self.seqDB[accession].desc))
 
     def GenerateScSummFile(self, outFilename: str) -> None:
-        with open(self.outputDirPath +
-                  '/' +
-                  outFilename,
-                  mode='w') as scSummFile:
+        with open(path.join(self.outputDirPath, outFilename),
+                  'w') as scSummFile:
             scSummFile.write(
                 "Accession\tSequence length" +
                 ("\t{}" * len(self.accessionTables.sortedTableNums)).format(
@@ -122,7 +116,7 @@ class Output:
             fieldName: str,
             outFilename: str) -> None:
 
-        with open(self.outputDirPath + '/' + outFilename, mode='w') as outFile:
+        with open(path.join(self.outputDirPath, outFilename), 'w') as outFile:
             outFile.write("Accession")
             outFile.write(
                 ("\t{}" * len(self.accessionTables.sortedTableNums)).format(
@@ -142,7 +136,7 @@ class Output:
             outFilename: str,
             groups: Dict[str, Dict[str, Dict[str, int]]],
             proteinDB: ProteinDB) -> None:
-        with open(self.outputDirPath + '/' + outFilename, 'w') as outFile:
+        with open(path.join(self.outputDirPath, outFilename), 'w') as outFile:
             outFile.write(("Representative\tAccession" +
                            "\t{}" * len(proteinDB.GetSortedTableNums()) +
                            '\n').format(*proteinDB.GetSortedTableNums()))
@@ -216,7 +210,7 @@ class Output:
             self,
             outFilename: str) -> None:
 
-        with open(self.outputDirPath + '/' + outFilename, 'w') as outFile:
+        with open(path.join(self.outputDirPath, outFilename), 'w') as outFile:
             outFile.write("Accession\tFilename\tUnused\tseq_length_summ\t" +
                           "counts\tSc_summ\tPep_intensity__summ\tSc_norm\t" +
                           "Pep_intensity__norm\tSP_2\tseq_length")
