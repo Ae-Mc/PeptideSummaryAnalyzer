@@ -21,19 +21,17 @@ class Output:
             filesSumms: Dict[str, Dict[str, float]],
             seqDB: Dict[str, Sequence],
             accessionTables: AccessionTables,
-            proteinTables: ProteinDB) -> None:
+            proteinTables: ProteinDB = None) -> None:
 
         self.seqDB: Dict[str, Sequence] = seqDB
         self.outputDirPath: str = outputDirPath
         self.accessionTables: AccessionTables = accessionTables
-        if proteinTables is not None:
-            self.GenerateOutputFiles(filesSumms,
-                                     proteinTables)
+        self.GenerateOutputFiles(proteinTables)
 
     def GenerateOutputFiles(
             self,
             filesSumms: Dict[str, Dict[str, float]],
-            proteinDB: ProteinDB) -> None:
+            proteinDB: ProteinDB = None) -> None:
 
         self.CreateDirIfNotExist()
         self.accessionsBunch = (
@@ -57,18 +55,19 @@ class Output:
                 fieldName=field,
                 outFilename=filename)
 
-        self.GenerateGroupsFile(
-                "ProteinGroups.txt",
-                self.ConvertProteinGroupsToOutputFormat(
-                    proteinDB.GetSortedTableNums(),
-                    proteinDB.proteinGroupsPerTable),
-                proteinDB)
-        self.GenerateGroupsFile(
-                "DifficultCases.txt",
-                self.ConvertProteinGroupsToOutputFormat(
-                    proteinDB.GetSortedTableNums(),
-                    proteinDB.difficultCases),
-                proteinDB)
+        if proteinDB is not None:
+            self.GenerateGroupsFile(
+                    "ProteinGroups.txt",
+                    self.ConvertProteinGroupsToOutputFormat(
+                        proteinDB.GetSortedTableNums(),
+                        proteinDB.proteinGroupsPerTable),
+                    proteinDB)
+            self.GenerateGroupsFile(
+                    "DifficultCases.txt",
+                    self.ConvertProteinGroupsToOutputFormat(
+                        proteinDB.GetSortedTableNums(),
+                        proteinDB.difficultCases),
+                    proteinDB)
 
         self.GenerateJointOutputFile("output.txt")
 
