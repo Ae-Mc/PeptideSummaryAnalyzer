@@ -66,12 +66,11 @@ class AccessionTables:
         return accessions
 
     def CalculateNormParamsForAccessions(
-            self: "AccessionTables",
+            self,
             accessions: Dict[str, Accession],
             seqences: Dict[str, Sequence]):
 
-        for accession in accessions:
-            curAccession = accessions[accession]
+        for accession, curAccession in accessions.items():
             curAccession.ScNorm = curAccession.ScSumm / seqences[accession].len
             curAccession.PSignalNorm = (
                 curAccession.PSignalSumm / seqences[accession].len)
