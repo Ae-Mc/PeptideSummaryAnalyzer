@@ -11,8 +11,6 @@ from Classes.AccessionTables import AccessionTables
 from Classes.ColumnNames import ColumnNames
 from Classes.Output import Output
 
-INPUTPATH = "Input"
-
 
 def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:
     columns = [column for column in table]
@@ -342,6 +340,7 @@ def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
 
 def GetInput() -> Input:
     inputParams = Input()
+    inputParams.inputPath = "Input"
     if len(argv) == 11:
         inputParams.proteinPilotVersion = argv[1]
         inputParams.whiteList = GetFileLines(argv[2])
@@ -382,10 +381,10 @@ def main():
     if inputParams.proteinPilotVersion == '5':
         columnNames = ColumnNames(precursorSignal="Intensity (Peptide)")
 
-    peptideTables = PeptideTables(columnNames, inputDir=INPUTPATH)
+    peptideTables = PeptideTables(columnNames, inputDir=inputParams.inputPath)
     proteinTables = None
     if inputParams.isProteinGroupFilter:
-        proteinTables = ProteinDB(INPUTPATH,
+        proteinTables = ProteinDB(inputParams.inputPath,
                                   inputParams.seqDB,
                                   unsafeReadTableFlag=True)
         proteinTables.ReadDBFromFolder()
