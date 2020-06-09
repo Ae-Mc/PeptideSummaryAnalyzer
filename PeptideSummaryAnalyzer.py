@@ -343,8 +343,7 @@ def GetInput() -> Input:
         inputParams.proteinPilotVersion = argv[1]
         inputParams.whiteList = GetFileLines(argv[2])
         inputParams.blackList = GetFileLines(argv[3])
-        inputParams.isProteinGroupFilter = (
-            True if argv[4].strip().lower() == 'y' else False)
+        inputParams.isProteinGroupFilter = argv[4].strip().lower()
         inputParams.seqDB = ReadSeqDB(argv[5])
         inputParams.unused = Comparable(argv[6])
         inputParams.contrib = Comparable(argv[7])
