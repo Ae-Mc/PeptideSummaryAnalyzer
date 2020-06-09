@@ -13,9 +13,12 @@ INPUTPATH = ""
 
 class Preset:
     folder: str
+    presetOutputDir: str
+    settings: Input
 
     def __init__(self, folder: str):
         self.folder = folder
+        self.presetOutputDir = path.join(self.folder, "TrueOutput")
 
     def Run(self) -> None:
         try:
@@ -74,14 +77,21 @@ class Preset:
             i += 1
 
     def TestResult(self):
-        presetOutputDir = path.join(
-            path.split(self.settings.inputPath)[0], "TrueOutput")
-        for filename in listdir(presetOutputDir):
+        for filename in listdir(self.presetOutputDir):
             try:
-                with open(path.join("Output", filename)):
-                    print(path.join("Output", filename))
+                self.TestOutputFile(filename)
             except FileNotFoundError:
-                print(f"Error! File \"{filename}\" not found!")
+                print(f"Error! File \"{filename}\" not found in Output dir!")
+
+    def TestOutputFile(self, filename: str) -> None:
+        paths = (path.join(self.presetOutputDir, filename),
+                 path.join("Output", filename))
+        with open(paths[0]) as file1:
+            with open(paths[1]) as file2:
+                filesContent = (file1.read().split("\n"),
+                                file2.read().split("\n"))
+        if(len(filesContent[0]) != len(filesContent[1])):
+            print(f"{paths[0]} != {paths[1]}")
 
     @staticmethod
     def ClearOutputFolder():
