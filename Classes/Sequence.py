@@ -16,3 +16,6 @@ class Sequence:
         self.len = 0
         self.desc = ""
         self.seq = ""
+
+    def __repr__(self):
+        return f"{self.seq} ({self.len})"
