@@ -1,5 +1,5 @@
 #!/bin/env python
-from os import listdir, path
+from os import listdir, path, remove
 from typing import List
 from Classes.Input import Input
 from Classes.Comparable import Comparable
@@ -83,6 +83,11 @@ class Preset:
             except FileNotFoundError:
                 print(f"Error! File \"{filename}\" not found!")
 
+    @staticmethod
+    def ClearOutputFolder():
+        for filename in listdir("Output"):
+            remove(path.join("Output", filename))
+
 
 def GetPresetsFolders(presetFolder: str):
     presetsFolders = []
@@ -97,6 +102,7 @@ def main():
     # RunPreset(presetsFolders[4])
     for folder in presetsFolders:
         preset = Preset(folder)
+        Preset.ClearOutputFolder()
         preset.ReadSettings()
         preset.Run()
 
