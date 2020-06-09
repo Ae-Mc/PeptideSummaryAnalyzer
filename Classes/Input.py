@@ -10,7 +10,7 @@ class Input:
     contrib: Comparable
     __conf: Comparable
     isDefaultConf: bool
-    isProteinGroupFilter: bool
+    __isProteinGroupFilter: bool
     whiteList: Union[List[str], None]
     blackList: Union[List[str], None]
     minGroupsWithAccession: int
@@ -28,3 +28,14 @@ class Input:
             self.isDefaultConf = True
         else:
             self.isDefaultConf = False
+
+    @property
+    def isProteinGroupFilter(self):
+        return self.__isProteinGroupFilter
+
+    @isProteinGroupFilter.setter
+    def isProteinGroupFilter(self, value: Union[str, bool]):
+        if isinstance(value, str):
+            self.__isProteinGroupFilter = True if value == 'y' else False
+        else:
+            self.__isProteinGroupFilter = value
