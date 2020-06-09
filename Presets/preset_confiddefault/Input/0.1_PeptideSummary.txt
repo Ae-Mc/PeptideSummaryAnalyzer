@@ -1,0 +1,12 @@
+N	Unused	Total	%Cov	%Cov(50)	%Cov(95)	Accessions	Names	Used	Annotation	Contrib	Conf	Sequence	Modifications	ProteinModifications	Cleavages	dMass	Obs MW	Obs m/z	Theor MW	Theor m/z	Theor z	Sc	Spectrum	Acq Time	Intensity (Peptide)	PrecursorIntensityAcquisition	Apex Time (Peptide)	Elution Peak Width (Peptide)	MS2Counts
+1	20	0	0	0	0	W	0	0	0	2	99.00000095	AAAAA	0	0	0	0	0	0	0	0	0	10	0	0	100	0	0	0	0
+1	20	0	0	0	0	W	0	0	0	2	95	CCCCC	0	0	0	0	0	0	0	0	0	10	0	0	100	0	0	0	0
+1	20	0	0	0	0	W	0	0	0	0	94.9	DDDDD	0	0	0	0	0	0	0	0	0	10	0	0	100	0	0	0	0
+1	20	0	0	0	0	W	0	0	0	0	50	EEEEE	0	0	0	0	0	0	0	0	0	10	0	0	100	0	0	0	0
+6	1	0	0	0	0	RRRRRH	0	0	0	0	50	EEEEEEEEEE	0	0	0	0	0	0	0	0	0	10	0	0	100	0	0	0	0
+7	1	0	0	0	0	Z	0	0	0	0.5	99	CCCCC	0	0	0	0	0	0	0	0	0	10	0	0	100	0	0	0	0
+7	1	0	0	0	0	Z	0	0	0	0.5	94.9	DDDDD	0	0	0	0	0	0	0	0	0	10	0	0	100	0	0	0	0
+7	1	0	0	0	0	Z	0	0	0	0	50	EEEEE	0	0	0	0	0	0	0	0	0	10	0	0	100	0	0	0	0
+8	1	0	0	0	0	Y	0	0	0	0.5	95	CCCCC	0	0	0	0	0	0	0	0	0	10	0	0	100	0	0	0	0
+8	1	0	0	0	0	Y	0	0	0	0.5	95	DDDDD	0	0	0	0	0	0	0	0	0	10	0	0	100	0	0	0	0
+8	1	0	0	0	0	Y	0	0	0	0	50	EEEEE	0	0	0	0	0	0	0	0	0	10	0	0	100	0	0	0	0
