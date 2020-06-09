@@ -399,11 +399,6 @@ def main(inputParams: Input = None):
                       peptideTables.peptideTables,
                       columnNames)
 
-    if inputParams.whiteList:
-        ApplyWhiteList(peptideTables.peptideTables,
-                       inputParams.whiteList,
-                       columnNames)
-
     accessionTables = AccessionTables(inputParams.seqDB,
                                       peptideTables,
                                       columnNames=columnNames)
@@ -418,6 +413,11 @@ def main(inputParams: Input = None):
     accessionTables.GetAccessionsPerTable(inputParams.seqDB, peptideTables)
     CalculateAccessionsNormRatios(accessionTables.accessionsPerTable,
                                   filesSumms)
+
+    if inputParams.whiteList:
+        ApplyWhiteList(peptideTables.peptideTables,
+                       inputParams.whiteList,
+                       columnNames)
 
     ApplyGroupFilter(accessionTables,
                      inputParams.maxGroupAbsence,
