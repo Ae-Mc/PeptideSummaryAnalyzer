@@ -4,6 +4,7 @@ from Classes.Sequence import Sequence
 
 
 class Input:
+    inputPath: str
     seqDB: Dict[str, Sequence]
     unused: Comparable
     contrib: Comparable
