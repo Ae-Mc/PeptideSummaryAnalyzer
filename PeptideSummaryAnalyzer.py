@@ -372,9 +372,9 @@ def GetInput() -> Input:
     return inputParams
 
 
-def main():
-    inputParams = GetInput()
-    columnNames = ColumnNames()
+def main(inputParams: Input = None):
+    if inputParams is None:
+        inputParams = GetInput()
     if inputParams.proteinPilotVersion == '5':
         columnNames = ColumnNames(precursorSignal="Intensity (Peptide)")
 
