@@ -377,6 +377,8 @@ def main(inputParams: Input = None):
         inputParams = GetInput()
     if inputParams.proteinPilotVersion == '5':
         columnNames = ColumnNames(precursorSignal="Intensity (Peptide)")
+    else:
+        columnNames = ColumnNames()
 
     peptideTables = PeptideTables(columnNames, inputDir=inputParams.inputPath)
     proteinTables = None
