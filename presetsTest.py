@@ -1,3 +1,4 @@
+#!/bin/env python
 from os import listdir, path
 from typing import List
 from Classes.Input import Input
