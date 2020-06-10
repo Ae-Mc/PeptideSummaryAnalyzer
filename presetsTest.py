@@ -88,8 +88,8 @@ class Preset:
                  path.join("Output", filename))
         with open(paths[0]) as file1:
             with open(paths[1]) as file2:
-                filesContent = (file1.read().split("\n"),
-                                file2.read().split("\n"))
+                filesContent = (file1.read().strip().split("\n"),
+                                file2.read().strip().split("\n"))
         if(len(filesContent[0]) != len(filesContent[1])):
             print(f"{paths[0]} != {paths[1]}")
 
