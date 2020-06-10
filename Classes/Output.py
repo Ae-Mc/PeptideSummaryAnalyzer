@@ -36,22 +36,26 @@ class Output:
             self.accessionTables.GenerateAccessionsBunchOverAllTables())
         self.GenerateDescriptionFile(outFilename="description.txt")
 
-        self.GenerateScSummFile("Sc_summ.txt")
-
-        fieldsToFiles: Tuple[Tuple[str, str], ...] = (
-            ("Counts", "counts.txt"),
-            ("ScNormToFileNormRatio", "Sc_norm.txt"),
-            ("PSignalNormToFileNormRatio", "Pep_intensity_norm.txt"),
-            ("PSignalSumm", "Pep_intensity_summ.txt"),
-            ("PSignalAndScNormRatiosAverage", "SP_2.txt"),
-            ("SeqlenSumm", "seq_length_summ.txt"),
-            ("Unused", "unused.txt")
+        fieldsToFiles: Tuple[Tuple[str, str, bool], ...] = (
+            ("Counts", "counts.txt", False),
+            ("ScNormToFileNormRatio", "Sc_norm.txt", True),
+            ("ScSumm", "Sc_summ.txt", True),
+            ("PSignalNormToFileNormRatio", "Pep_intensity_norm.txt", False),
+            ("PSignalSumm", "Pep_intensity_summ.txt", False),
+            ("PSignalAndScNormRatiosAverage", "SP_2.txt", False),
+            ("SeqlenSumm", "seq_length_summ.txt", False),
+            ("Unused", "unused.txt", False)
         )
 
-        for field, filename in fieldsToFiles:
-            self.GenerateTableFileByField(
-                fieldName=field,
-                outFilename=filename)
+        for field, filename, isSeqlen in fieldsToFiles:
+            if isSeqlen:
+                self.GenerateTableFileByFieldWithSeqlen(
+                    fieldName=field,
+                    outFilename=filename)
+            else:
+                self.GenerateTableFileByField(
+                    fieldName=field,
+                    outFilename=filename)
 
         if proteinDB is not None:
             self.GenerateGroupsFile(
@@ -91,22 +95,26 @@ class Output:
                     descFile.write("\n{}\t{}".format(
                         accession, self.seqDB[accession].desc))
 
-    def GenerateScSummFile(self, outFilename: str) -> None:
+    def GenerateTableFileByFieldWithSeqlen(
+            self,
+            fieldName: str,
+            outFilename: str) -> None:
         with open(path.join(self.outputDirPath, outFilename),
-                  'w') as scSummFile:
-            scSummFile.write(
+                  'w') as outFile:
+            outFile.write(
                 "Accession\tSequence length" +
                 ("\t{}" * len(self.accessionTables.sortedTableNums)).format(
                     *self.accessionTables.sortedTableNums))
             for accession in sorted(self.accessionsBunch.keys()):
-                scSummFile.write(f"\n{accession}" +
-                                 f"\t{self.seqDB[accession].len}")
+                outFile.write(f"\n{accession}" +
+                              f"\t{self.seqDB[accession].len}")
                 for tableNum in self.accessionTables.sortedTableNums:
                     table = self.accessionTables.accessionsPerTable[tableNum]
                     if accession in table:
-                        scSummFile.write(f"\t{table[accession].ScSumm}")
+                        outFile.write("\t{}".format(
+                            table[accession].__dict__[fieldName]))
                     else:
-                        scSummFile.write('\t')
+                        outFile.write('\t0')
 
     def GenerateTableFileByField(
             self,
@@ -126,7 +134,7 @@ class Output:
                         outFile.write('\t{}'.format(
                             table[accession].__dict__[fieldName]))
                     else:
-                        outFile.write('\t')
+                        outFile.write('\t0')
 
     def GenerateGroupsFile(
             self,
