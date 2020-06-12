@@ -40,8 +40,8 @@ class Output:
             ("Counts", "counts.txt", False),
             ("ScNormToFileNormRatio", "Sc_norm.txt", True),
             ("ScSumm", "Sc_summ.txt", True),
-            ("PSignalNormToFileNormRatio", "Pep_intensity_norm.txt", False),
-            ("PSignalSumm", "Pep_intensity_summ.txt", False),
+            ("PSignalNormToFileNormRatio", "Pep_intensity_norm.txt", True),
+            ("PSignalSumm", "Pep_intensity_summ.txt", True),
             ("PSignalAndScNormRatiosAverage", "SP_2.txt", False),
             ("SeqlenSumm", "seq_length_summ.txt", False),
             ("Unused", "unused.txt", False)
