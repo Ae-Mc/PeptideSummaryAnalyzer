@@ -114,7 +114,7 @@ class Output:
                         outFile.write("\t{}".format(
                             table[accession].__dict__[fieldName]))
                     else:
-                        outFile.write('\t0')
+                        outFile.write('\t')
 
     def GenerateTableFileByField(
             self,
@@ -134,7 +134,7 @@ class Output:
                         outFile.write('\t{}'.format(
                             table[accession].__dict__[fieldName]))
                     else:
-                        outFile.write('\t0')
+                        outFile.write('\t')
 
     def GenerateGroupsFile(
             self,
