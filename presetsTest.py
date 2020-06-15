@@ -92,6 +92,11 @@ class Preset:
                                 file2.read().strip().split("\n"))
         if(len(filesContent[0]) != len(filesContent[1])):
             print(f"{paths[0]} != {paths[1]}")
+        else:
+            for i in range(0, len(filesContent[0])):
+                if(filesContent[0][i] != filesContent[1][i]):
+                    print(f"Line {i+1} is not equals in file {filename}")
+                    break
 
     @staticmethod
     def ClearOutputFolder():
@@ -109,12 +114,12 @@ def GetPresetsFolders(presetFolder: str):
 
 def main():
     presetsFolders = GetPresetsFolders(presetsFolder)
-    # RunPreset(presetsFolders[4])
     for folder in presetsFolders:
         preset = Preset(folder)
         Preset.ClearOutputFolder()
         preset.ReadSettings()
         preset.Run()
+        print()
 
 
 if __name__ == "__main__":
