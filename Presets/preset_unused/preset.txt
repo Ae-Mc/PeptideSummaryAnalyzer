@@ -3,8 +3,9 @@ Id list file name:
 ID exclusion list  file name:
 Protein group filter (Y or N): N
 Database file name: test.fasta
-Unused:>=10
+Unused:>10
 Contribution:
-Confidence:
+Confidence ID:
+Confidence peptide:
 Min groups with ID: 1
 Max missing values per group: 1

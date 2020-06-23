@@ -5,6 +5,7 @@ Protein group filter (Y or N): N
 Database file name: test.fasta
 Unused:
 Contribution:
-Confidence:
+Confidence ID:
+Confidence peptide:
 Min groups with ID: 1
 Max missing values per group: 1
