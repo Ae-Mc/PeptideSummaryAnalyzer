@@ -63,19 +63,14 @@ class Comparable:
             self.val = None
 
     def compare(self, value, filename: str) -> bool:
-        if self.__float:
-            return eval("{value}{op}{comparable}".format(
-                value=value,
-                op=self.op,
-                comparable=self.val))
+        if self.val is None:
+            return True
+        elif self.__float:
+            return eval(f"{value}{self.op}{self.val}")
+        elif self.val and filename in self.val:
+            return eval(f"{value}{self.op}{self.val[filename]}")
         else:
-            if self.val and filename in self.val:
-                return eval("{value}{op}{comparable}".format(
-                    value=value,
-                    op=self.op,
-                    comparable=self.val[filename]))
-            else:
-                return True
+            return True
 
     def __str__(self):
         return f"{self.op} {self.val}"
