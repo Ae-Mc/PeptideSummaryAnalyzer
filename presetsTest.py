@@ -58,9 +58,10 @@ class Preset:
             path.join(self.folder, presetFileValues[4]))
         self.settings.unused = Comparable(presetFileValues[5])
         self.settings.contrib = Comparable(presetFileValues[6])
-        self.settings.conf = presetFileValues[7]
-        self.settings.minGroupsWithAccession = int(presetFileValues[8])
-        self.settings.maxGroupAbsence = int(presetFileValues[9])
+        self.settings.confID = presetFileValues[7]
+        self.settings.confPeptide = presetFileValues[8]
+        self.settings.minGroupsWithAccession = int(presetFileValues[9])
+        self.settings.maxGroupAbsence = int(presetFileValues[10])
 
     def TestPresetFile(self, presetFileLines: List[str]) -> None:
         neccessaryStringParts = [
@@ -71,7 +72,8 @@ class Preset:
             ("Database", "Database"),
             ("Unused", "Unused"),
             ("Contribution", "Contribution"),
-            ("Confidence", "Confidence"),
+            ("Confidence ID", "Confidence ID"),
+            ("Confidence peptide", "Confidence peptide"),
             ("Min groups", "Min groups"),
             ("Max missing values", "Max missing values per group")
         ]
