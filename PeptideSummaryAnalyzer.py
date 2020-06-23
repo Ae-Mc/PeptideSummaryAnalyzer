@@ -10,6 +10,7 @@ from Classes.PeptideTables import PeptideTables
 from Classes.AccessionTables import AccessionTables
 from Classes.ColumnNames import ColumnNames
 from Classes.Output import Output
+from decimal import Decimal, getcontext, FloatOperation
 
 
 def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:
@@ -85,22 +86,21 @@ def ApplyGroupFilter(accessionTables: AccessionTables,
 
 def CalculateAccessionsNormRatios(
         accessionsPerTable: Dict[str, Dict[str, Accession]],
-        tableSumms: Dict[str, Dict[str, float]]) -> None:
+        tableSumms: Dict[str, Dict[str, Decimal]]) -> None:
     """ NormRatio — отношение Sc/PSignalNorm Accession к сумме всех
     Sc/PsignalNorm в файле """
 
-    for tableNum in tableSumms:
-        curSumm = tableSumms[tableNum]
+    for tableNum, curSumm in tableSumms.items():
         curAccessionTable = accessionsPerTable[tableNum]
         for accession, curAccession in curAccessionTable.items():
             curAccession.ScNormToFileNormRatio = (
                 (curAccession.ScNorm /
                  curSumm["ScNorm"]) if curSumm["ScNorm"] != 0
-                else 0)
+                else Decimal(0))
             curAccession.PSignalNormToFileNormRatio = (
                 (curAccession.PSignalNorm /
                  curSumm["PSignalNorm"]) if curSumm["PSignalNorm"] != 0
-                else 0)
+                else Decimal(0))
             curAccession.PSignalAndScNormRatiosAverage = (
                 (curAccession.ScNormToFileNormRatio +
                  curAccession.PSignalNormToFileNormRatio) / 2)
@@ -108,7 +108,7 @@ def CalculateAccessionsNormRatios(
 
 def GetScPsigAndNormFilesSumm(
     accessionsPerTable: Dict[str, Dict[str, Accession]]) -> Dict[
-                        str, Dict[str, float]]:
+                        str, Dict[str, Decimal]]:
     """ Получаем суммы параметров Sc, Sequence, PrecursorSignal,
     ScNorm, PSignalNorm по файлам
 
@@ -137,21 +137,21 @@ def GetScPsigAndNormFilesSumm(
     }
     """
 
-    fileSumms: Dict[str, Dict[str, Union[float, int]]] = {}
+    fileSumms: Dict[str, Dict[str, Decimal]] = {}
 
     for tableNum, curTable in accessionsPerTable.items():
         fileSumms[tableNum] = {}
         curSumm = fileSumms[tableNum]
-        curSumm["ScSumm"] = 0
-        curSumm["PSignalSumm"] = 0
-        curSumm["ScNorm"] = 0
-        curSumm["PSignalNorm"] = 0
+        curSumm["ScSumm"] = Decimal(0)
+        curSumm["PSignalSumm"] = Decimal(0)
+        curSumm["ScNorm"] = Decimal(0)
+        curSumm["PSignalNorm"] = Decimal(0)
 
         for accession in curTable:
-            curSumm["ScSumm"] += float(curTable[accession].ScSumm)
-            curSumm["ScNorm"] += float(curTable[accession].ScNorm)
-            curSumm["PSignalSumm"] += float(curTable[accession].PSignalSumm)
-            curSumm["PSignalNorm"] += float(curTable[accession].PSignalNorm)
+            curSumm["ScSumm"] += Decimal(curTable[accession].ScSumm)
+            curSumm["ScNorm"] += Decimal(curTable[accession].ScNorm)
+            curSumm["PSignalSumm"] += Decimal(curTable[accession].PSignalSumm)
+            curSumm["PSignalNorm"] += Decimal(curTable[accession].PSignalNorm)
     return fileSumms
 
 
@@ -246,10 +246,10 @@ def RemoveAccessionsFromTableByBlacklist(peptideTable: Dict[str, List[str]],
         i += 1
 
 
-def TestConfDefaultCondition(confVal: float):
-    if confVal >= 99.0:
+def TestConfDefaultCondition(confVal: Decimal):
+    if confVal >= Decimal("99"):
         return 2
-    if confVal >= 95.0:
+    if confVal >= Decimal("95"):
         return 1
     return 0
 
@@ -284,7 +284,7 @@ def ApplyConfidenceDefaultFilter(
             if curAccession in blackList:
                 blackList[curAccession] += (
                     TestConfDefaultCondition(
-                        float(curTable[columnNames.confidence][i])))
+                        Decimal(curTable[columnNames.confidence][i])))
                 if blackList[curAccession] > 1:
                     del blackList[curAccession]
             i += 1
@@ -408,6 +408,8 @@ def GetInput() -> Input:
 
 
 def main(inputParams: Input = None):
+    getcontext().traps[FloatOperation] = True
+
     if inputParams is None:
         inputParams = GetInput()
     if inputParams.proteinPilotVersion == '5':

@@ -6,6 +6,7 @@ from Classes.Sequence import Sequence
 from Classes.Accession import Accession
 from Classes.ProteinGroup import ProteinGroup
 from Classes.Errors import AccessionNotFoundError
+from decimal import localcontext
 
 
 class Output:
@@ -111,8 +112,16 @@ class Output:
                 for tableNum in self.accessionTables.sortedTableNums:
                     table = self.accessionTables.accessionsPerTable[tableNum]
                     if accession in table:
-                        outFile.write("\t{}".format(
-                            table[accession].__dict__[fieldName]))
+                        # Создание локального контекста обязательно, иначе
+                        # все округления по какой-то причине начинают работать
+                        # неправильно! Например, число 0.60000000001
+                        # округляется до 0.600001, а не до 0.6
+                        with localcontext() as context:
+                            context.prec = 6
+                            val = str(+table[accession].__dict__[fieldName])
+                            if '.' in val and "e" not in val.lower():
+                                val = val.rstrip("0").rstrip(".")
+                            outFile.write("\t{}".format(val))
                     else:
                         outFile.write('\t')
 
@@ -131,8 +140,16 @@ class Output:
                 for tableNum in self.accessionTables.sortedTableNums:
                     table = self.accessionTables.accessionsPerTable[tableNum]
                     if accession in table:
-                        outFile.write('\t{}'.format(
-                            table[accession].__dict__[fieldName]))
+                        # Создание локального контекста обязательно, иначе
+                        # все округления по какой-то причине начинают работать
+                        # неправильно! Например, число 0.60000000001
+                        # округляется до 0.600001, а не до 0.6
+                        with localcontext() as context:
+                            context.prec = 6
+                            val = str(+table[accession].__dict__[fieldName])
+                            if '.' in val and "e" not in val.lower():
+                                val = val.rstrip("0").rstrip(".")
+                            outFile.write("\t{}".format(val))
                     else:
                         outFile.write('\t')
 
