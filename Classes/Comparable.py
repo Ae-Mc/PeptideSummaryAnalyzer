@@ -1,3 +1,6 @@
+from typing import Union
+
+
 def IsFloat(value):
     try:
         float(value)
@@ -10,15 +13,18 @@ def IsFloat(value):
 class Comparable:
     op: str
     __val: str
-    __float: bool
+    __isFileToCompare: bool
 
     def __init__(self, op: str = "", val: str = None) -> None:
-        self.__float: bool = False
+        self.__isFileToCompare: bool = True
         if val is not None:
             self.op: str = op
             self.val: str = val
-        else:
+        elif op is not None:
             self.GetComparable(op)
+        else:
+            self.op = None
+            self.val = None
 
     @property
     def val(self):
@@ -29,9 +35,9 @@ class Comparable:
         self.__val = value
         try:
             float(value)
-            self.__float = True
+            self.__isFileToCompare = False
         except (TypeError, ValueError):
-            self.__float = False
+            self.__isFileToCompare = True
 
     def GetComparable(self, paramString: str):
         """ Получение param
@@ -62,10 +68,12 @@ class Comparable:
         else:
             self.val = None
 
-    def compare(self, value, filename: str) -> bool:
+    def compare(self,
+                value: Union[str, float, int],
+                filename: str = None) -> bool:
         if self.val is None:
             return True
-        elif self.__float:
+        elif not self.__isFileToCompare:
             return eval(f"{value}{self.op}{self.val}")
         elif self.val and filename in self.val:
             return eval(f"{value}{self.op}{self.val[filename]}")

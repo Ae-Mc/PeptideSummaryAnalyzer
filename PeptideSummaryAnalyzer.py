@@ -173,21 +173,27 @@ def ApplyWhiteList(peptideTables: Dict[str, Dict[str, List[str]]],
             i += 1
 
 
+def RemoveAccessionsFromTableByBlacklist(peptideTable: Dict[str, List[str]],
+                                         blackList: List[str],
+                                         columnNames: ColumnNames) -> None:
+    curTableLen = len(peptideTable[columnNames.accession])
+    i = 0
+    while i < curTableLen:
+        if(peptideTable[columnNames.accession][i].split(';')[0] in blackList):
+            RemoveRow(peptideTable, i)
+            curTableLen -= 1
+            i -= 1
+        i += 1
+
+
 def ApplyBlackList(peptideTables: Dict[str, Dict[str, List[str]]],
                    blackList: List[str],
                    columnNames: ColumnNames):
     """ Удаляем из всех таблиц все id, находящиеся в чёрном списке """
 
-    for tableNum in peptideTables:
-        curTable = peptideTables[tableNum]
-        curTableLen = len(curTable[columnNames.accession])
-        i = 0
-        while i < curTableLen:
-            if curTable[columnNames.accession][i].split(';')[0] in blackList:
-                RemoveRow(curTable, i)
-                i -= 1
-                curTableLen -= 1
-            i += 1
+    for curTable in peptideTables.values():
+        RemoveAccessionsFromTableByBlacklist(
+            curTable, blackList, columnNames)
 
 
 def TestUnusedContribConfParams(unused: Comparable,
@@ -233,19 +239,6 @@ def ApplyParamsFilter(unused: Comparable,
     return peptideTables
 
 
-def RemoveAccessionsFromTableByBlacklist(peptideTable: Dict[str, List[str]],
-                                         blackList: Dict[str, int],
-                                         columnNames: ColumnNames) -> None:
-    i = 0
-    curTableLen = len(peptideTable[columnNames.accession])
-    while i < curTableLen:
-        if(peptideTable[columnNames.accession][i].split(';')[0] in blackList):
-            RemoveRow(peptideTable, i)
-            curTableLen -= 1
-            i -= 1
-        i += 1
-
-
 def TestConfDefaultCondition(confVal: Decimal):
     if confVal >= Decimal("99"):
         return 2
@@ -255,7 +248,7 @@ def TestConfDefaultCondition(confVal: Decimal):
 
 
 def GenerateTableAccessionsBunch(peptideTable: Dict[str, List[str]],
-                                 columnNames: ColumnNames):
+                                 columnNames: ColumnNames) -> Dict[str, int]:
     accessionBunch: Dict[str, int] = {}
     for accession in peptideTable[columnNames.accession]:
         if accession not in accessionBunch:
