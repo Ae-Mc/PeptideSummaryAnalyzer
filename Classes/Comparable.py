@@ -14,7 +14,7 @@ class Comparable:
 
     def __init__(self, op: str = "", val: str = None) -> None:
         self.__float: bool = False
-        if len(op.strip()) == len([ch for ch in op.strip() if ch in "!=<>"]):
+        if val is not None:
             self.op: str = op
             self.val: str = val
         else:
