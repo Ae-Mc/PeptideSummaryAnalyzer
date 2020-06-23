@@ -45,8 +45,14 @@ class Preset:
                 if len(line.strip()) > 0]
 
         self.settings.proteinPilotVersion = presetFileValues[0]
-        self.settings.blackList = GetFileLines(presetFileValues[1])
-        self.settings.whiteList = GetFileLines(presetFileValues[2])
+        self.settings.blackList = None
+        self.settings.whiteList = None
+        if len(presetFileValues[1].strip()):
+            self.settings.whiteList = GetFileLines(
+                path.join(self.folder, presetFileValues[1]))
+        if len(presetFileValues[2].strip()):
+            self.settings.blackList = GetFileLines(
+                path.join(self.folder, presetFileValues[2]))
         self.settings.isProteinGroupFilter = presetFileValues[3].lower()
         self.settings.seqDB = ReadSeqDB(
             path.join(self.folder, presetFileValues[4]))
