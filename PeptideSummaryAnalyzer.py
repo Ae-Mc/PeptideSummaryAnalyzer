@@ -263,14 +263,17 @@ def GenerateTableAccessionsBunch(peptideTable: Dict[str, List[str]],
     return accessionBunch
 
 
-def ApplyDefaultConf(peptideTables: Dict[str, Dict[str, List[str]]],
-                     columnNames: ColumnNames) -> None:
-    """ default-условие: Accession учитывается, если хотя бы одна
+def ApplyConfidenceDefaultFilter(
+        peptideTables: Dict[str, Dict[str, List[str]]],
+        columnNames: ColumnNames) -> None:
+    """ Применяем Confidence default условие.
+
+    Удаляем все ID, у которых нет ни одной строки проходящей default-условие.
+
+    default-условие: Accession учитывается, если хотя бы одна
     из строк с ним имеет Conf >= 99 или минимум две строки имеют
     Conf >= 95"""
-
-    for tableNum in peptideTables:
-        curTable = peptideTables[tableNum]
+    for tableNum, curTable in peptideTables.items():
         curTableLen = len(curTable[columnNames.unused])
         # Заносим все Accession в список Accession для удаления
         # В процессе чтения списка записи из него будут удаляться
@@ -285,7 +288,41 @@ def ApplyDefaultConf(peptideTables: Dict[str, Dict[str, List[str]]],
                 if blackList[curAccession] > 1:
                     del blackList[curAccession]
             i += 1
-        RemoveAccessionsFromTableByBlacklist(curTable, blackList, columnNames)
+        RemoveAccessionsFromTableByBlacklist(curTable,
+                                             [*blackList],
+                                             columnNames)
+
+
+def ApplyConfidenceIDFilter(confID: Comparable,
+                            peptideTables: Dict[str, Dict[str, List[str]]],
+                            columnNames: ColumnNames) -> None:
+    """ Применяем Confidence ID фильтр.
+
+    Удаляем все ID, у которых нет ни одной строки проходящей условия,
+    заданные confID.
+
+    default-условие: Accession учитывается, если хотя бы одна
+    из строк с ним имеет Conf >= 99 или минимум две строки имеют
+    Conf >= 95"""
+    if confID.val is None:
+        ApplyConfidenceDefaultFilter(peptideTables, columnNames)
+    else:
+        for tableNum, curTable in peptideTables.items():
+            curTableLen = len(curTable[columnNames.unused])
+            # Заносим все Accession в список Accession для удаления
+            # В процессе чтения списка записи из него будут удаляться
+            blackList = GenerateTableAccessionsBunch(curTable, columnNames)
+            i = 0
+            while i < curTableLen:
+                curAccession = curTable[columnNames.accession][i]
+                if curAccession in blackList:
+                    if confID.compare(curTable[columnNames.confidence][i],
+                                      tableNum):
+                        del blackList[curAccession]
+                i += 1
+            RemoveAccessionsFromTableByBlacklist(curTable,
+                                                 [*blackList],
+                                                 columnNames)
 
 
 def GetFileLines(filename: str) -> Union[List[str], None]:
@@ -339,7 +376,7 @@ def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
 def GetInput() -> Input:
     inputParams = Input()
     inputParams.inputPath = "Input"
-    if len(argv) == 11:
+    if len(argv) == 12:
         inputParams.proteinPilotVersion = argv[1]
         inputParams.whiteList = GetFileLines(argv[2])
         inputParams.blackList = GetFileLines(argv[3])
@@ -347,25 +384,23 @@ def GetInput() -> Input:
         inputParams.seqDB = ReadSeqDB(argv[5])
         inputParams.unused = Comparable(argv[6])
         inputParams.contrib = Comparable(argv[7])
-        inputParams.conf = argv[8]
-        inputParams.minGroupsWithAccession = int(argv[9])
-        inputParams.maxGroupAbsence = int(argv[10])
+        inputParams.confID = argv[8]
+        inputParams.confPeptide = argv[9]
+        inputParams.minGroupsWithAccession = int(argv[10])
+        inputParams.maxGroupAbsence = int(argv[11])
     else:
         inputParams.proteinPilotVersion = input(
             "ProteinPilot Version (4 or 5): ")
         inputParams.whiteList = GetFileLines(input("ID list file name: "))
         inputParams.blackList = GetFileLines(
             input("ID exclusion list file name: "))
-        inputParams.isProteinGroupFilter = (
-            True if (
-                input(
-                    "Protein group filter (Y or N): "
-                ).strip().lower() == 'y')
-            else False)
+        inputParams.isProteinGroupFilter = input(
+            "Protein group filter (Y or N): ").strip()
         inputParams.seqDB = ReadSeqDB(input("Database file name: "))
         inputParams.unused = Comparable(input("Unused: "))
         inputParams.contrib = Comparable(input("Contribution: "))
-        inputParams.conf = input("Confidence: ")
+        inputParams.confID = input("Confidence ID: ")
+        inputParams.confPeptide = input("Confidence peptide: ")
         inputParams.minGroupsWithAccession = int(input("Min groups with ID: "))
         inputParams.maxGroupAbsence = int(
             input("Max missing values per group: "))
@@ -396,11 +431,13 @@ def main(inputParams: Input = None):
                        inputParams.blackList,
                        columnNames)
 
-    if inputParams.isDefaultConf:
-        ApplyDefaultConf(peptideTables.peptideTables, columnNames)
+    if inputParams.isConfID:
+        ApplyConfidenceIDFilter(inputParams.confID,
+                                peptideTables.peptideTables,
+                                columnNames)
     ApplyParamsFilter(inputParams.unused,
                       inputParams.contrib,
-                      inputParams.conf,
+                      inputParams.confPeptide,
                       peptideTables.peptideTables,
                       columnNames)
 

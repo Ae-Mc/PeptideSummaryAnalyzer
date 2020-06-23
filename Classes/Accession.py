@@ -1,14 +1,17 @@
+from decimal import Decimal
+
+
 class Accession:
-    Unused: float
-    ScSumm: float
-    ScNorm: float
-    ScNormToFileNormRatio: float
-    PSignalSumm: float
-    PSignalNorm: float
-    PSignalNormToFileNormRatio: float
+    Unused: Decimal
+    ScSumm: Decimal
+    ScNorm: Decimal
+    ScNormToFileNormRatio: Decimal
+    PSignalSumm: Decimal
+    PSignalNorm: Decimal
+    PSignalNormToFileNormRatio: Decimal
     SeqlenSumm: int
     Counts: int
-    PSignalAndScNormRatiosAverage: float
+    PSignalAndScNormRatiosAverage: Decimal
 
     def __init__(self, name="", Unused=0, ScSumm=0, ScNorm=0,
                  ScNormToFileNormRatio=0, PSignalSumm=0, PSignalNorm=0,
