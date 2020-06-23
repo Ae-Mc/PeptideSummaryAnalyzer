@@ -391,6 +391,11 @@ def main(inputParams: Input = None):
         peptideTables.ApplyProteinReplacements(
                 proteinTables.GetAccessionsReplacementsPerTable())
 
+    if inputParams.blackList:
+        ApplyBlackList(peptideTables.peptideTables,
+                       inputParams.blackList,
+                       columnNames)
+
     if inputParams.isDefaultConf:
         ApplyDefaultConf(peptideTables.peptideTables, columnNames)
     ApplyParamsFilter(inputParams.unused,
@@ -404,11 +409,6 @@ def main(inputParams: Input = None):
                                       columnNames=columnNames)
     accessionTables.sortedTableNums = peptideTables.GetSortedTableNums()
     filesSumms = GetScPsigAndNormFilesSumm(accessionTables.accessionsPerTable)
-
-    if inputParams.blackList:
-        ApplyBlackList(peptideTables.peptideTables,
-                       inputParams.blackList,
-                       columnNames)
 
     accessionTables.GetAccessionsPerTable(inputParams.seqDB, peptideTables)
     CalculateAccessionsNormRatios(accessionTables.accessionsPerTable,
