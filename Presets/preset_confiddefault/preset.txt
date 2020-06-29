@@ -6,6 +6,6 @@ Database file name: test.fasta
 Unused:
 Contribution:
 Confidence ID:default
-Confidence peptide:
+Confidence peptide:>=95
 Min groups with ID: 1
 Max missing values per group: 1
