@@ -3,6 +3,7 @@ from Classes.Accession import Accession
 from Classes.Sequence import Sequence
 from Classes.PeptideTables import PeptideTables
 from Classes.ColumnNames import ColumnNames
+from decimal import Decimal
 
 
 class AccessionTables:
@@ -53,25 +54,25 @@ class AccessionTables:
             if curAccession not in accessions:
                 accessions[curAccession] = Accession(name=curAccession)
             accessions[curAccession].Counts += 1
-            accessions[curAccession].Unused = float(
+            accessions[curAccession].Unused = Decimal(
                 peptideTable[self.columnNames.unused][i])
-            accessions[curAccession].ScSumm += float(
+            accessions[curAccession].ScSumm += Decimal(
                 peptideTable[self.columnNames.sc][i])
             accessions[curAccession].PSignalSumm += (
-                float(peptideTable[self.columnNames.precursorSignal][i]) if
-                peptideTable[self.columnNames.precursorSignal][i] != '' else 0)
+                Decimal(peptideTable[self.columnNames.precursorSignal][i]) if
+                peptideTable[self.columnNames.precursorSignal][i] != ''
+                else Decimal(0))
             accessions[curAccession].SeqlenSumm += (
                 len(peptideTable[self.columnNames.sequence][i]))
             i += 1
         return accessions
 
     def CalculateNormParamsForAccessions(
-            self: "AccessionTables",
+            self,
             accessions: Dict[str, Accession],
             seqences: Dict[str, Sequence]):
 
-        for accession in accessions:
-            curAccession = accessions[accession]
+        for accession, curAccession in accessions.items():
             curAccession.ScNorm = curAccession.ScSumm / seqences[accession].len
             curAccession.PSignalNorm = (
                 curAccession.PSignalSumm / seqences[accession].len)

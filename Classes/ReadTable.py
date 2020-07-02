@@ -2,8 +2,8 @@ from typing import Dict, List, IO
 
 
 def ReadTable(tableFilename: str,
-              sep: str = '\t',
-              unsafeFlag: bool = False) -> Dict[str, List[str]]:
+              unsafeFlag: bool = False,
+              sep: str = '\t') -> Dict[str, List[str]]:
     """ Считываем файл в словарь, где ключом является заголовок, а
     значением — список значений в столбце.
 
