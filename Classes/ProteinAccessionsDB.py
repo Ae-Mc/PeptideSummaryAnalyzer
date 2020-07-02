@@ -1,9 +1,10 @@
 from typing import Dict, List
 from os import listdir, path
+from decimal import Decimal
+from Classes.Sequence import Sequence
 from Classes.ReadTable import ReadTable
 from Classes.Errors import ColumnNotFoundError
 from Classes.ProteinAccession import ProteinAccession
-from decimal import Decimal
 
 
 class ProteinAccessionsDB(dict):
@@ -46,14 +47,21 @@ class ProteinAccessionsDB(dict):
                     self[accession.name] = accession
                 i += 1
 
-    def GetRepresentative(self, accessions: List[str]) -> str:
+    def GetRepresentative(self,
+                          accessions: List[str],
+                          seqDB: Dict[str, Sequence]) -> str:
         representativeAccession = ProteinAccession("", Decimal(0), 0)
         for accession in sorted(accessions):
             if(
                 self[accession].unused > representativeAccession.unused or
                 (self[accession].unused == representativeAccession.unused and
                  self[accession].occurences >
-                 representativeAccession.occurences)):
+                 representativeAccession.occurences) or
+                (self[accession].unused == representativeAccession.unused and
+                 self[accession].occurences ==
+                 representativeAccession.occurences and
+                 seqDB[accession].len >
+                 seqDB[representativeAccession.name].len)):
                 representativeAccession = self[accession]
         return representativeAccession.name
 

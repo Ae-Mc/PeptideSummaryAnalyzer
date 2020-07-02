@@ -4,18 +4,22 @@ from decimal import Decimal
 from Classes.ProteinAccessionsDB import ProteinAccessionsDB
 from Classes.ProteinGroup import ProteinGroup
 from Classes.ReadTable import ReadTable
-from Classes.Errors import ColumnNotFoundError
+from Classes.Errors import ColumnNotFoundError, AccessionNotFoundError
+from Classes.Sequence import Sequence
 
 
 class ProteinGroupsDB(dict):
     necessaryColumns = ["Accession", "Unused"]
     sortedTableNums: List[str]
     proteinAccessionsDB: ProteinAccessionsDB
+    seqDB: Dict[str, Sequence]
 
     def __init__(self,
                  proteinAccessionsDB: ProteinAccessionsDB,
+                 seqDB: Dict[str, Sequence],
                  folder: str) -> None:
         self.proteinAccessionsDB = proteinAccessionsDB
+        self.seqDB = seqDB
         self.LoadFromFolder(folder)
 
     def LoadFromFolder(self, folder: str) -> None:
@@ -58,4 +62,4 @@ class ProteinGroupsDB(dict):
             for group in table:
                 group.representativeAccession = (
                     self.proteinAccessionsDB.GetRepresentative(
-                        group.accessions))
+                        group.accessions, self.seqDB))
