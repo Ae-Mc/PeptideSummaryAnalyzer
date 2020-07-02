@@ -117,7 +117,10 @@ class Output:
                         # неправильно! Например, число 0.60000000001
                         # округляется до 0.600001, а не до 0.6
                         with localcontext() as context:
-                            context.prec = 6
+                            context.prec = max(
+                                1,
+                                7 + table[accession
+                                          ].__dict__[fieldName].adjusted())
                             val = str(+table[accession].__dict__[fieldName])
                             if '.' in val and "e" not in val.lower():
                                 val = val.rstrip("0").rstrip(".")
