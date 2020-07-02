@@ -47,8 +47,8 @@ class ProteinAccessionsDB(dict):
                 i += 1
 
     def GetRepresentative(self, accessions: List[str]) -> str:
-        representativeAccession = self[accessions[0]]
-        for accession in accessions:
+        representativeAccession = ProteinAccession("", Decimal(0), 0)
+        for accession in sorted(accessions):
             if(
                 self[accession].unused > representativeAccession.unused or
                 (self[accession].unused == representativeAccession.unused and

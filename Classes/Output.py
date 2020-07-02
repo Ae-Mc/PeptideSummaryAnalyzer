@@ -153,13 +153,15 @@ class Output:
                           ("\t{}" * len(self.proteinGroupsDB.sortedTableNums)
                            ).format(*self.proteinGroupsDB.sortedTableNums) +
                           "\n")
-            for reprAccession, accessions in outDict.items():
+            for reprAccession, accessions in sorted(outDict.items()):
+                if len(accessions) == 1:
+                    continue
                 outFile.write(
                     f"{reprAccession}\t" +
                     ("\t{}" * len(self.proteinGroupsDB.sortedTableNums)
                      ).format(*accessions[reprAccession]) + "\n")
 
-                for accession, accessionTables in accessions.items():
+                for accession, accessionTables in sorted(accessions.items()):
                     if accession == reprAccession:
                         continue
                     outFile.write(

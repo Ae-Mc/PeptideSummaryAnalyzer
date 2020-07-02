@@ -44,11 +44,13 @@ class ProteinGroupsDB(dict):
                         break
 
                     if Decimal(table["Unused"][i]) != Decimal(0):
+                        curGroup.accessions = sorted(curGroup.accessions)
                         self[tableNum].append(curGroup)
                         curGroup = ProteinGroup(
                             Decimal(table["Unused"][i]), [])
                     curGroup.accessions.append(table["Accession"][i])
                     i += 1
+                self[tableNum].append(curGroup)
         self.CalculateRepresentatives()
 
     def CalculateRepresentatives(self):
