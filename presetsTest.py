@@ -117,7 +117,7 @@ def GetPresetsFolders(presetFolder: str):
     for folderName in listdir(presetsFolder):
         if folderName.startswith("preset"):
             presetsFolders.append(path.join(presetsFolder, folderName))
-    return presetsFolders
+    return sorted(presetsFolders, key=lambda x: x.lower())
 
 
 def main():
