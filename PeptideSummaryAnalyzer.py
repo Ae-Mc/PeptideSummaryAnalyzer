@@ -422,6 +422,8 @@ def main(inputParams: Input = None):
                                           inputParams.inputPath)
         print(*[f"{tableNum}:" + ("\n\t{}" * len(table)).format(*table)
                 for tableNum, table in proteinGroupsDB.items()], sep="\n")
+        peptideTables.ApplyProteinReplacements(
+            proteinGroupsDB.GetReplacementsPerTable())
 
     if inputParams.blackList:
         ApplyBlackList(peptideTables.peptideTables,

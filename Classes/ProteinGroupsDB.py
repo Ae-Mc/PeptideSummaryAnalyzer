@@ -63,3 +63,18 @@ class ProteinGroupsDB(dict):
                 group.representativeAccession = (
                     self.proteinAccessionsDB.GetRepresentative(
                         group.accessions, self.seqDB))
+
+    def GetReplacementsPerTable(self) -> Dict[str, Dict[str, str]]:
+        replacements: Dict[str, Dict[str, str]] = {}
+        for tableNum, groups in self.items():
+            replacements[tableNum] = {}
+            group: ProteinGroup
+            for group in groups:
+                if group.representativeAccession is None:
+                    raise AccessionNotFoundError(
+                        "Representative accession for group"
+                        f"{group.accessions} not found")
+                for accession in group.accessions:
+                    replacements[tableNum][accession] = (
+                        group.representativeAccession)
+        return replacements
