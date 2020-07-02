@@ -15,3 +15,7 @@ class ProteinAccession:
         if not isinstance(other, ProteinAccession):
             return NotImplemented
         return self.__dict__ == other.__dict__
+
+    def __str__(self):
+        return (f"{self.name} (unused: {self.unused}, "
+                f"occurences: {self.occurences})")
