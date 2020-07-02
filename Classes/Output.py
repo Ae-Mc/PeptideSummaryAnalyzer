@@ -1,9 +1,9 @@
-from typing import Dict, Tuple, List
+from typing import Dict, Tuple, List, Optional
 from os import mkdir, path
 from Classes.AccessionTables import AccessionTables
-from Classes.ProteinDB import ProteinDB
 from Classes.Sequence import Sequence
 from Classes.Accession import Accession
+from Classes.ProteinGroupsDB import ProteinGroupsDB
 from Classes.ProteinGroup import ProteinGroup
 from Classes.Errors import AccessionNotFoundError
 from decimal import localcontext
@@ -15,22 +15,22 @@ class Output:
     accessionsBunch: Dict[str, Dict[str, Accession]]
     seqDB: Dict[str, Sequence]
     accessionTables: AccessionTables
+    proteinGroupsDB: Optional[ProteinGroupsDB]
 
     def __init__(
             self,
             outputDirPath: str,
             seqDB: Dict[str, Sequence],
             accessionTables: AccessionTables,
-            proteinTables: ProteinDB = None) -> None:
+            proteinGroupsDB: ProteinGroupsDB = None) -> None:
 
         self.seqDB: Dict[str, Sequence] = seqDB
         self.outputDirPath: str = outputDirPath
         self.accessionTables: AccessionTables = accessionTables
-        self.GenerateOutputFiles(proteinTables)
+        self.proteinGroupsDB = proteinGroupsDB
+        self.GenerateOutputFiles()
 
-    def GenerateOutputFiles(
-            self,
-            proteinDB: ProteinDB = None) -> None:
+    def GenerateOutputFiles(self) -> None:
 
         self.CreateDirIfNotExist()
         self.accessionsBunch = (
@@ -58,19 +58,7 @@ class Output:
                     fieldName=field,
                     outFilename=filename)
 
-        if proteinDB is not None:
-            self.GenerateGroupsFile(
-                    "ProteinGroups.txt",
-                    self.ConvertProteinGroupsToOutputFormat(
-                        proteinDB.GetSortedTableNums(),
-                        proteinDB.proteinGroupsPerTable),
-                    proteinDB)
-            self.GenerateGroupsFile(
-                    "DifficultCases.txt",
-                    self.ConvertProteinGroupsToOutputFormat(
-                        proteinDB.GetSortedTableNums(),
-                        proteinDB.difficultCases),
-                    proteinDB)
+        self.GenerateGroupsFile("ProteinGroups.txt")
 
         self.GenerateJointOutputFile("output.txt")
 
@@ -156,44 +144,32 @@ class Output:
                     else:
                         outFile.write('\t')
 
-    def GenerateGroupsFile(
-            self,
-            outFilename: str,
-            groups: Dict[str, Dict[str, Dict[str, int]]],
-            proteinDB: ProteinDB) -> None:
+    def GenerateGroupsFile(self, outFilename: str) -> None:
+        if self.proteinGroupsDB is None:
+            return
+        outDict = self.ConvertProteinGroupsToOutputFormat(self.proteinGroupsDB)
         with open(path.join(self.outputDirPath, outFilename), 'w') as outFile:
-            outFile.write(("Representative\tAccession" +
-                           "\t{}" * len(proteinDB.GetSortedTableNums()) +
-                           '\n').format(*proteinDB.GetSortedTableNums()))
-            for representativeAccessionName, accessions in sorted(
-                    groups.items()):
-                if len(accessions) > 1:
+            outFile.write("Representative\tAccession" +
+                          ("\t{}" * len(self.proteinGroupsDB.sortedTableNums)
+                           ).format(*self.proteinGroupsDB.sortedTableNums) +
+                          "\n")
+            for reprAccession, accessions in outDict.items():
+                outFile.write(
+                    f"{reprAccession}\t" +
+                    ("\t{}" * len(self.proteinGroupsDB.sortedTableNums)
+                     ).format(*accessions[reprAccession]) + "\n")
+
+                for accession, accessionTables in accessions.items():
+                    if accession == reprAccession:
+                        continue
                     outFile.write(
-                        f"{representativeAccessionName}\t" +
-                        ("\t{}" * len(proteinDB.GetSortedTableNums()) +
-                         '\n').format(
-                             *(map(
-                                 lambda key:
-                                 accessions[representativeAccessionName][key],
-                                 proteinDB.GetSortedTableNums()))
-                             ))
-                    for replaceableName in sorted(accessions.keys()):
-                        if replaceableName == representativeAccessionName:
-                            continue
-                        outFile.write(
-                            ("\t{}" +
-                             "\t{}" * len(proteinDB.GetSortedTableNums()) +
-                             '\n').format(
-                                 replaceableName,
-                                 *[accessions[replaceableName][key] for key in
-                                     proteinDB.GetSortedTableNums()]
-                                 ))
+                        f"\t{accession}" +
+                        ("\t{}" * len(self.proteinGroupsDB.sortedTableNums)
+                         ).format(*accessionTables) + "\n")
 
     def ConvertProteinGroupsToOutputFormat(
-            self,
-            tableNums: List[str],
-            groupsPerTable: Dict[str, List[ProteinGroup]]
-            ) -> Dict[str, Dict[str, Dict[str, int]]]:
+            self, proteinGroupsDB: ProteinGroupsDB
+    ) -> Dict[str, Dict[str, List[int]]]:
         """Представление групп в формате
         {
             "RID": {
@@ -211,24 +187,24 @@ class Output:
                 }
             }
         }"""
-        accessions: Dict[str, Dict[str, Dict[str, int]]] = {}
+        accessions: Dict[str, Dict[str, List[int]]] = {}
         groups: List[ProteinGroup]
-        for tableNum, groups in groupsPerTable.items():
+        for tableNum, groups in proteinGroupsDB.items():
             for group in groups:
                 reprAccession = group.representativeAccession
                 if reprAccession is None:
                     raise AccessionNotFoundError(
                         "Representative accession for group"
-                        f"{group.accessions} is not found")
+                        f"{group.accessions} not found")
                 if reprAccession not in accessions:
                     accessions[reprAccession] = {}
                 for accession in group.accessions:
                     if (accession not in accessions[reprAccession]):
                         accessions[reprAccession][accession] = (
-                                {tableNum: 0 for tableNum in
-                                    tableNums}
-                        )
-                    accessions[reprAccession][accession][tableNum] = 1
+                                [0 for tableNum in
+                                    proteinGroupsDB.sortedTableNums])
+                    accessions[reprAccession][accession][
+                        proteinGroupsDB.sortedTableNums.index(tableNum)] = 1
         return accessions
 
     def GenerateJointOutputFile(

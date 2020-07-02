@@ -4,6 +4,18 @@ class AccessionNotFoundError(Exception):
         self.message = message
 
 
+class ColumnNotFoundError(Exception):
+
+    def __init__(self, columnName: str, filename: str = None):
+        if columnName is not None:
+            self.message = f"Column {columnName} not found!"
+            if filename is not None:
+                self.message = (
+                    f"Column {columnName} not found in file {filename}!")
+        else:
+            self.message = None
+
+
 class RepresentativeAccessionNotFoundError(Exception):
 
     def __init__(self, group):

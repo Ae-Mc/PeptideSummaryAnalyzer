@@ -1,14 +1,15 @@
 from typing import List, Optional
+from decimal import Decimal
 
 
 class ProteinGroup:
     representativeAccession: Optional[str]
     accessions: List[str]
-    unused: float
+    unused: Decimal
 
     def __init__(
             self,
-            unused: float = None,
+            unused: Decimal = None,
             accessions: List[str] = None,
             representativeAccession: str = None) -> None:
 

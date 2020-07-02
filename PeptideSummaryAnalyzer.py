@@ -5,7 +5,8 @@ from Classes.Sequence import Sequence
 from Classes.Comparable import Comparable
 from Classes.Accession import Accession
 from Classes.Input import Input
-from Classes.ProteinDB import ProteinDB
+from Classes.ProteinAccessionsDB import ProteinAccessionsDB
+from Classes.ProteinGroupsDB import ProteinGroupsDB
 from Classes.PeptideTables import PeptideTables
 from Classes.AccessionTables import AccessionTables
 from Classes.ColumnNames import ColumnNames
@@ -411,15 +412,15 @@ def main(inputParams: Input = None):
         columnNames = ColumnNames()
 
     peptideTables = PeptideTables(columnNames, inputDir=inputParams.inputPath)
-    proteinTables = None
+    proteinGroupsDB = None
+    # TODO: Protein filter
     if inputParams.isProteinGroupFilter:
-        proteinTables = ProteinDB(inputParams.inputPath,
-                                  inputParams.seqDB,
-                                  unsafeReadTableFlag=True)
-        proteinTables.ReadDBFromFolder()
-        proteinTables.CalculateRepresentatives()
-        peptideTables.ApplyProteinReplacements(
-                proteinTables.GetAccessionsReplacementsPerTable())
+        proteinAccessionsDB = ProteinAccessionsDB(inputParams.inputPath)
+        print(*proteinAccessionsDB.items(), sep="\n")
+        proteinGroupsDB = ProteinGroupsDB(proteinAccessionsDB,
+                                          inputParams.inputPath)
+        print(*[f"{tableNum}:" + ("\n\t{}" * len(table)).format(*table)
+                for tableNum, table in proteinGroupsDB.items()], sep="\n")
 
     if inputParams.blackList:
         ApplyBlackList(peptideTables.peptideTables,
@@ -458,7 +459,7 @@ def main(inputParams: Input = None):
     Output("Output/",
            seqDB=inputParams.seqDB,
            accessionTables=accessionTables,
-           proteinTables=proteinTables)
+           proteinGroupsDB=proteinGroupsDB)
 
 
 if __name__ == "__main__":
