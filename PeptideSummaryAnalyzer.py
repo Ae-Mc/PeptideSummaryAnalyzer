@@ -413,15 +413,11 @@ def main(inputParams: Input = None):
 
     peptideTables = PeptideTables(columnNames, inputDir=inputParams.inputPath)
     proteinGroupsDB = None
-    # TODO: Protein filter
     if inputParams.isProteinGroupFilter:
         proteinAccessionsDB = ProteinAccessionsDB(inputParams.inputPath)
-        print(*proteinAccessionsDB.items(), sep="\n")
         proteinGroupsDB = ProteinGroupsDB(proteinAccessionsDB,
                                           inputParams.seqDB,
                                           inputParams.inputPath)
-        print(*[f"{tableNum}:" + ("\n\t{}" * len(table)).format(*table)
-                for tableNum, table in proteinGroupsDB.items()], sep="\n")
         peptideTables.ApplyProteinReplacements(
             proteinGroupsDB.GetReplacementsPerTable())
 
