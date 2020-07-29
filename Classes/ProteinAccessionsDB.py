@@ -19,7 +19,7 @@ class ProteinAccessionsDB(dict):
         dictionary: Dict[str, Dict[str, List[str]]] = {}
         for filename in filenames:
             tableNum = path.split(filename)[1].split('_')[0]
-            dictionary[tableNum] = ReadTable(filename)
+            dictionary[tableNum] = ReadTable(filename, unsafeFlag=True)
         self.LoadFromDict(dictionary)
 
     def LoadFromDict(self,
