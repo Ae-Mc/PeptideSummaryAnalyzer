@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-#!python
-=======
 #!/bin/env python3
->>>>>>> InDevelopment
 import zipfile
 from os import listdir
 from os.path import join
