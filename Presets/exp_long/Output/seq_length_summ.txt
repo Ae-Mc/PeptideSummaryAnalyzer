@@ -1,0 +1,174 @@
+Accession	0.1	0.2	0.3	0.4	1.1	1.2	1.3	1.4	3.1	3.2	3.4	5.1	5.2	5.3	5.4	7.1	7.2	7.3	10.1	10.2	10.3	12.1	12.2	12.3
+Efra.gene10049_i0_length1308.p1	14	233	46	34			29	120	70	126	22	98		206	110	24	111		23	176	110		98	23
+Efra.gene10189_i0_length1293.p1									27			35		59		27	18	53	43	27	18		27	53
+Efra.gene10803_i4_length1062.p1																						93	44	
+Efra.gene10979_i0_length1233.p1						153			250		115	420	184	322	163	369	285	288	171	228	231	463	436	285
+Efra.gene10979_i3_length1134.p1																					189			
+Efra.gene110165_i0_length213.p1		11	33		22	22										22								
+Efra.gene11166_i2_length1221.p1												13									13			
+Efra.gene113616_i0_length210.p1					27																			
+Efra.gene1160_i1_length3549.p1												14												
+Efra.gene11716_i0_length1179.p1					13				13					13		26			13	13	13	13		
+Efra.gene11803_i0_length1173.p1																12								
+Efra.gene12082_i0_length1156.p1									17							43	37		17	57	20	26		
+Efra.gene12182_i0_length1149.p1							77			176		420						295						
+Efra.gene12442_i0_length1134.p1									192			393						244	135	170			264	384
+Efra.gene12565_i0_length1128.p1																							14	
+Efra.gene12660_i0_length1122.p1												9		9						9				
+Efra.gene12747_i0_length1116.p1	16	16	101	16				64		16	16				16					16	16			
+Efra.gene1287_i0_length3423.p1	23							23							26									
+Efra.gene12899_i0_length1107.p1														11						11				
+Efra.gene13656_i0_length1062.p1						14			73			46		81	39	45	31	65	170	31	17	45	31	
+Efra.gene13900_i0_length1047.p1					27		34		67			196	37	79		37	37	44	77	17	17	17	17	51
+Efra.gene13951_i0_length1044.p1																			24					
+Efra.gene14059_i2_length1041.p1		26	37	47	155	328	188	37	302	347	81	365	479	933	175	708	251	936	377	351	449	377	715	430
+Efra.gene14246_i0_length1029.p1		49	10																					
+Efra.gene14418_i2_length1020.p1											23	60	46	66	42	50	23	31	165		48		19	42
+Efra.gene14678_i0_length1005.p1	57							40																
+Efra.gene15113_i1_length981.p1								11																
+Efra.gene15574_i0_length957.p1	40							24											15					
+Efra.gene16475_i0_length912.p1															16									
+Efra.gene16498_i0_length912.p1	415	281	170	246	398	260	219	620	725	190	783	335	255	356	959	317	291	224	395	338	182	195	356	210
+Efra.gene16536_i2_length909.p1	15	15	55		15	15	15		15	15	15	23	30	15	15	30	15		15	15	15		15	29
+Efra.gene16539_i1_length909.p1					33												33	33	17	16	16	17	16	
+Efra.gene16539_i3_length783.p1					16																			
+Efra.gene16603_i1_length906.p1								8																
+Efra.gene17074_i1_length884.p1						11						11							11					
+Efra.gene17127_i0_length880.p1					117	127	189	22	481	208	115	1134	412	645	241	583	415	488	762	453	263	251	339	396
+Efra.gene17127_i6_length777.p1												703												
+Efra.gene17231_i0_length876.p1																			15					
+Efra.gene17278_i0_length873.p1												17					17	43	17		17			31
+Efra.gene1749_i1_length3021.p1					112	53			302	116	226	515	233	396	347	458	277	314	685	149	278	211	218	292
+Efra.gene1757_i1_length3015.p1														9		41		94		47				18
+Efra.gene17580_i1_length858.p1					58													34	62					
+Efra.gene17870_i0_length846.p1																			14					
+Efra.gene18044_i0_length837.p1														24				73						
+Efra.gene18178_i0_length831.p1						33	29		29		58	72	24	41	29	73		81	49	49	29			
+Efra.gene18440_i0_length819.p1												23									11	11		
+Efra.gene18480_i1_length818.p1	32			48				41							51									
+Efra.gene1853_i0_length2945.p1						42	42		80	59	16	234	95	227	51	236	170	229	147	212	83	42	162	132
+Efra.gene18564_i2_length720.p1		14	25		84	39	107	19	88	40	53	186	82	127	100	139	123	183	173	65	102	68	101	69
+Efra.gene18573_i0_length813.p1																			46					
+Efra.gene18607_i0_length813.p1		31																						
+Efra.gene19022_i1_length795.p1				25																				
+Efra.gene19055_i3_length734.p1			11	11				11			19	10			45	11								
+Efra.gene19206_i0_length786.p1												12												12
+Efra.gene19494_i1_length774.p1							14																	
+Efra.gene19562_i0_length771.p1						10																		
+Efra.gene19598_i0_length771.p1												36		17			17		36			17		
+Efra.gene19920_i0_length759.p1															22									
+Efra.gene20233_i0_length744.p1					105										85	183				120	60		183	
+Efra.gene20233_i2_length690.p1														202					210					
+Efra.gene20233_i3_length579.p1	14		14	14		91	28	14	91	14	14	98	49				105					14		77
+Efra.gene21094_i2_length714.p1												12												
+Efra.gene21131_i1_length711.p1	51	31	31		82	244	114	9	231	167	145	279	487	264	86	368	360	296	231	276	165	153	364	163
+Efra.gene21137_i1_length711.p1					22		24					94		24	46	62	46	70	46	46	46		46	67
+Efra.gene21360_i0_length705.p1												21												
+Efra.gene21462_i0_length701.p1						15						51					23	71	48	60				
+Efra.gene22028_i0_length681.p1							20								20	60	28		40				28	
+Efra.gene22225_i1_length309.p1			16			16		16	16		16	32			16		16		16	16				
+Efra.gene22328_i1_length673.p1					14	28			41	45	14	127	110	77	28	28	156	64	91	64	64	28	51	80
+Efra.gene23221_i0_length645.p1									48									53	41	57				
+Efra.gene23450_i0_length639.p1			22					43																
+Efra.gene23511_i1_length639.p1					42	48	16	26	58	63	60	123	38	86	120	91	127	92	92	74	42	58	95	108
+Efra.gene24170_i0_length618.p1									10			20	10	10	10					10				
+Efra.gene24458_i0_length609.p1	104	124	126	79	331	377	201	91	685	324	337	920	704	741	483	878	806	614	712	730	369	435	702	519
+Efra.gene24472_i0_length609.p1				12																				
+Efra.gene2525_i0_length2598.p1		34										17		17			17			17				
+Efra.gene25373_i0_length585.p1												16												
+Efra.gene25400_i0_length486.p1	17	17		17	17	17	17		17	43	17	35	26	87	17	35	17	26	44	17	17	17	17	35
+Efra.gene25400_i1_length585.p1					16				16	25	16	50	25	34	16	48	80	41	25	32	16		16	16
+Efra.gene25717_i1_length576.p1							11		11			11		11			11			11	11			11
+Efra.gene25799_i1_length576.p1					29	12	12		12	12	12	12	12	12	12	12	12	63	46		12	29	12	12
+Efra.gene25963_i0_length570.p1																92		92	92					37
+Efra.gene25967_i0_length570.p1						97	46					46		46		49	115	98	78	32	32			
+Efra.gene25967_i1_length321.p1					34				17															
+Efra.gene26093_i0_length567.p1												35							35	15			35	
+Efra.gene26194_i2_length522.p1																9								
+Efra.gene26421_i0_length561.p1				10																				
+Efra.gene26595_i0_length555.p1					14																			
+Efra.gene26700_i1_length468.p1																			22	22	22			
+Efra.gene26710_i0_length552.p1	76	40	51	11	98	84	66	87	120	52	80	144	131	134	120	135	193	120	116	116	138	157	135	98
+Efra.gene26810_i1_length543.p1					14	28	14	14	61	21	28	33	20	35		34	40	28	20	21	28	28	34	40
+Efra.gene26810_i2_length552.p1					9	9			50	16	9	30	9	30	9	23	29	23	9	16	23	23	23	29
+Efra.gene27122_i0_length543.p1	12					31	12	22	40	41	72	52	22	64	66	22	65	65	31	75	46	53	77	50
+Efra.gene27221_i0_length540.p1												17							17		17			
+Efra.gene27331_i1_length540.p1					59	17	30		59	59	30	107	76	59	76	76	59	45	94	33	46	59	59	59
+Efra.gene27516_i0_length534.p1					24	12			12			24	12	24	12	24	38		38	24	24	12	24	24
+Efra.gene2834_i2_length480.p1																			11		11			11
+Efra.gene28361_i0_length519.p1	72	22	11	45				22	22										22		22			
+Efra.gene28510_i1_length516.p1								15													15			
+Efra.gene29879_i0_length489.p1														14		33		27	14					
+Efra.gene29886_i0_length489.p1	198	184	184	210	34	30	34	270	147	109	223	165	350	156	120	94	111	160	132	128	260	68	128	584
+Efra.gene30061_i0_length486.p1												15												
+Efra.gene30096_i0_length486.p1					47	43	31				31	46		31	67	31	61	127	38	50	81		66	70
+Efra.gene30394_i1_length483.p1											24				95									
+Efra.gene30439_i0_length480.p1																18							18	18
+Efra.gene31160_i0_length470.p1			17	17									17		17									
+Efra.gene31366_i0_length466.p1									11			33						23	58	22	22			93
+Efra.gene31742_i2_length462.p1				8		8		15			31									8				
+Efra.gene31924_i2_length459.p1							12		12			12	20	12	12	12	12		12	12	12	12	12	23
+Efra.gene32379_i0_length452.p1	16	96	32	16	16			16			16				16	32								
+Efra.gene329_i3_length5301.p1		21	11		72	36	21	57	217	242	35	383	501	262	175	134	350	219	309	317	353	95	165	466
+Efra.gene330_i0_length5295.p1				11																				
+Efra.gene33821_i0_length432.p1				34		26	26			8		68	34	26	208	26	60	112	52	26			26	260
+Efra.gene34053_i0_length429.p1				14											34									
+Efra.gene34277_i0_length426.p1					48	66	48		62	48	46	63	80	48	62	62	76	107	62	93	48	66	77	100
+Efra.gene34351_i1_length426.p1									19			38			58				102					58
+Efra.gene34755_i1_length384.p1																		32						
+Efra.gene349_i0_length5181.p1						24	13						48	60			80		138	78	13			31
+Efra.gene35075_i0_length418.p1																							28	
+Efra.gene35579_i0_length414.p1		90	40																					
+Efra.gene38041_i0_length390.p1		22																						
+Efra.gene38386_i0_length387.p1						14			14						14	14				14	14			
+Efra.gene38556_i0_length385.p1	30		15	15			15	30			30	30			31				30	15			15	
+Efra.gene399_i0_length4974.p1		20			49	32	49			32		41	32	12			49	84	76	29	49		49	64
+Efra.gene40169_i0_length372.p1												10		10					10		10			10
+Efra.gene41065_i0_length366.p1												17												
+Efra.gene41171_i0_length356.p1						20				20		104	20	20		76	84		80	40				
+Efra.gene41171_i1_length366.p1	12	12	12	12	32		32	12	12		12				12						12		32	32
+Efra.gene42768_i0_length273.p1	36	12	12	22			12	12	24		12	12			12				12		12			
+Efra.gene42777_i0_length357.p1	21	21	21	21	21		21	42	63	21	21	21	21	21	21	21					21	21	21	21
+Efra.gene42958_i0_length354.p1				96																				
+Efra.gene42994_i0_length354.p1																	26	91		26	93			
+Efra.gene43037_i0_length354.p1					87	50	50		263			121	170	121		70	149	87	70	90	61	103	107	90
+Efra.gene43796_i1_length351.p1																	32							
+Efra.gene44522_i0_length345.p1											27													
+Efra.gene47379_i0_length333.p1	118	186	106	83	43	56		191		48	70		93	66	88	68	124	68		44	61	68	134	43
+Efra.gene48207_i0_length327.p1						13													13		13		13	
+Efra.gene482_i1_length4723.p1		20						20	20		20				20					20	20		20	
+Efra.gene49456_i0_length210.p1												155		120					291		25		60	
+Efra.gene49456_i1_length324.p1					11				29		11	97	29	11	40	58	29			29		29		40
+Efra.gene50115_i0_length321.p1	151	117	111	75	83	58	81	75	90	75	75	93	75	94	56	152	75	63	179	88	105	43	88	
+Efra.gene52470_i0_length312.p1				8											8									
+Efra.gene56456_i0_length297.p1						7																		
+Efra.gene56589_i0_length261.p1		64								36										36				
+Efra.gene59164_i0_length291.p1				11																				
+Efra.gene59690_i0_length288.p1						50	19		39	26	19	65	39	39		39	58	50	58	39	39		46	31
+Efra.gene6007_i1_length1710.p1									10			10			10							10		
+Efra.gene60545_i1_length273.p1		12				24	24					24	24	12			24		60		24			
+Efra.gene6232_i1_length1047.p1																								11
+Efra.gene62669_i0_length282.p1	193			36	35	22		57	35		85				63	22								
+Efra.gene6459_i2_length357.p1						11													11					
+Efra.gene6519_i1_length1659.p1																								50
+Efra.gene6586_i0_length1651.p1					20	20			38			20		20		20	20		20	40	40		20	
+Efra.gene67076_i0_length270.p1														34					16			16	16	
+Efra.gene68755_i0_length267.p1			15																					
+Efra.gene6959_i0_length1608.p1			11																		11			
+Efra.gene6991_i0_length1602.p1																							27	
+Efra.gene70882_i0_length264.p1						32											16			48			48	
+Efra.gene74167_i0_length258.p1							14																	
+Efra.gene7558_i0_length1539.p1									57			44					68	42	57	35	69	35	117	113
+Efra.gene7598_i0_length1533.p1					65	22	38				27	27	49		49	38	38	97	49	38	65	54		97
+Efra.gene7751_i0_length1518.p1									62		105	83	31		93	53			62		22	41		19
+Efra.gene813_i1_length4026.p1					26				107		145	159	99	50	193	193	66	108	223		131	54	64	146
+Efra.gene82151_i1_length246.p1									29															
+Efra.gene8230_i0_length1470.p1									27			39		39		12	39	27	39	26	37		51	53
+Efra.gene82314_i0_length246.p1									20			84				20								
+Efra.gene8953_i1_length1399.p1												18					16		18					
+Efra.gene91141_i0_length234.p1			27																					
+Efra.gene9182_i0_length1380.p1			57														106							
+Efra.gene9478_i0_length1353.p1						22			102			138		137	62	71	65	190	109	83	62	58	142	122
+Efra.gene9603_i0_length1344.p1								24																
+Efra.gene9742_i0_length1332.p1			12	30				30			24				36									
+Efra.gene99937_i0_length225.p1	60		22	49	40	40	40	20	48	40	40	49	48	40		66	48	40		40	40	48		
