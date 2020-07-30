@@ -16,7 +16,9 @@ def ReadTable(tableFilename: str,
         return ReadTableFromFileObj(inFile, sep, unsafeFlag)
 
 
-def ReadTableFromFileObj(inFile: IO[str], sep: str, unsafeFlag: bool):
+def ReadTableFromFileObj(inFile: IO[str],
+                         sep: str,
+                         unsafeFlag: bool) -> Dict[str, List[str]]:
     strings = inFile.read().split('\n')
     inFile.close()
     table: Dict[str, List[str]] = {}
