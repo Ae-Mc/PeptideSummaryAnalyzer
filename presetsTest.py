@@ -3,7 +3,7 @@ from os import listdir, path, remove
 from typing import List
 from Classes.Input import Input
 from Classes.Comparable import Comparable
-from PeptideSummaryAnalyzer import ReadSeqDB, GetFileLines
+from Classes.Functions import ReadSeqDB, GetFileLines
 from PeptideSummaryAnalyzer import main as proteinMain
 
 
