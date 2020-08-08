@@ -150,8 +150,9 @@ if len(argv) > 1:
         columnPadding = 1
         filenames = argv[1:]
     for filename in filenames:
+        fileTable = ReadTable(filename, unsafeFlag=True)
+        columnsToDelete = []
         if filename.endswith("PeptideSummary.txt"):
-            fileTable = ReadTable(filename)
             columnsToDelete = [
                 "N",
                 "Total",
@@ -180,13 +181,63 @@ if len(argv) > 1:
                 "Apex Time (Peptide)",
                 "Elution Peak Width (Peptide)",
                 "MS2Counts"]
-            for columnName in columnsToDelete:
-                if columnName in fileTable:
-                    del fileTable[columnName]
             for i in range(0, len(fileTable["Accessions"])):
                 fileTable["Accessions"][i] = (
                     fileTable["Accessions"][i].split(';')[0])
-            table = Table(table=fileTable)
-        else:
-            table = Table(filename=filename)
+        elif filename.endswith("ProteinSummary.txt"):
+            columnsToDelete = [
+                "Total",
+                "%Cov",
+                "%Cov(50)",
+                "%Cov(95)",
+                "Name",
+                "Species",
+                "Peptides(95%)",
+                "",
+                "Gene Ontology",
+                "Gene Names",
+                "Pathway",
+                "Interactions",
+                "Protein Families",
+                "Subcellular Location",
+                "Function",
+                "Disease",
+                "Tissue Specificity",
+                "Keywords",
+                "Modifications",
+                "Natural Variants",
+                "Glycosylations",
+                "Propeptide",
+                "Signal Peptide",
+                "Initiator Methionine",
+                "Sequence Conflicts",
+                "Sequence Uncertainties",
+                "Alternative Sequence",
+                "Non-Standard Residues",
+                "Lipidations",
+                "Disulfide Bonds",
+                "Cross Links",
+                "Protein Existence",
+                "InterPro",
+                "Polymorphism",
+                "PTM",
+                "RNA Editing",
+                "Active Site",
+                "Binding Site",
+                "Entry",
+                "Entry Name",
+                "Entry Status",
+                "Sequence",
+                "Protein Names",
+                "Organism",
+                "Sequence Length",
+                "Features",
+                "Mass Spectrometry",
+                "Virus Hosts",
+                "Entry Information"
+            ]
+        for columnName in columnsToDelete:
+            if columnName in fileTable:
+                del fileTable[columnName]
+        table = Table(table=fileTable)
         table.Print(columnPadding=columnPadding)
