@@ -1,7 +1,9 @@
 from os import listdir
 from typing import Dict, List
-from Classes.ReadTable import ReadTable
-from Classes.ColumnNames import ColumnNames
+from .ReadTable import ReadTable
+from .ColumnNames import ColumnNames
+from .ProteinPerTableList import ProteinPerTableList
+
 
 """ peptideTables - словарь вида
     {
@@ -83,6 +85,17 @@ class PeptideTables:
                 accession.split(';')[0] for accession in table[
                     self.columnNames.accession]]
 
+    def ApplyProteinPerTableList(
+            self, proteinPerTableList: ProteinPerTableList) -> None:
+        for tableNum, table in self.peptideTables.items():
+            i = 0
+            while i < len(table[self.columnNames.accession]):
+                if(table[self.columnNames.accession][i] not in
+                   proteinPerTableList[tableNum]):
+                    self.RemoveRow(tableNum, i)
+                    i -= 1
+                i += 1
+
     def ApplyProteinReplacements(
             self, proteinReplacements: Dict[str, Dict[str, str]]):
 
@@ -95,3 +108,8 @@ class PeptideTables:
 
     def SetColumnNames(self, columnNames: ColumnNames):
         self.columnNames = columnNames
+
+    def RemoveRow(self, tableNum: str, rowNum: int) -> None:
+        columns = [column for column in self.peptideTables[tableNum]]
+        for column in columns:
+            del self.peptideTables[tableNum][column][rowNum]

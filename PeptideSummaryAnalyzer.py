@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
-from typing import List, Dict, Union
+from decimal import Decimal, FloatOperation, getcontext
 from sys import argv
-from Classes.Sequence import Sequence
-from Classes.Comparable import Comparable
+from typing import Dict, List, Union
+
 from Classes.Accession import Accession
-from Classes.Input import Input
-from Classes.ProteinAccessionsDB import ProteinAccessionsDB
-from Classes.ProteinGroupsDB import ProteinGroupsDB
-from Classes.PeptideTables import PeptideTables
 from Classes.AccessionTables import AccessionTables
 from Classes.ColumnNames import ColumnNames
+from Classes.Comparable import Comparable
+from Classes.Input import Input
 from Classes.Output import Output
-from decimal import Decimal, getcontext, FloatOperation
+from Classes.PeptideTables import PeptideTables
+from Classes.ProteinAccessionsDB import ProteinAccessionsDB
+from Classes.ProteinGroupsDB import ProteinGroupsDB
+from Classes.ProteinPerTableList import ProteinPerTableList
+from Classes.Sequence import Sequence
 
 
 def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:
@@ -108,8 +110,8 @@ def CalculateAccessionsNormRatios(
 
 
 def GetScPsigAndNormFilesSumm(
-    accessionsPerTable: Dict[str, Dict[str, Accession]]) -> Dict[
-                        str, Dict[str, Decimal]]:
+    accessionsPerTable: Dict[str, Dict[str, Accession]]
+) -> Dict[str, Dict[str, Decimal]]:
     """ Получаем суммы параметров Sc, Sequence, PrecursorSignal,
     ScNorm, PSignalNorm по файлам
 
@@ -418,6 +420,8 @@ def main(inputParams: Input = None):
         proteinGroupsDB = ProteinGroupsDB(proteinAccessionsDB,
                                           inputParams.seqDB,
                                           inputParams.inputPath)
+        proteinPerTableList = ProteinPerTableList(proteinGroupsDB)
+        peptideTables.ApplyProteinPerTableList(proteinPerTableList)
         peptideTables.ApplyProteinReplacements(
             proteinGroupsDB.GetReplacementsPerTable())
 
