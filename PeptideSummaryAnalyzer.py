@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
-from Classes.Input import Input
-from Classes.ProteinAccessionsDB import ProteinAccessionsDB
-from Classes.ProteinGroupsDB import ProteinGroupsDB
-from Classes.PeptideTables import PeptideTables
+from decimal import FloatOperation, getcontext
+
 from Classes.AccessionTables import AccessionTables
 from Classes.ColumnNames import ColumnNames
+from Classes.Functions import (ApplyBlackList, ApplyConfidenceIDFilter,
+                               ApplyGroupFilter, ApplyParamsFilter,
+                               ApplyWhiteList, CalculateAccessionsNormRatios,
+                               GetInput, GetScPsigAndNormFilesSumm)
+from Classes.Input import Input
 from Classes.Output import Output
-from Classes.Functions import GetInput, ApplyBlackList, ApplyWhiteList
-from Classes.Functions import ApplyConfidenceIDFilter, ApplyParamsFilter
-from Classes.Functions import ApplyGroupFilter, GetScPsigAndNormFilesSumm
-from Classes.Functions import CalculateAccessionsNormRatios
-from decimal import getcontext, FloatOperation
+from Classes.PeptideTables import PeptideTables
+from Classes.ProteinAccessionsDB import ProteinAccessionsDB
+from Classes.ProteinGroupsDB import ProteinGroupsDB
+from Classes.ProteinPerTableList import ProteinPerTableList
 
 ## @mainpage Peptide Summary Analyzer
 # @section intro_sec Краткое описание
@@ -65,6 +67,8 @@ def main(inputParams: Input = None) -> None:
         proteinGroupsDB = ProteinGroupsDB(proteinAccessionsDB,
                                           inputParams.seqDB,
                                           inputParams.inputPath)
+        proteinPerTableList = ProteinPerTableList(proteinGroupsDB)
+        peptideTables.ApplyProteinPerTableList(proteinPerTableList)
         peptideTables.ApplyProteinReplacements(
             proteinGroupsDB.GetReplacementsPerTable())
 
