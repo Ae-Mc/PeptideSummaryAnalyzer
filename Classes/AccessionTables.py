@@ -30,7 +30,6 @@ class AccessionTables:
         """ Получаем суммы значений Sc, Precursor Signal и сумму длинн
         последовательностей для каждого Accession, а также нормализованные
         значения Precursor Signal и Sc для каждого файла"""
-
         self.accessionsPerTable: Dict[str, Dict[str, Accession]] = {}
         for tableNum in peptideTables.peptideTables:
             self.accessionsPerTable[tableNum] = (
@@ -45,7 +44,6 @@ class AccessionTables:
         """ Получаем unused, суммы значений Sc, Precursor Signal и сумму длинн
         последовательностей и подсчитываем количество строк с одинаковым
         Accession для каждого Accession """
-
         accessions: Dict[str, Accession] = {}
         i = 0
         while i < len(peptideTable[self.columnNames.accession]):
@@ -71,7 +69,6 @@ class AccessionTables:
             self,
             accessions: Dict[str, Accession],
             seqences: Dict[str, Sequence]):
-
         for accession, curAccession in accessions.items():
             curAccession.ScNorm = curAccession.ScSumm / seqences[accession].len
             curAccession.PSignalNorm = (
@@ -79,7 +76,6 @@ class AccessionTables:
 
     def GenerateAccessionsBunchOverAllTables(
             self) -> Dict[str, Dict[str, Accession]]:
-
         accessions: Dict[str, Dict[str, Accession]] = {}
         for tableName, table in self.accessionsPerTable.items():
             for accessionName, accession in table.items():
@@ -89,10 +85,8 @@ class AccessionTables:
         return accessions
 
     def RemoveAccessionFromAllTables(self, accession: str) -> None:
-
         for table in self.accessionsPerTable.values():
             table.pop(accession, None)
 
     def SetColumnNames(self, columnNames: ColumnNames):
-
         self.columnNames = columnNames

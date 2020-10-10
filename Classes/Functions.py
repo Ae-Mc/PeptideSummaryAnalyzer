@@ -441,7 +441,7 @@ def GetInput() -> Input:
     """Получение параметров для запуска обработки
 
     Returns:
-        Класс Input, содержащий все нужные параметры
+        Класс Input, содержащий все нужные параметры для запуска обработки
     """
     inputParams = Input()
     inputParams.inputPath = "Input"
