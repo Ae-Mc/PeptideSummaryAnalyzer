@@ -1,35 +1,43 @@
 from sys import argv
 from typing import List, Dict, Union
-from Classes.Accession import Accession
-from Classes.AccessionTables import AccessionTables
-from Classes.ColumnNames import ColumnNames
-from Classes.Comparable import Comparable
-from Classes.Input import Input
-from Classes.Sequence import Sequence
+from .Accession import Accession
+from .AccessionTables import AccessionTables
+from .ColumnNames import ColumnNames
+from .Comparable import Comparable
+from .Input import Input
+from .Sequence import Sequence
 from decimal import Decimal
 
 
-## Удаляет строку из таблицы, полученной с помощью Classes.ReadTable.ReadTable
-# @param table Таблица, из которой происходит удаление
-# @param rowNum Номер строки в таблице
 def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:
+    """Удаляет строку из таблицы, полученной с помощью .ReadTable.ReadTable
+
+    Args:
+        table Таблица, из которой происходит удаление
+        rowNum Номер строки в таблице
+    """
     columns = [column for column in table]
     for column in columns:
         del table[column][rowNum]
 
 
-## Подсчитывает количество файлов, не содержащих данный accession, в группе
-# @param accession Имя accession, для которого считается отсутствие в группе
-# @param group Список номеров таблиц, входящих в группу
-# @param accessionsPerTable Словарь, ключом в котором является номер таблицы, а
-#                           ключом — словарь, в котором, в свою очередь, ключом
-#                           является имя accession, а значением — экземпляр
-#                           класса Classes.Accession
-# @returns Количество файлов, не содержащих данный accession, в группе
 def CountAccessionLackInGroup(
         accession: str,
         group: List[str],
         accessionsPerTable: Dict[str, Dict[str, Accession]]) -> int:
+    """Подсчитывает количество файлов, не содержащих данный accession, в группе
+
+    Args:
+        accession: Имя accession, для которого считается отсутствие в группе
+        group: Список номеров таблиц, входящих в группу
+        accessionsPerTable: Словарь, ключом в котором является номер таблицы, а
+            ключом — словарь, в котором, в свою очередь, ключом
+            является имя accession, а значением — экземпляр
+            класса Classes.Accession
+
+    Returns:
+        Количество файлов, не содержащих данный accession, в группе
+    """
     groupAbsence = 0
     for tableName in group:
         if accession not in accessionsPerTable[tableName]:
@@ -37,23 +45,27 @@ def CountAccessionLackInGroup(
     return groupAbsence
 
 
-## Подсчёт количества групп, в которых данный accession отсутствует не более
-#  maxGroupAbsence раз
-# @param groups Словарь, в котором ключом является номер группы, а значением —
-#               список номеров входящих в неё таблиц
-# @param accession Имя accession, для которого считается отсутствие в группах
-# @param maxGroupAbsence Максимальное количество отсутствий accession в группе
-# @param accessionsPerTable Словарь, ключом в котором является номер таблицы, а
-#                           ключом — словарь, в котором, в свою очередь, ключом
-#                           является имя accession, а значением — экземпляр
-#                           класса Classes.Accession
-# @returns Количество групп, в которых accession отсутствует не более
-#          maxGroupAbsence раз
 def CountGroupsWithAccession(
         groups: Dict[str, List[str]],
         accession: str,
         maxGroupAbsence: int,
         accessionsPerTable: Dict[str, Dict[str, Accession]]) -> int:
+    """Подсчёт количества групп, в которых данный accession отсутствует не
+    более maxGroupAbsence раз
+
+    Args:
+        groups: Словарь, в котором ключом является номер группы, а значением —
+                  список номеров входящих в неё таблиц
+        accession: Имя accession, для которого считается отсутствие в группах
+        maxGroupAbsence: Максимальное количество отсутствий accession в группе
+        accessionsPerTable: Словарь, ключом в котором является номер таблицы, а
+            ключом — словарь, в котором, в свою очередь, ключом является имя
+            accession, а значением — экземпляр Accession
+
+    Returns:
+        Количество групп, в которых accession отсутствует не более
+        maxGroupAbsence раз
+    """
 
     groupsWithAccessionCount = len(groups)
     for tableNames in groups.values():
@@ -64,18 +76,23 @@ def CountGroupsWithAccession(
     return groupsWithAccessionCount
 
 
-## Создаёт словарь с группами, в котором ключом является номер группы, а
-#  значением — список номеров таблиц, входящих в группу
-# @param accessionsPerTable Словарь, ключом в котором является номер таблицы, а
-#                           ключом — словарь, в котором, в свою очередь, ключом
-#                           является имя accession, а значением — экземпляр
-#                           класса Classes.Accession
-# @returns Словарь с группами, в котором ключом является номер группы, а
-#  значением — список номеров таблиц, входящих в группу
 def GenerateGroupsBunch(
         accessionsPerTable: Dict[str, Dict[str, Accession]]
 ) -> Dict[str, List[str]]:
     groups: Dict[str, List[str]] = {}
+    """Создаёт словарь с группами, в котором ключом является номер группы, а
+    значением — список номеров таблиц, входящих в группу
+
+    Args:
+        accessionsPerTable: Словарь, ключом в котором является номер таблицы, а
+            ключом — словарь, в котором, в свою очередь, ключом
+            является имя accession, а значением — экземпляр
+            класса Classes.Accession
+
+    Returns:
+        Словарь с группами, в котором ключом является номер группы, а
+        значением — список номеров таблиц, входящих в группу
+    """
 
     for tableNum in accessionsPerTable.keys():
         groupNum = tableNum.split('.')[0]
@@ -85,20 +102,21 @@ def GenerateGroupsBunch(
     return groups
 
 
-## @brief Применение фильтра по группам к экземпляру класса
-#  Classes.AccessionTables
-# @param accessionTables Экземпляр класса Classes.AccessionTables, к которому
-#                        применяется фильтр
-#
-# Таблицы, начинающиеся с одинакового числа входят в одну группу, например:
-#     1.1, 1.2, 1.3 входят в одну группу, 2.1, 2.2 входят в другую и т. д.
-# Из всех таблиц удаляются все Accession, присутствующие в меньше, чем в
-# minGroupsWithAccession группах. Accession считается отсутствуюющим в
-# группе, если он отсутствует в больше, чем maxGroupAbsence таблицах внутри
-# группы.
 def ApplyGroupFilter(accessionTables: AccessionTables,
                      maxGroupAbsence: int,
                      minGroupsWithAccession: int) -> None:
+    """Применение фильтра по группам к AccessionTables
+
+    Таблицы, начинающиеся с одинакового числа входят в одну группу, например:
+    1.1, 1.2, 1.3 входят в одну группу, 2.1, 2.2 входят в другую и т. д.
+    Из всех таблиц удаляются все Accession, присутствующие в меньше, чем в
+    minGroupsWithAccession группах. Accession считается отсутствуюющим в
+    группе, если он отсутствует в больше, чем maxGroupAbsence таблицах внутри
+    группы.
+
+    Args:
+        accessionTables: Экземпляр класса Classes.AccessionTables, к которому
+            применяется фильтр"""
     groups: Dict[str, List[str]] = GenerateGroupsBunch(
         accessionTables.accessionsPerTable)
 
@@ -112,64 +130,59 @@ def ApplyGroupFilter(accessionTables: AccessionTables,
             accessionTables.RemoveAccessionFromAllTables(accession)
 
 
-## Подсчёт нормализованных значений PSignalNormToFileNormRatio и
-#  ScNormToFileNormRatio для всех accession
-# @param accessionTables Экземпляр класса Classes.AccessionTables, к которому
-#                        применяется фильтр
-# @param tableSumms Словарь, содержащий суммы значений ScNorm и PSignalNorm
-#                   для каждой таблицы
-#
-# Нормализованные значения PSignalNormToFileNormRatio и ScNormToFileNormRatio
-# это отношения ScNorm/PsignalNorm accession к сумме всех ScNorm/PsignalNorm в
-# файле
 def CalculateAccessionsNormRatios(
         accessionTables: AccessionTables,
         tableSumms: Dict[str, Dict[str, Decimal]]) -> None:
+    """Подсчёт нормализованных значений PSignalNormToFileNormRatio и
+
+    Нормализованные значения PSignalNormToFileNormRatio и ScNormToFileNormRatio
+    это отношения ScNorm/PsignalNorm accession к сумме всех ScNorm/PsignalNorm
+    в файле ScNormToFileNormRatio для всех accession
+
+    Args:
+        accessionTables: Экземпляр класса Classes.AccessionTables, к которому
+            применяется фильтр
+        tableSumms: Словарь, содержащий суммы значений ScNorm и PSignalNorm
+            для каждой таблицы
+    """
     for tableNum, curSumm in tableSumms.items():
         curAccessionTable = accessionTables.accessionsPerTable[tableNum]
         for accession, curAccession in curAccessionTable.items():
             curAccession.ScNormToFileNormRatio = (
-                (curAccession.ScNorm /  # noqa: W504
-                 curSumm["ScNorm"]) if curSumm["ScNorm"] != 0
+                (curAccession.ScNorm
+                 / curSumm["ScNorm"]) if curSumm["ScNorm"] != 0
                 else Decimal(0))
             curAccession.PSignalNormToFileNormRatio = (
-                (curAccession.PSignalNorm /  # noqa: W504
-                 curSumm["PSignalNorm"]) if curSumm["PSignalNorm"] != 0
+                (curAccession.PSignalNorm
+                 / curSumm["PSignalNorm"]) if curSumm["PSignalNorm"] != 0
                 else Decimal(0))
             curAccession.PSignalAndScNormRatiosAverage = (
-                (curAccession.ScNormToFileNormRatio +  # noqa: W504
-                 curAccession.PSignalNormToFileNormRatio) / 2)
+                (curAccession.ScNormToFileNormRatio
+                 + curAccession.PSignalNormToFileNormRatio) / 2)
 
 
 def GetScPsigAndNormFilesSumm(
     accessionsPerTable: Dict[str, Dict[str, Accession]]
 ) -> Dict[str, Dict[str, Decimal]]:
-    """ Получаем суммы параметров Sc, Sequence, PrecursorSignal,
+    """Получает суммы параметров Sc, Sequence, PrecursorSignal,
     ScNorm, PSignalNorm по файлам
 
+    Args:
+        accessionsPerTable: Словарь {
+                "Номер таблицы": {
+                    "Имя Accession": Accession
+                }
+            }
 
-    Возвращаем словарь с суммами вида
-    {
-        "1.1": {
-            "ScSumm": S1,
-            "PSignalSumm": P1,
-            "ScNorm: SN1,
-            "PSignalNorm": PN1
-        },
-        "1.2": {
-            "ScSumm": S2,
-            "PSignalSumm": P2,
-            "ScNorm: SN2,
-            "PSignalNorm": PN2
-        },
-        ...,
-        "n-ый файл": {
-            "ScSumm": Sn,
-            "PSignalSumm": Pn,
-            "ScNorm: SNn,
-            "PSignalNorm": PNn
+    Returns:
+        Словарь с суммами {
+            "Номер таблицы": {
+                "ScSumm": x1,
+                "PSignalSumm": x2,
+                "ScNorm: x3,
+                "PSignalNorm": x4
+            }
         }
-    }
     """
 
     fileSumms: Dict[str, Dict[str, Decimal]] = {}
@@ -193,7 +206,10 @@ def GetScPsigAndNormFilesSumm(
 def ApplyWhiteList(peptideTables: Dict[str, Dict[str, List[str]]],
                    whiteList: List[str],
                    columnNames: ColumnNames) -> None:
-    """ Удаляем из всех таблиц все id, отсутствующие в белом списке """
+    """Удаляет из всех таблиц все id, отсутствующие в белом списке
+
+    Args:
+    """
 
     for tableNum in peptideTables:
         curTable = peptideTables[tableNum]
@@ -239,10 +255,10 @@ def TestUnusedContribConfParams(unused: Comparable,
                                 tableRowNum: int,
                                 columnNames: ColumnNames) -> bool:
     if(unused.compare(
-        peptideTable[columnNames.unused][tableRowNum], tableNum) and  # noqa: W504, E501
-       contrib.compare(
-           peptideTable[columnNames.contribution][tableRowNum], tableNum) and  # noqa: W504, E501
-       conf.compare(
+        peptideTable[columnNames.unused][tableRowNum], tableNum)
+       and contrib.compare(
+           peptideTable[columnNames.contribution][tableRowNum], tableNum)
+       and conf.compare(
            peptideTable[columnNames.confidence][tableRowNum], tableNum)):
         return True
     return False
@@ -253,8 +269,7 @@ def ApplyParamsFilter(unused: Comparable,
                       conf: Comparable,
                       peptideTables: Dict[str, Dict[str, List[str]]],
                       columnNames: ColumnNames) -> None:
-    """ Применяем фильтры, завязанные на параметры unused, contib, conf.
-    """
+    """ Применяем фильтры, завязанные на параметры unused, contib, conf."""
 
     for tableNum in peptideTables:
         curTable = peptideTables[tableNum]
@@ -278,15 +293,20 @@ def TestConfDefaultCondition(confVal: Decimal) -> int:
     return 0
 
 
-## Создание словаря, содержащего все accession из данной таблицы в качестве
-# ключей и 0 в качестве значений
-# @param peptideTable Таблица-результат чтения PeptideSummary файла с помощью
-#                     Classes.ReadTable
-# @param columnNames Экземпляр класса Classes.ColumnNames
-# @returns Словарь, содержащий все accession данной таблицы в качестве ключей
-#          и 0 в качестве значений
 def GenerateTableAccessionsBunch(peptideTable: Dict[str, List[str]],
                                  columnNames: ColumnNames) -> Dict[str, int]:
+    """Создание словаря, содержащего все accession из данной таблицы в качестве
+    ключей и 0 в качестве значений
+
+    Args:
+        peptideTable Таблица-результат чтения PeptideSummary файла с помощью
+                        Classes.ReadTable
+        columnNames Экземпляр класса Classes.ColumnNames
+
+    Returns:
+        Словарь, содержащий все accession данной таблицы в качестве ключей
+        и 0 в качестве значений
+    """
     accessionBunch: Dict[str, int] = {}
     for accession in peptideTable[columnNames.accession]:
         if accession not in accessionBunch:
@@ -357,7 +377,14 @@ def ApplyConfidenceIDFilter(confID: Comparable,
 
 
 def GetFileLines(filename: str) -> Union[List[str], None]:
-    """ Returns list of file strings without newline symbols """
+    """Считывает файл и возвращает список строк без символа переноса строки
+
+    Args:
+        filename: Имя файла, из которого происходит считывание строк
+
+    Returns:
+        Список строк файла, без символов переноса строки
+    """
 
     if len(filename):
         with open(filename) as tfile:
@@ -369,7 +396,13 @@ def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
     """ Считывание последовательностей из файла
 
     Считывание длин последовательностей из файла БД с последовательностями в
-    словарь классов Sequence вида {"Accession": Sequence} """
+    словарь классов Sequence вида {"Accession": Sequence}
+
+    Args:
+        seqDBFilename: Имя файла с последовательностями
+    Returns:
+        Словарь вида {"Accession": Sequence}
+    """
 
     with open(seqDBFilename) as seqDBFile:
         strings = seqDBFile.read().split('\n')
@@ -405,6 +438,11 @@ def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
 
 
 def GetInput() -> Input:
+    """Получение параметров для запуска обработки
+
+    Returns:
+        Класс Input, содержащий все нужные параметры
+    """
     inputParams = Input()
     inputParams.inputPath = "Input"
     if len(argv) == 12:
