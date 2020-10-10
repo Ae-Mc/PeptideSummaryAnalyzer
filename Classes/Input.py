@@ -5,6 +5,7 @@ from Classes.Sequence import Sequence
 
 class Input:
     inputPath: str
+    outputPath: str = "Output"
     seqDB: Dict[str, Sequence]
     unused: Comparable
     contrib: Comparable
