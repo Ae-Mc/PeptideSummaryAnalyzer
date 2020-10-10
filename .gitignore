@@ -46,7 +46,8 @@ TAGS
 *.rar
 
 # Output files
-Output/*.txt
+Output
+Presets/*/Output
 
 # Installer logs
 pip-log.txt

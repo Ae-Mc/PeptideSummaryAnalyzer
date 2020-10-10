@@ -32,6 +32,7 @@ class Preset:
     def ReadSettings(self) -> None:
         self.settings: Input = Input()
         self.settings.inputPath = path.join(self.folder, "Input")
+        self.settings.outputPath = path.join(self.folder, "Output")
         with open(path.join(self.folder, "preset.txt")) as presetFile:
             presetFileLines = presetFile.read().split("\n")
             try:
@@ -93,7 +94,7 @@ class Preset:
 
     def TestOutputFile(self, filename: str) -> None:
         paths = (path.join(self.presetOutputDir, filename),
-                 path.join("Output", filename))
+                 path.join(self.settings.outputPath, filename))
         with open(paths[0]) as file1:
             with open(paths[1]) as file2:
                 filesContent = (file1.read().strip().split("\n"),
@@ -106,10 +107,10 @@ class Preset:
                     print(f"Line {i+1} is not equals in file {filename}")
                     break
 
-    @staticmethod
-    def ClearOutputFolder():
-        for filename in listdir("Output"):
-            remove(path.join("Output", filename))
+    def ClearOutputFolder(self):
+        if path.exists(self.settings.outputPath):
+            for filename in listdir(self.settings.outputPath):
+                remove(path.join(self.settings.outputPath, filename))
 
 
 def GetPresetsFolders(presetFolder: str):
@@ -124,8 +125,8 @@ def main():
     presetsFolders = GetPresetsFolders(presetsFolder)
     for folder in presetsFolders:
         preset = Preset(folder)
-        Preset.ClearOutputFolder()
         preset.ReadSettings()
+        preset.ClearOutputFolder()
         preset.Run()
         print()
 

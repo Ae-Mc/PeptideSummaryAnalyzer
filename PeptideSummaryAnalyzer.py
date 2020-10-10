@@ -107,7 +107,7 @@ def main(inputParams: Input = None) -> None:
                      inputParams.maxGroupAbsence,
                      inputParams.minGroupsWithAccession)
 
-    Output("Output/",
+    Output(inputParams.outputPath,
            seqDB=inputParams.seqDB,
            accessionTables=accessionTables,
            proteinGroupsDB=proteinGroupsDB)
