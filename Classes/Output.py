@@ -86,7 +86,7 @@ class Output:
                 outFile.write(f"\n{accession}" +
                               f"\t{self.seqDB[accession].len}")
                 for tableNum in self.accessionTables.sortedTableNums:
-                    table = self.accessionTables.accessionsPerTable[tableNum]
+                    table = self.accessionTables[tableNum]
                     if accession in table:
                         # Создание локального контекста обязательно, иначе
                         # все округления по какой-то причине начинают работать
@@ -117,7 +117,7 @@ class Output:
             for accession in sorted(self.accessionsBunch.keys()):
                 outFile.write("\n" + accession)
                 for tableNum in self.accessionTables.sortedTableNums:
-                    table = self.accessionTables.accessionsPerTable[tableNum]
+                    table = self.accessionTables[tableNum]
                     if accession in table:
                         # Создание локального контекста обязательно, иначе
                         # все округления по какой-то причине начинают работать

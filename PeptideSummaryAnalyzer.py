@@ -93,9 +93,7 @@ def main(inputParams: Input = None) -> None:
                                       peptideTables,
                                       columnNames=columnNames)
     accessionTables.sortedTableNums = peptideTables.GetSortedTableNums()
-    filesSumms = GetScPsigAndNormFilesSumm(accessionTables.accessionsPerTable)
-
-    accessionTables.GetAccessionsPerTable(inputParams.seqDB, peptideTables)
+    filesSumms = GetScPsigAndNormFilesSumm(accessionTables)
     CalculateAccessionsNormRatios(accessionTables, filesSumms)
 
     if inputParams.whiteList:

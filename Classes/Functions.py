@@ -117,8 +117,7 @@ def ApplyGroupFilter(accessionTables: AccessionTables,
     Args:
         accessionTables: Экземпляр класса Classes.AccessionTables, к которому
             применяется фильтр"""
-    groups: Dict[str, List[str]] = GenerateGroupsBunch(
-        accessionTables.accessionsPerTable)
+    groups: Dict[str, List[str]] = GenerateGroupsBunch(accessionTables)
 
     accessionBunch = accessionTables.GenerateAccessionsBunchOverAllTables()
     for accession in accessionBunch:
@@ -126,7 +125,7 @@ def ApplyGroupFilter(accessionTables: AccessionTables,
                 groups,
                 accession,
                 maxGroupAbsence,
-                accessionTables.accessionsPerTable) < minGroupsWithAccession:
+                accessionTables) < minGroupsWithAccession:
             accessionTables.RemoveAccessionFromAllTables(accession)
 
 
@@ -146,19 +145,18 @@ def CalculateAccessionsNormRatios(
             для каждой таблицы
     """
     for tableNum, curSumm in tableSumms.items():
-        curAccessionTable = accessionTables.accessionsPerTable[tableNum]
-        for accession, curAccession in curAccessionTable.items():
-            curAccession.ScNormToFileNormRatio = (
-                (curAccession.ScNorm
+        for accession in accessionTables[tableNum].values():
+            accession.ScNormToFileNormRatio = (
+                (accession.ScNorm
                  / curSumm["ScNorm"]) if curSumm["ScNorm"] != 0
                 else Decimal(0))
-            curAccession.PSignalNormToFileNormRatio = (
-                (curAccession.PSignalNorm
+            accession.PSignalNormToFileNormRatio = (
+                (accession.PSignalNorm
                  / curSumm["PSignalNorm"]) if curSumm["PSignalNorm"] != 0
                 else Decimal(0))
-            curAccession.PSignalAndScNormRatiosAverage = (
-                (curAccession.ScNormToFileNormRatio
-                 + curAccession.PSignalNormToFileNormRatio) / 2)
+            accession.PSignalAndScNormRatiosAverage = (
+                (accession.ScNormToFileNormRatio
+                 + accession.PSignalNormToFileNormRatio) / 2)
 
 
 def GetScPsigAndNormFilesSumm(

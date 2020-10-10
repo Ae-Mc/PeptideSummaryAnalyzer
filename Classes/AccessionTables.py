@@ -6,78 +6,143 @@ from Classes.ColumnNames import ColumnNames
 from decimal import Decimal
 
 
-class AccessionTables:
+class AccessionTables(dict):
+    """Хранит список Accession для каждой таблицы и предоставляет функции
+    работы с ним
 
-    accessionsPerTable: Dict[str, Dict[str, Accession]]
+    Словарь, хранящий Accession'ы, распределённые по таблицам.
+    Имеет вид: {
+        "Номер таблицы": {
+            "Имя Accession": Accession
+        }
+    }
+
+    Args:
+        sortedTableNums: отсортированный список номеров таблиц
+    """
     sortedTableNums: List[str]
-    columnNames: ColumnNames
 
     def __init__(self,
                  seqDB: Dict[str, Sequence],
                  peptideTables: PeptideTables,
                  columnNames: ColumnNames = None) -> None:
-        if columnNames is None:
-            self.columnNames = ColumnNames()
-        else:
-            self.columnNames = columnNames
-        self.proteinReplacements = None
-        self.GetAccessionsPerTable(seqDB, peptideTables)
+        """См. GetAccessionsPerTable
+        (если columnNames == None, то columnNames = ColumnNames())
+        """
+        self.GetAccessionsPerTable(
+            seqDB, peptideTables, columnNames or ColumnNames())
 
-    def GetAccessionsPerTable(
-            self,
-            seqences: Dict[str, Sequence],
-            peptideTables: PeptideTables) -> None:
-        """ Получаем суммы значений Sc, Precursor Signal и сумму длинн
+    def GetAccessionsPerTable(self,
+                              seqDB: Dict[str, Sequence],
+                              peptideTables: PeptideTables,
+                              columnNames: ColumnNames) -> None:
+        """Конвертирует PeptideTables в AccessionTables и подсчитывает
+        нормализованные значения для каждого Accession
+
+        Получает unused, суммы значений Sc, Precursor Signal и сумму длинн
         последовательностей для каждого Accession, а также нормализованные
-        значения Precursor Signal и Sc для каждого файла"""
-        self.accessionsPerTable: Dict[str, Dict[str, Accession]] = {}
-        for tableNum in peptideTables.peptideTables:
-            self.accessionsPerTable[tableNum] = (
-                self.GetAccessionsFromTable(
-                    peptideTables.peptideTables[tableNum]))
-            self.CalculateNormParamsForAccessions(
-                self.accessionsPerTable[tableNum], seqences)
+        значения Precursor Signal и Sc для каждого файла.
+        Этот метод не заполняет поля ScNormToFileNormRatio,
+        PSignalNormToFileNormRatio и PSignalAndScNormRatiosAverage!!!
 
-    def GetAccessionsFromTable(
+        Args:
+            seqDB: словарь с последовательностями, считанными из БД, вида: {
+                    "Имя Accession": Sequence
+                }
+            peptideTables: класс PeptideTables, который будет конвертирован в
+                AccessionTables
+            columnNames: класс, хранящий названия столбцов с нужными данными
+        """
+
+        self.clear()
+        for tableNum, peptideTable in peptideTables.peptideTables.items():
+            self[tableNum] = self._GetAccessionsFromTable(peptideTable,
+                                                          columnNames)
+            self._CalculateNormParamsForAccessions(self[tableNum], seqDB)
+
+    def _GetAccessionsFromTable(
             self,
-            peptideTable: Dict[str, List[str]]) -> Dict[str, Accession]:
-        """ Получаем unused, суммы значений Sc, Precursor Signal и сумму длинн
-        последовательностей и подсчитываем количество строк с одинаковым
-        Accession для каждого Accession """
+            peptideTable: Dict[str, List[str]],
+            columnNames: ColumnNames) -> Dict[str, Accession]:
+        """Конвертирует PeptideTables в AccessionTables
+
+        Получает unused, суммы значений Sc, Precursor Signal и сумму длинн
+        последовательностей и подсчитывает количество строк с Accession для
+        каждого Accession
+
+        Args:
+            seqDB: словарь с последовательностями, считанными из БД, вида: {
+                    "Имя Accession": Sequence
+                }
+            peptideTables: класс PeptideTables, который будет конвертирован в
+                AccessionTables
+            columnNames: класс, хранящий названия столбцов с нужными данными
+
+        Returns:
+            Словарь с Accession'ами вида: {
+                "Имя Accession": Accession
+            }
+        """
         accessions: Dict[str, Accession] = {}
         i = 0
-        while i < len(peptideTable[self.columnNames.accession]):
+        while i < len(peptideTable[columnNames.accession]):
             curAccession = (
-                peptideTable[self.columnNames.accession][i].split(sep=';')[0])
+                peptideTable[columnNames.accession][i].split(sep=';')[0])
             if curAccession not in accessions:
                 accessions[curAccession] = Accession(name=curAccession)
             accessions[curAccession].Counts += 1
             accessions[curAccession].Unused = Decimal(
-                peptideTable[self.columnNames.unused][i])
+                peptideTable[columnNames.unused][i])
             accessions[curAccession].ScSumm += Decimal(
-                peptideTable[self.columnNames.sc][i])
+                peptideTable[columnNames.sc][i])
             accessions[curAccession].PSignalSumm += (
-                Decimal(peptideTable[self.columnNames.precursorSignal][i]) if
-                peptideTable[self.columnNames.precursorSignal][i] != ''
+                Decimal(peptideTable[columnNames.precursorSignal][i]) if
+                peptideTable[columnNames.precursorSignal][i] != ''
                 else Decimal(0))
             accessions[curAccession].SeqlenSumm += (
-                len(peptideTable[self.columnNames.sequence][i]))
+                len(peptideTable[columnNames.sequence][i]))
             i += 1
         return accessions
 
-    def CalculateNormParamsForAccessions(
+    def _CalculateNormParamsForAccessions(
             self,
             accessions: Dict[str, Accession],
-            seqences: Dict[str, Sequence]):
+            seqDB: Dict[str, Sequence]) -> None:
+        """Подсчитывает нормализованные параметры Sc и Psignal для всех
+        Accession'ов из словаря accessions
+
+        Этот метод не заполняет поля ScNormToFileNormRatio,
+        PSignalNormToFileNormRatio и PSignalAndScNormRatiosAverage!!!
+
+        Args:
+            accessions: словарь вида: {
+                    "Имя Accession": Accession
+                }
+            seqDB: словарь с последовательностями, считанными из БД, вида: {
+                    "Имя Accession": Sequence
+                }
+        """
         for accession, curAccession in accessions.items():
-            curAccession.ScNorm = curAccession.ScSumm / seqences[accession].len
+            curAccession.ScNorm = curAccession.ScSumm / seqDB[accession].len
             curAccession.PSignalNorm = (
-                curAccession.PSignalSumm / seqences[accession].len)
+                curAccession.PSignalSumm / seqDB[accession].len)
 
     def GenerateAccessionsBunchOverAllTables(
             self) -> Dict[str, Dict[str, Accession]]:
+        """Получает словарь с Accession, каждый из которых разбит по таблицам
+
+        Если конкретного Accession нет в конкретной таблице, то эта таблица
+        отсутствует в словаре таблиц этого Accession
+
+        Returns:
+            Словарь вида: {
+                "Имя Accession": {
+                    "Номер таблицы": Accession
+                }
+            }
+        """
         accessions: Dict[str, Dict[str, Accession]] = {}
-        for tableName, table in self.accessionsPerTable.items():
+        for tableName, table in self.items():
             for accessionName, accession in table.items():
                 if accessionName not in accessions:
                     accessions[accessionName] = {}
@@ -85,8 +150,10 @@ class AccessionTables:
         return accessions
 
     def RemoveAccessionFromAllTables(self, accession: str) -> None:
-        for table in self.accessionsPerTable.values():
-            table.pop(accession, None)
+        """Удаляет Accession из всех таблиц
 
-    def SetColumnNames(self, columnNames: ColumnNames):
-        self.columnNames = columnNames
+        Args:
+            accession: имя Accession
+        """
+        for table in self.values():
+            table.pop(accession, None)
