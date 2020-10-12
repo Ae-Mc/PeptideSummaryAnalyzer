@@ -1,5 +1,5 @@
 from typing import Dict, Tuple, List, Optional
-from os import mkdir, path
+from os import makedirs, path
 from Classes.AccessionTables import AccessionTables
 from Classes.Sequence import Sequence
 from Classes.Accession import Accession
@@ -32,7 +32,8 @@ class Output:
 
     def GenerateOutputFiles(self) -> None:
 
-        self.CreateDirIfNotExist()
+        if not path.exists(self.outputDirPath):
+            makedirs(self.outputDirPath)
         self.accessionsBunch = (
             self.accessionTables.GenerateAccessionsBunchOverAllTables())
         self.GenerateDescriptionFile(outFilename="description.txt")
@@ -59,20 +60,7 @@ class Output:
                     outFilename=filename)
 
         self.GenerateGroupsFile("ProteinGroups.txt")
-
         self.GenerateJointOutputFile("output.txt")
-
-    def CreateDirIfNotExist(self) -> None:
-
-        pathLeftover = self.outputDirPath
-        folderPath = ""
-        while(not path.exists(self.outputDirPath)):
-            folderPath += pathLeftover.split('/')[0] + '/'
-            pathLeftover = '/'.join(pathLeftover.split('/')[1:])
-            try:
-                mkdir(folderPath)
-            except FileExistsError:
-                pass
 
     def GenerateDescriptionFile(
             self,

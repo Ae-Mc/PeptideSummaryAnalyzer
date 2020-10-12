@@ -15,6 +15,7 @@ class Preset:
     folder: str
     presetOutputDir: str
     settings: Input
+    errorCode: int = 0
 
     def __init__(self, folder: str):
         self.folder = folder
@@ -32,6 +33,7 @@ class Preset:
     def ReadSettings(self) -> None:
         self.settings: Input = Input()
         self.settings.inputPath = path.join(self.folder, "Input")
+        self.settings.outputPath = path.join(self.folder, "Output")
         with open(path.join(self.folder, "preset.txt")) as presetFile:
             presetFileLines = presetFile.read().split("\n")
             try:
@@ -90,26 +92,29 @@ class Preset:
                 self.TestOutputFile(filename)
             except FileNotFoundError:
                 print(f"Error! File \"{filename}\" not found in Output dir!")
+                self.errorCode = 1
 
     def TestOutputFile(self, filename: str) -> None:
         paths = (path.join(self.presetOutputDir, filename),
-                 path.join("Output", filename))
+                 path.join(self.settings.outputPath, filename))
         with open(paths[0]) as file1:
             with open(paths[1]) as file2:
                 filesContent = (file1.read().strip().split("\n"),
                                 file2.read().strip().split("\n"))
         if(len(filesContent[0]) != len(filesContent[1])):
             print(f"{paths[0]} != {paths[1]}")
+            self.errorCode = 2
         else:
             for i in range(0, len(filesContent[0])):
                 if(filesContent[0][i] != filesContent[1][i]):
                     print(f"Line {i+1} is not equals in file {filename}")
+                    self.errorCode = 3
                     break
 
-    @staticmethod
-    def ClearOutputFolder():
-        for filename in listdir("Output"):
-            remove(path.join("Output", filename))
+    def ClearOutputFolder(self):
+        if path.exists(self.settings.outputPath):
+            for filename in listdir(self.settings.outputPath):
+                remove(path.join(self.settings.outputPath, filename))
 
 
 def GetPresetsFolders(presetFolder: str):
@@ -122,12 +127,16 @@ def GetPresetsFolders(presetFolder: str):
 
 def main():
     presetsFolders = GetPresetsFolders(presetsFolder)
+    errorCode = 0
     for folder in presetsFolders:
         preset = Preset(folder)
-        Preset.ClearOutputFolder()
         preset.ReadSettings()
+        preset.ClearOutputFolder()
         preset.Run()
+        if preset.errorCode:
+            errorCode = preset.errorCode
         print()
+    exit(errorCode)
 
 
 if __name__ == "__main__":
