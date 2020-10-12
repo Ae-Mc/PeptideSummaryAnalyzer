@@ -65,9 +65,11 @@ def main(inputParams: Input = None) -> None:
     peptideTables = PeptideTables(columnNames, inputDir=inputParams.inputPath)
     proteinGroupsDB = None
     if inputParams.isProteinGroupFilter:
-        proteinAccessionsDB = ProteinAccessionsDB(inputParams.inputPath)
+        proteinAccessionsDB = ProteinAccessionsDB(
+            inputParams.skipReversedIfSecondary, inputParams.inputPath)
         proteinGroupsDB = ProteinGroupsDB(proteinAccessionsDB,
                                           inputParams.seqDB,
+                                          inputParams.skipReversedIfSecondary,
                                           inputParams.inputPath)
         proteinPerTableList = ProteinPerTableList(proteinGroupsDB)
         peptideTables.ApplyProteinPerTableList(proteinPerTableList)

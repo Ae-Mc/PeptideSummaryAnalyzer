@@ -14,22 +14,33 @@ class PeptideTables(dict):
 
     Attributes:
         columnNames: имена заголовков
+        skipReversedIfSecondary: пропускать ли перевёрнутые Accession, если они
+            стоят одни
     """
     columnNames: ColumnNames
+    skipReversedIfSecondary: bool
 
-    def __init__(self, columnNames: ColumnNames, inputDir: str = None) -> None:
+    def __init__(self,
+                 columnNames: ColumnNames,
+                 skipReversedIfSecondary: bool = False,
+                 inputDir: str = None) -> None:
         """
         Args:
             columnNames: имена заголовков
+            skipReversedIfSecondary: пропускать ли перевёрнутые Accession,
+                если они стоят одни
             inputDir: путь, из которого считываются таблицы
         """
-
+        self.skipReversedIfSecondary = skipReversedIfSecondary
         self.SetColumnNames(columnNames)
 
         if inputDir is not None:
             self.ReadPeptideSummaries(inputDir)
             self.sortedTableNums = self.GetSortedTableNums()
-            self.RemoveReversedAccessions()
+            if self.skipReversedIfSecondary:
+                self.RemoveReversedAccessionsIfSecondaryReversedToo()
+            else:
+                self.RemoveReversedAccessions()
             self.RemoveExcessAccessions()
 
     def ReadPeptideSummaries(self, inputDir: str) -> None:
@@ -61,16 +72,15 @@ class PeptideTables(dict):
 
         Перевёрнутые Accession - это Accession, начинающиеся с RRRRR
         """
-        for peptideTable in self.values():
+        for table in self.values():
             i = 0
-            while i < len(peptideTable[self.columnNames.accession]):
-                if peptideTable[
-                        self.columnNames.accession][i].startswith("RRRRR"):
+            while i < len(table[self.columnNames.accession]):
+                if (self.IsReversive(table[self.columnNames.accession][i])):
                     break
                 i += 1
 
-            if i < len(peptideTable[self.columnNames.accession]):
-                for column in peptideTable.values():
+            if i < len(table[self.columnNames.accession]):
+                for column in table.values():
                     del column[i:]
 
     def RemoveExcessAccessions(self) -> None:
@@ -81,6 +91,24 @@ class PeptideTables(dict):
             table[self.columnNames.accession] = [
                 accession.split(';')[0] for accession in table[
                     self.columnNames.accession]]
+
+    def RemoveReversedAccessionsIfSecondaryReversedToo(self):
+        for table in self.peptideTables.values():
+            i = 0
+            while i < len(table[self.columnNames.accession]):
+                if (self.IsReversed(table[self.columnNames.accession][i])):
+                    if (i + 1 == len(table[self.columnNames.accession])
+                            or self.IsReversed(
+                                table[self.columnNames.accession][i + 1])):
+                        break
+                    for column in table.values():
+                        del column[i]
+                    continue
+                i += 1
+
+            if i < len(table[self.columnNames.accession]):
+                for column in table.values():
+                    del column[i:]
 
     def ApplyProteinPerTableList(
             self, proteinPerTableList: ProteinPerTableList) -> None:
@@ -124,3 +152,7 @@ class PeptideTables(dict):
         columns = [column for column in self[tableNum]]
         for column in columns:
             del self[tableNum][column][rowNum]
+
+    @staticmethod
+    def IsReversive(accession: str) -> bool:
+        return accession.startswith("RRRRR")

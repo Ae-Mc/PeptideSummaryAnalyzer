@@ -13,11 +13,13 @@ class ProteinGroupsDB(dict):
     sortedTableNums: List[str]
     proteinAccessionsDB: ProteinAccessionsDB
     seqDB: Dict[str, Sequence]
+    skipReversedIfSecondary: bool
 
     def __init__(self,
                  proteinAccessionsDB: ProteinAccessionsDB,
                  seqDB: Dict[str, Sequence],
-                 folder: str) -> None:
+                 skipReversedIfSecondary: bool = False,
+                 folder: str = None) -> None:
         """См. LoadFromFolder
 
         Args:
@@ -25,9 +27,11 @@ class ProteinGroupsDB(dict):
             seqDB: база данных последовательностей Accession
             folder: путь, в котором хранятся Protein таблицы
         """
+        self.skipReversedIfSecondary = skipReversedIfSecondary
         self.proteinAccessionsDB = proteinAccessionsDB
         self.seqDB = seqDB
-        self.LoadFromFolder(folder)
+        if folder:
+            self.LoadFromFolder(folder)
 
     def LoadFromFolder(self, folder: str) -> None:
         """Загружает Protein таблицы из папки folder
@@ -66,8 +70,13 @@ class ProteinGroupsDB(dict):
                     Decimal(table["Unused"][0]), [table["Accession"][0]])
                 i = 1
                 while i < len(table["Accession"]):
-                    if table["Accession"][i].startswith("RRRRR"):
-                        break
+                    if (table["Accession"][i].startswith("RRRRR")):
+                        if(not self.skipReversedIfSecondary
+                           or i + 1 == len(table["Accession"])
+                           or table["Accession"][i + 1].startswith("RRRRR")):
+                            break
+                        i += 1
+                        continue
 
                     if Decimal(table["Unused"][i]) != Decimal(0):
                         curGroup.accessions = sorted(curGroup.accessions)
@@ -76,6 +85,7 @@ class ProteinGroupsDB(dict):
                             Decimal(table["Unused"][i]), [])
                     curGroup.accessions.append(table["Accession"][i])
                     i += 1
+                curGroup.accessions = sorted(curGroup.accessions)
                 self[tableNum].append(curGroup)
         self.CalculateRepresentatives()
 

@@ -68,15 +68,16 @@ class Preset:
         if len(presetFileValues[2].strip()):
             self.settings.blackList = GetFileLines(
                 path.join(self.folder, presetFileValues[2]))
-        self.settings.isProteinGroupFilter = presetFileValues[3].lower()
+        self.settings.isProteinGroupFilter = presetFileValues[3]
+        self.settings.skipReversedIfSecondary = presetFileValues[4]
         self.settings.seqDB = ReadSeqDB(
-            path.join(self.folder, presetFileValues[4]))
-        self.settings.unused = Comparable(presetFileValues[5])
-        self.settings.contrib = Comparable(presetFileValues[6])
-        self.settings.confID = presetFileValues[7]
-        self.settings.confPeptide = presetFileValues[8]
-        self.settings.minGroupsWithAccession = int(presetFileValues[9])
-        self.settings.maxGroupAbsence = int(presetFileValues[10])
+            path.join(self.folder, presetFileValues[5]))
+        self.settings.unused = Comparable(presetFileValues[6])
+        self.settings.contrib = Comparable(presetFileValues[7])
+        self.settings.confID = presetFileValues[8]
+        self.settings.confPeptide = presetFileValues[9]
+        self.settings.minGroupsWithAccession = int(presetFileValues[10])
+        self.settings.maxGroupAbsence = int(presetFileValues[11])
 
     def TestPresetFile(self, presetFileLines: List[str]) -> None:
         """Проверка того, правильно ли написан файл с настроками пресета"""
@@ -85,6 +86,7 @@ class Preset:
             ("ID list file", "ID whitelist"),
             ("ID exclusion list", "ID blacklist"),
             ("Protein group filter", "Protein group filter"),
+            ("Skip REVERSED", "Skip REVERSED if secondary is not REVERSED"),
             ("Database", "Database"),
             ("Unused", "Unused"),
             ("Contribution", "Contribution"),

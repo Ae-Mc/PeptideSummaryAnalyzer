@@ -13,11 +13,19 @@ class ProteinAccessionsDB(dict):
             "имя Accession": ProteinAccession
         }
     }
+
+    Attributes:
+        skipReversedIfSecondary: пропускать ли перевёрнутые Accession, если они
+            стоят одни
     """
     _necessaryColumns = ["Accession", "N", "Unused"]
+    skipReversedIfSecondary: bool
 
-    def __init__(self, folder: str = None):
+    def __init__(self,
+                 skipReversedIfSecondary: bool = False,
+                 folder: str = None):
         """См. LoadFromFolder"""
+        self.skipReversedIfSecondary = skipReversedIfSecondary
         if folder is not None:
             self.LoadFromFolder(folder)
 
@@ -54,11 +62,17 @@ class ProteinAccessionsDB(dict):
             curUnused: Decimal = Decimal(0)
             i = 0
             while i < len(table["Accession"]):
-                if table["Accession"][i].startswith("RRRRR"):
-                    break
-
                 if Decimal(table["Unused"][i]) != Decimal(0):
                     curUnused = Decimal(table["Unused"][i])
+
+                if (table["Accession"][i].startswith("RRRRR")):
+                    if(not self.skipReversedIfSecondary
+                       or i + 1 == len(table["Accession"])
+                       or table["Accession"][i + 1].startswith("RRRRR")):
+                        break
+                    i += 1
+                    continue
+
                 accession = ProteinAccession(table["Accession"][i],
                                              curUnused)
                 if accession.name in self:

@@ -29,6 +29,7 @@ class Input:
     __confPeptide: Comparable
     __confID: Comparable
     __isProteinGroupFilter: bool
+    __skipReversedIfSecondary: bool
     isConfID: bool
     whiteList: Optional[List[str]]
     blackList: Optional[List[str]]
@@ -65,7 +66,19 @@ class Input:
     @isProteinGroupFilter.setter
     def isProteinGroupFilter(self, value: Union[str, bool]):
         if isinstance(value, str):
-            value = value.lower()
+            value = value.lower().strip()
             self.__isProteinGroupFilter = True if value == 'y' else False
         else:
             self.__isProteinGroupFilter = value
+
+    @property
+    def skipReversedIfSecondary(self):
+        return self.__skipReversedIfSecondary
+
+    @skipReversedIfSecondary.setter
+    def skipReversedIfSecondary(self, value: Union[str, bool]):
+        if isinstance(value, str):
+            value = value.lower().strip()
+            self.__skipReversedIfSecondary = True if value == 'y' else False
+        else:
+            self.__skipReversedIfSecondary = value
