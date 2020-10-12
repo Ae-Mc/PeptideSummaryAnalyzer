@@ -1,7 +1,20 @@
-from typing import Dict
+from dataclasses import dataclass
 
 
+@dataclass
 class ColumnNames:
+
+    """Хранит названия столбцов для таблиц Peptide
+
+    Attributes:
+        accession: имя столбца accession
+        precursorSignal: имя столбца precursorSignal
+        sc: имя столбца sc
+        unused: имя столбца unused
+        sequence: имя столбца sequence
+        confidence: имя столбца confidence
+        contribution: имя столбца contribution
+    """
 
     accession: str = "Accessions"
     precursorSignal: str = "PrecursorSignal"
@@ -10,16 +23,6 @@ class ColumnNames:
     sequence: str = "Sequence"
     confidence: str = "Conf"
     contribution: str = "Contrib"
-
-    def __init__(self,
-                 columnsDict: Dict[str, str] = None,
-                 **kwargs) -> None:
-        if columnsDict is not None:
-            for columnClassicName, columnName in columnsDict.items():
-                self.__dict__[columnClassicName] = columnName
-
-        for columnClassicName, columnName in kwargs.items():
-            self.__dict__[columnClassicName] = columnName
 
     def GetColumnNamesList(self):
         return [self.accession,
