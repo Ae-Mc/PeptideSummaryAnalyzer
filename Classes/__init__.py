@@ -4,7 +4,6 @@ from .ColumnNames import ColumnNames
 from .Comparable import Comparable
 from .Errors import (AccessionNotFoundError,
                      ColumnNotFoundError,
-                     EmptyGroupError,
                      RepresentativeAccessionNotFoundError)
 from .Fisher.FisherExactTest import FisherExact
 from .Functions import (ApplyBlackList,
