@@ -55,7 +55,7 @@ class AccessionTables(dict):
         """
 
         self.clear()
-        for tableNum, peptideTable in peptideTables.peptideTables.items():
+        for tableNum, peptideTable in peptideTables.items():
             self[tableNum] = self._GetAccessionsFromTable(peptideTable,
                                                           columnNames)
             self._CalculateNormParamsForAccessions(self[tableNum], seqDB)

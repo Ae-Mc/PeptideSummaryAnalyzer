@@ -75,18 +75,18 @@ def main(inputParams: Input = None) -> None:
             proteinGroupsDB.GetReplacementsPerTable())
 
     if inputParams.blackList:
-        ApplyBlackList(peptideTables.peptideTables,
+        ApplyBlackList(peptideTables,
                        inputParams.blackList,
                        columnNames)
 
     if inputParams.isConfID:
         ApplyConfidenceIDFilter(inputParams.confID,
-                                peptideTables.peptideTables,
+                                peptideTables,
                                 columnNames)
     ApplyParamsFilter(inputParams.unused,
                       inputParams.contrib,
                       inputParams.confPeptide,
-                      peptideTables.peptideTables,
+                      peptideTables,
                       columnNames)
 
     accessionTables = AccessionTables(inputParams.seqDB,
@@ -97,7 +97,7 @@ def main(inputParams: Input = None) -> None:
     CalculateAccessionsNormRatios(accessionTables, filesSumms)
 
     if inputParams.whiteList:
-        ApplyWhiteList(peptideTables.peptideTables,
+        ApplyWhiteList(peptideTables,
                        inputParams.whiteList,
                        columnNames)
 
