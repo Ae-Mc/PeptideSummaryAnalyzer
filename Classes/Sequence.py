@@ -1,7 +1,18 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class Sequence:
-    len: int
-    desc: str
-    __seq: str
+    """Хранит последовательность
+
+    Attributes:
+        len: длина последовательности
+        desc: описание последовательности
+        seq: сама последовательность
+    """
+    len: int = 0
+    desc: str = ""
+    __seq: str = ""
 
     @property
     def seq(self):
@@ -11,11 +22,6 @@ class Sequence:
     def seq(self, seq: str):
         self.len = len(seq)
         self.__seq = seq
-
-    def __init__(self) -> None:
-        self.len = 0
-        self.desc = ""
-        self.seq = ""
 
     def __repr__(self):
         return f"{self.seq} ({self.len})"
