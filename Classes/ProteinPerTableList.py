@@ -5,10 +5,24 @@ from Classes.ProteinGroupsDB import ProteinGroupsDB
 
 
 class ProteinPerTableList(dict):
+    """Словарь для хранения Protein таблиц в виде: {
+        "номер таблицы": ["Accession1", "Accession2", ..., "AccessionN"]
+    }
+    """
     def __init__(self, db: ProteinGroupsDB) -> None:
+        """См. ReadFromProteinGroupsDB"""
         self.ReadFromProteinGroupsDB(db)
 
     def ReadFromProteinGroupsDB(self, db: ProteinGroupsDB) -> None:
+        """Считывает ProteinGroupsDB в словарь
+
+        Словарь вида: {
+            "номер таблицы": ["Accession1", "Accession2", ..., "AccessionN"]
+        }
+
+        Args:
+            db: ProteinGroupsDB из которой происходит считывание
+        """
         table: List[ProteinGroup]
         for tableNum, table in db.items():
             self[tableNum] = []
