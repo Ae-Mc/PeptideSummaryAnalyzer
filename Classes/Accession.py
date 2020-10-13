@@ -1,30 +1,38 @@
+from dataclasses import dataclass
 from decimal import Decimal
 
 
+@dataclass
 class Accession:
-    Unused: Decimal
-    ScSumm: Decimal
-    ScNorm: Decimal
-    ScNormToFileNormRatio: Decimal
-    PSignalSumm: Decimal
-    PSignalNorm: Decimal
-    PSignalNormToFileNormRatio: Decimal
-    SeqlenSumm: int
-    Counts: int
-    PSignalAndScNormRatiosAverage: Decimal
+    """Хранит информацию об Accession
 
-    def __init__(self, name="", Unused=0, ScSumm=0, ScNorm=0,
-                 ScNormToFileNormRatio=0, PSignalSumm=0, PSignalNorm=0,
-                 PSignalNormToFileNormRatio=0, SeqlenSumm=0, Counts=0,
-                 PSignalAndScNormRatiosAverage=0):
-        self.name = name
-        self.Unused = Unused
-        self.ScSumm = ScSumm
-        self.ScNorm = ScNorm
-        self.ScNormToFileNormRatio = ScNormToFileNormRatio
-        self.PSignalSumm = PSignalSumm
-        self.PSignalNorm = PSignalNorm
-        self.PSignalNormToFileNormRatio = PSignalNormToFileNormRatio
-        self.SeqlenSumm = SeqlenSumm
-        self.Counts = Counts
-        self.PSignalAndScNormRatiosAverage = PSignalAndScNormRatiosAverage
+    Attributes:
+        name: имя Accession
+        Unused: параметр Unused Accession
+        ScSumm: сумма параметра Sc для всех строк с данным Accession в файле
+        ScNorm: отношение ScSumm к длинне последовательности данного Accession
+            в базе данных последовательностей
+        ScNormToFileNormRatio: отношение ScNorm к сумме всех ScNorm в файле
+        PSignalSumm: сумма параметра Precursor Signal для всех строк с данным
+            Accession в файле
+        PSignalNorm: отношение PSignalSumm к длинне последовательности данного
+            Accession в базе данных последовательностей
+        PSignalNormToFileNormRatio: отношение PSignalNorm к сумме всех
+            PSignalNorm в файле
+        SeqlenSumm: сумма параметра Sequence для всех строк с данным
+            Accession в файле
+        Counts: количество строк с данным Accession в файле
+        PSignalAndScNormRatiosAverage: среднее арифметическое
+            ScNormToFileNormRatio и PSignalNormToFileNormRatio
+    """
+    name: str = ""
+    Unused: Decimal = Decimal(0)
+    ScSumm: Decimal = Decimal(0)
+    ScNorm: Decimal = Decimal(0)
+    ScNormToFileNormRatio: Decimal = Decimal(0)
+    PSignalSumm: Decimal = Decimal(0)
+    PSignalNorm: Decimal = Decimal(0)
+    PSignalNormToFileNormRatio: Decimal = Decimal(0)
+    SeqlenSumm: int = 0
+    Counts: int = 0
+    PSignalAndScNormRatiosAverage: Decimal = Decimal(0)

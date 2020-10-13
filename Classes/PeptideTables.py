@@ -5,39 +5,24 @@ from .ColumnNames import ColumnNames
 from .ProteinPerTableList import ProteinPerTableList
 
 
-""" peptideTables - словарь вида
-    {
-        "1.1": {
-            "Заголовок 1":  ["Значение 1", "Значение 2", ..., "Значение n1"],
-            "Заголовок 2":  ["Значение 1", "Значение 2", ..., "Значение n1"],
-            ..............................................................
-            "Заголовок N1": ["Значение 1", "Значение 2", ..., "Значение n1"]
+class PeptideTables(dict):
+    """Словарь вида {
+        "номер таблицы": {
+            "Заголовок":  ["Значение1", "Значение2", ..., "ЗначениеN"],
         },
-        "1.2": {
-            "Заголовок 1":  ["Значение 1", "Значение 2", ..., "Значение n2"],
-            "Заголовок 2":  ["Значение 1", "Значение 2", ..., "Значение n2"],
-            ..............................................................
-            "Заголовок N2": ["Значение 1", "Значение 2", ..., "Значение n2"]
-        },
-        ...,
-        "I-ый файл": {
-            "Заголовок 1":  ["Значение 1", "Значение 2", ..., "Значение nI"],
-            "Заголовок 2":  ["Значение 1", "Значение 2", ..., "Значение nI"],
-            ..............................................................
-            "Заголовок NI": ["Значение 1", "Значение 2", ..., "Значение nI"]
-        }
     }
-"""
 
-
-class PeptideTables:
-
-    peptideTables: Dict[str, Dict[str, List[str]]]
+    Attributes:
+        columnNames: имена заголовков
+    """
     columnNames: ColumnNames
 
-    def __init__(self,
-                 columnNames: ColumnNames,
-                 inputDir: str = None) -> None:
+    def __init__(self, columnNames: ColumnNames, inputDir: str = None) -> None:
+        """
+        Args:
+            columnNames: имена заголовков
+            inputDir: путь, из которого считываются таблицы
+        """
 
         self.SetColumnNames(columnNames)
 
@@ -48,25 +33,35 @@ class PeptideTables:
             self.RemoveExcessAccessions()
 
     def ReadPeptideSummaries(self, inputDir: str) -> None:
-        """ Считывание всех PeptideSummary файлов в словарь """
+        """Считывает все PeptideSummary файлы в словарь
 
-        self.peptideTables: Dict[str, Dict[str, List[str]]] = {}
+        Args:
+            inputDir: путь, из которого считываются таблицы
+        """
         for filename in listdir(inputDir):
             if "Peptide" in filename:
                 tableNum = filename.split('_')[0]
-                self.peptideTables[tableNum] = (
+                self[tableNum] = (
                     ReadTable(inputDir + '/' + filename))
-                curTableColumnNames = list(self.peptideTables[tableNum].keys())
+                curTableColumnNames = list(self[tableNum].keys())
                 for columnName in curTableColumnNames:
                     if columnName not in self.columnNames.GetColumnNamesList():
-                        del self.peptideTables[tableNum][columnName]
+                        del self[tableNum][columnName]
 
     def GetSortedTableNums(self) -> List[str]:
-        return sorted(self.peptideTables.keys(), key=lambda x: float(x))
+        """Получает отсортированный список номеров таблиц
 
-    def RemoveReversedAccessions(self):
+        Returns:
+            отсортированный список номеров таблиц
+        """
+        return sorted(self.keys(), key=lambda x: float(x))
 
-        for peptideTable in self.peptideTables.values():
+    def RemoveReversedAccessions(self) -> None:
+        """Удаляет перевёрнутые Accession
+
+        Перевёрнутые Accession - это Accession, начинающиеся с RRRRR
+        """
+        for peptideTable in self.values():
             i = 0
             while i < len(peptideTable[self.columnNames.accession]):
                 if peptideTable[
@@ -78,16 +73,24 @@ class PeptideTables:
                 for column in peptideTable.values():
                     del column[i:]
 
-    def RemoveExcessAccessions(self):
-
-        for table in self.peptideTables.values():
+    def RemoveExcessAccessions(self) -> None:
+        """Удаляет все лишние имена, которые идут после ; в имени
+        Accession
+        """
+        for table in self.values():
             table[self.columnNames.accession] = [
                 accession.split(';')[0] for accession in table[
                     self.columnNames.accession]]
 
     def ApplyProteinPerTableList(
             self, proteinPerTableList: ProteinPerTableList) -> None:
-        for tableNum, table in self.peptideTables.items():
+        """Удаляет все Accession, отсутствующие в Protein таблицах
+
+        Args:
+            proteinPerTableList: список Protein Accession, распределённых по
+                таблицам
+        """
+        for tableNum, table in self.items():
             i = 0
             while i < len(table[self.columnNames.accession]):
                 if(table[self.columnNames.accession][i] not in
@@ -97,9 +100,17 @@ class PeptideTables:
                 i += 1
 
     def ApplyProteinReplacements(
-            self, proteinReplacements: Dict[str, Dict[str, str]]):
+            self, proteinReplacements: Dict[str, Dict[str, str]]) -> None:
+        """Применяет замены, полученные из Protein таблиц
 
-        for tableNum, table in self.peptideTables.items():
+        Args:
+            proteinReplacements: словарь замен вида: {
+                    "номер таблицы": {
+                        "что заменяем": "на что заменяем"
+                    }
+                }
+        """
+        for tableNum, table in self.items():
             tableReplacements = proteinReplacements[tableNum]
             for i in range(0, len(table[self.columnNames.accession])):
                 if table[self.columnNames.accession][i] in tableReplacements:
@@ -110,6 +121,6 @@ class PeptideTables:
         self.columnNames = columnNames
 
     def RemoveRow(self, tableNum: str, rowNum: int) -> None:
-        columns = [column for column in self.peptideTables[tableNum]]
+        columns = [column for column in self[tableNum]]
         for column in columns:
-            del self.peptideTables[tableNum][column][rowNum]
+            del self[tableNum][column][rowNum]

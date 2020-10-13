@@ -1,23 +1,19 @@
 from decimal import Decimal
+from dataclasses import dataclass
 
 
+@dataclass
 class ProteinAccession:
+    """Класс для хранения данных об Accession из файлов ProteinSummary
 
-    """ Класс для хранения данных об Accession из файлов ProteinSummary """
-
+    Attributes:
+        name: имя Accession
+        unused: максимальный unused для данного Accession
+        occurences: количество появлений Accession
+    """
     name: str
-    occurences: int
     unused: Decimal
-
-    def __init__(self, name: str, unused: Decimal, occurences: int = 1):
-        self.name = name
-        self.unused = unused
-        self.occurences = occurences
-
-    def __eq__(self, other):
-        if not isinstance(other, ProteinAccession):
-            return NotImplemented
-        return self.__dict__ == other.__dict__
+    occurences: int = 1
 
     def __str__(self):
         return (f"{self.name} (unused: {self.unused}, "

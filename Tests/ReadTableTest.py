@@ -12,7 +12,7 @@ class ReadTableTest(unittest.TestCase):
             "5\t6\t7\t8\t9\n" +
             "a\tb\tc\td\n")
         with self.assertRaises(IndexError):
-            ReadTableFromFileObj(inputFile, '\t', False)
+            ReadTableFromFileObj(inputFile, False, '\t')
 
     def testUnsafeReadTable(self):
         inputFile = StringIO(
@@ -21,7 +21,7 @@ class ReadTableTest(unittest.TestCase):
             "5\t6\t7\t8\t\n" +
             "a\tb\tc\td\n")
         self.assertDictEqual(
-            ReadTableFromFileObj(inputFile, '\t', True),
+            ReadTableFromFileObj(inputFile, True, '\t'),
             {
                 'A': ["1", "5", "a"],
                 'B': ["2", "6", "b"],
@@ -36,7 +36,7 @@ class ReadTableTest(unittest.TestCase):
             "5\t6\t7\t8\n" +
             "a\tb\tc\td\n")
         self.assertDictEqual(
-            ReadTableFromFileObj(inputFile, '\t', False),
+            ReadTableFromFileObj(inputFile, False, '\t'),
             {
                 'A': ["1", "5", "a"],
                 'B': ["2", "6", "b"],

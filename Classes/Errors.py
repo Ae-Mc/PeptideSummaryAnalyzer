@@ -1,23 +1,24 @@
 class AccessionNotFoundError(Exception):
-
+    """Если Accession не был найден"""
     def __init__(self, message):
         self.message = message
 
 
 class ColumnNotFoundError(Exception):
-
+    """Если столбец не был найден"""
     def __init__(self, columnName: str, filename: str = None):
         if columnName is not None:
-            self.message = f"Column {columnName} not found!"
             if filename is not None:
                 self.message = (
                     f"Column {columnName} not found in file {filename}!")
+            else:
+                self.message = f"Column {columnName} not found!"
         else:
             self.message = None
 
 
 class RepresentativeAccessionNotFoundError(Exception):
-
+    """Если для Protein группы не был определён репрезентативный ID"""
     def __init__(self, group):
         if group is not None:
             self.message = (
@@ -26,9 +27,3 @@ class RepresentativeAccessionNotFoundError(Exception):
             )
         else:
             self.message = None
-
-
-class EmptyGroupError(Exception):
-
-    def __init__(self, message):
-        self.message = message

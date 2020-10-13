@@ -10,9 +10,20 @@ from decimal import localcontext, Decimal
 
 
 class Output:
+    """Класс для вывода результатов в файлы
 
+    Attributes:
+        outputDirPath: путь для выходных файлов
+        seqDB: база данных последовательностей Accession
+        accessionTables: таблицы с Accession вида: {
+                "Номер таблицы": {
+                    "Имя Accession": Accession
+                }
+            }
+        proteinGroupsDB: база данных с Protein группами
+    """
     outputDirPath: str
-    accessionsBunch: Dict[str, Dict[str, Accession]]
+    _accessionsBunch: Dict[str, Dict[str, Accession]]
     seqDB: Dict[str, Sequence]
     accessionTables: AccessionTables
     proteinGroupsDB: Optional[ProteinGroupsDB]
@@ -31,12 +42,12 @@ class Output:
         self.GenerateOutputFiles()
 
     def GenerateOutputFiles(self) -> None:
-
+        """Создаёт все выходные файлы"""
         if not path.exists(self.outputDirPath):
             makedirs(self.outputDirPath)
-        self.accessionsBunch = (
+        self._accessionsBunch = (
             self.accessionTables.GenerateAccessionsBunchOverAllTables())
-        self.GenerateDescriptionFile(outFilename="description.txt")
+        self.GenerateDescriptionFile(filename="description.txt")
 
         fieldsToFiles: Tuple[Tuple[str, str, bool], ...] = (
             ("Counts", "counts.txt", False),
@@ -50,74 +61,52 @@ class Output:
         )
 
         for field, filename, isSeqlen in fieldsToFiles:
-            if isSeqlen:
-                self.GenerateTableFileByFieldWithSeqlen(
-                    fieldName=field,
-                    outFilename=filename)
-            else:
-                self.GenerateTableFileByField(
-                    fieldName=field,
-                    outFilename=filename)
+            self.GenerateTableFileByField(field, filename, isSeqlen)
 
         self.GenerateGroupsFile("ProteinGroups.txt")
         self.GenerateJointOutputFile("output.txt")
 
-    def GenerateDescriptionFile(
-            self,
-            outFilename: str) -> None:
-        with open(path.join(self.outputDirPath, outFilename), 'w') as descFile:
+    def GenerateDescriptionFile(self, filename: str) -> None:
+        """Создаёт файл с описаниями каждого Accession
+
+        Args:
+            filename: имя выходного файла
+        """
+        with open(path.join(self.outputDirPath, filename), 'w') as descFile:
             descFile.write("Accession\tDescription")
-            for accession in sorted(self.accessionsBunch.keys()):
+            for accession in sorted(self._accessionsBunch.keys()):
                 if self.seqDB[accession].len:
                     descFile.write("\n{}\t{}".format(
                         accession, self.seqDB[accession].desc))
 
-    def GenerateTableFileByFieldWithSeqlen(
-            self,
-            fieldName: str,
-            outFilename: str) -> None:
-        with open(path.join(self.outputDirPath, outFilename),
-                  'w') as outFile:
-            outFile.write(
-                "Accession\tSequence length" +
-                ("\t{}" * len(self.accessionTables.sortedTableNums)).format(
-                    *self.accessionTables.sortedTableNums))
-            for accession in sorted(self.accessionsBunch.keys()):
-                outFile.write(f"\n{accession}" +
-                              f"\t{self.seqDB[accession].len}")
-                for tableNum in self.accessionTables.sortedTableNums:
-                    table = self.accessionTables.accessionsPerTable[tableNum]
-                    if accession in table:
-                        # Создание локального контекста обязательно, иначе
-                        # все округления по какой-то причине начинают работать
-                        # неправильно! Например, число 0.60000000001
-                        # округляется до 0.600001, а не до 0.6
-                        with localcontext() as context:
-                            context.prec = max(
-                                1,
-                                7 + table[accession
-                                          ].__dict__[fieldName].adjusted())
-                            val = str(+table[accession].__dict__[fieldName])
-                            if '.' in val and "e" not in val.lower():
-                                val = val.rstrip("0").rstrip(".")
-                            outFile.write("\t{}".format(val))
-                    else:
-                        outFile.write('\t')
-
     def GenerateTableFileByField(
             self,
             fieldName: str,
-            outFilename: str) -> None:
+            filename: str,
+            isSeqlen: bool) -> None:
+        """Создаёт файл с Accession, разбитым по таблицам, где каждой таблице и
+        каждому Accession соответствует значение поля fieldName для данного
+        Accession в данной таблице
 
-        with open(path.join(self.outputDirPath, outFilename), 'w') as outFile:
+        Args:
+            fieldName: имя поля Accession
+            filename: имя выходного файла
+            isSeqlen: нужно ли добавлять столбец с Sequence Length
+        """
+        with open(path.join(self.outputDirPath, filename),
+                  'w') as outFile:
             outFile.write("Accession")
+            if isSeqlen:
+                outFile.write("\tSequence length")
             outFile.write(
                 ("\t{}" * len(self.accessionTables.sortedTableNums)).format(
                     *self.accessionTables.sortedTableNums))
-            for accession in sorted(self.accessionsBunch.keys()):
-                outFile.write("\n" + accession)
+            for accession in sorted(self._accessionsBunch.keys()):
+                outFile.write(f"\n{accession}")
+                if isSeqlen:
+                    outFile.write(f"\t{self.seqDB[accession].len}")
                 for tableNum in self.accessionTables.sortedTableNums:
-                    table = self.accessionTables.accessionsPerTable[tableNum]
+                    table = self.accessionTables[tableNum]
                     if accession in table:
                         # Создание локального контекста обязательно, иначе
                         # все округления по какой-то причине начинают работать
@@ -127,21 +116,25 @@ class Output:
                             context.prec = max(
                                 1,
                                 7 + Decimal(
-                                        table[accession].__dict__[fieldName]
-                                ).adjusted())
-                            val = str(
-                                +Decimal(table[accession].__dict__[fieldName]))
+                                    table[accession].__dict__[
+                                        fieldName]).adjusted())
+                            val = str(+table[accession].__dict__[fieldName])
                             if '.' in val and "e" not in val.lower():
                                 val = val.rstrip("0").rstrip(".")
                             outFile.write("\t{}".format(val))
                     else:
                         outFile.write('\t')
 
-    def GenerateGroupsFile(self, outFilename: str) -> None:
+    def GenerateGroupsFile(self, filename: str) -> None:
+        """Создаёт файл с Protein группами
+
+        Args:
+            filename: имя выходного файла
+        """
         if self.proteinGroupsDB is None:
             return
         outDict = self.ConvertProteinGroupsToOutputFormat(self.proteinGroupsDB)
-        with open(path.join(self.outputDirPath, outFilename), 'w') as outFile:
+        with open(path.join(self.outputDirPath, filename), 'w') as outFile:
             outFile.write("Representative\tAccession" +
                           ("\t{}" * len(self.proteinGroupsDB.sortedTableNums)
                            ).format(*self.proteinGroupsDB.sortedTableNums) +
@@ -165,23 +158,44 @@ class Output:
     def ConvertProteinGroupsToOutputFormat(
             self, proteinGroupsDB: ProteinGroupsDB
     ) -> Dict[str, Dict[str, List[int]]]:
-        """Представление групп в формате
-        {
-            "RID": {
-                "ID1": {
-                    "0.1": 0,
-                    "1.1": 1,
-                    .........
-                    "N.n": 0,
-                },
-                "IDX": {
-                    "0.1": 1,
-                    "1.1": 0,
-                    .........
-                    "N.n": 0,
+        """Представление групп в виде, удобном для вывода {
+                "RID": {
+                    "ID1": {
+                        "0.1": 0,
+                        "1.1": 1,
+                        .........
+                        "N.n": 0,
+                    },
+                    "IDX": {
+                        "0.1": 1,
+                        "1.1": 0,
+                        .........
+                        "N.n": 0,
+                    }
                 }
             }
-        }"""
+
+        Args:
+            proteinGroupsDB: база данных Protein групп
+
+        Returns:
+            Представление групп в виде, удобном для вывода: {
+                "RID": {
+                    "ID1": {
+                        "0.1": 0,
+                        "1.1": 1,
+                        .........
+                        "N.n": 0,
+                    },
+                    "IDX": {
+                        "0.1": 1,
+                        "1.1": 0,
+                        .........
+                        "N.n": 0,
+                    }
+                }
+            }
+        """
         accessions: Dict[str, Dict[str, List[int]]] = {}
         groups: List[ProteinGroup]
         for tableNum, groups in proteinGroupsDB.items():
@@ -202,16 +216,18 @@ class Output:
                         proteinGroupsDB.sortedTableNums.index(tableNum)] = 1
         return accessions
 
-    def GenerateJointOutputFile(
-            self,
-            outFilename: str) -> None:
+    def GenerateJointOutputFile(self, filename: str) -> None:
+        """Создаёт общий файл с параметрами Accession
 
-        with open(path.join(self.outputDirPath, outFilename), 'w') as outFile:
+        Args:
+            filename: имя выходного файла
+        """
+        with open(path.join(self.outputDirPath, filename), 'w') as outFile:
             outFile.write("Accession\tFilename\tUnused\tseq_length_summ\t" +
                           "counts\tSc_summ\tPep_intensity__summ\tSc_norm\t" +
                           "Pep_intensity__norm\tSP_2\tseq_length")
             for accessionName, accessionTables in sorted(
-                    self.accessionsBunch.items()):
+                    self._accessionsBunch.items()):
                 for tableNum in sorted(accessionTables.keys(),
                                        key=lambda x: float(x)):
                     accession = accessionTables[tableNum]

@@ -4,6 +4,23 @@ from Classes.Sequence import Sequence
 
 
 class Input:
+    """Содержит все нужные параметры для запуска обработки
+
+    Attributes:
+        inputPath: путь для таблиц
+        outputPath: путь для выходных файлов
+        seqDB: база данных с длинами последовательностей для Accession
+        unused: параметр фильтра unused
+        contrib: параметр фильтра contrib
+        confID: параметр фильтра confID
+        confPeptide: параметр фильтра confPeptide
+        whiteList: белый список Accession
+        blackList: чёрный список Accession
+        minGroupsWithAccession: минимум групп с Accession
+        maxGroupAbsence: максимальное количество таблиц в группе без Accession
+        proteinPilotVersion: версия ProteinPilot (от этого зависит формат
+            таблиц)
+    """
     inputPath: str
     outputPath: str = "Output"
     seqDB: Dict[str, Sequence]

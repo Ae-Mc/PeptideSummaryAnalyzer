@@ -3,7 +3,7 @@ from os import listdir, path, remove
 from typing import List
 from Classes.Input import Input
 from Classes.Comparable import Comparable
-from PeptideSummaryAnalyzer import ReadSeqDB, GetFileLines
+from Classes.Functions import ReadSeqDB, GetFileLines
 from PeptideSummaryAnalyzer import main as proteinMain
 
 
@@ -12,16 +12,28 @@ INPUTPATH = ""
 
 
 class Preset:
+    """Класс для проверки пресетов и сравнения их с результатами тестов
+
+    Attributes:
+        folder: папка с пресетом
+        presetOutputDir: папка, в которой хранятся "правильные" выходные файлы
+        settings: настройки пресета
+        errorCode: код ошибки, если она была
+    """
     folder: str
     presetOutputDir: str
     settings: Input
     errorCode: int = 0
 
     def __init__(self, folder: str):
+        """Args:
+            folder: папка с пресетом
+        """
         self.folder = folder
         self.presetOutputDir = path.join(self.folder, "TrueOutput")
 
     def Run(self) -> None:
+        """Запуск теста пресета"""
         try:
             print(self.folder)
             proteinMain(self.settings)
@@ -31,6 +43,7 @@ class Preset:
         self.TestResult()
 
     def ReadSettings(self) -> None:
+        """Считывание настроек пресета из папки с пресетом"""
         self.settings: Input = Input()
         self.settings.inputPath = path.join(self.folder, "Input")
         self.settings.outputPath = path.join(self.folder, "Output")
@@ -66,6 +79,7 @@ class Preset:
         self.settings.maxGroupAbsence = int(presetFileValues[10])
 
     def TestPresetFile(self, presetFileLines: List[str]) -> None:
+        """Проверка того, правильно ли написан файл с настроками пресета"""
         neccessaryStringParts = [
             ("ProteinPilot", "ProteinPilot Version"),
             ("ID list file", "ID whitelist"),
@@ -86,7 +100,8 @@ class Preset:
                 raise IOError(description)
             i += 1
 
-    def TestResult(self):
+    def TestResult(self) -> None:
+        """Проверка выходных файлов"""
         for filename in listdir(self.presetOutputDir):
             try:
                 self.TestOutputFile(filename)
@@ -95,6 +110,11 @@ class Preset:
                 self.errorCode = 1
 
     def TestOutputFile(self, filename: str) -> None:
+        """Проверка одного выходного файла
+
+        Args:
+            filename: имя файла для проверки
+        """
         paths = (path.join(self.presetOutputDir, filename),
                  path.join(self.settings.outputPath, filename))
         with open(paths[0]) as file1:
@@ -112,12 +132,21 @@ class Preset:
                     break
 
     def ClearOutputFolder(self):
+        """Очищает выходную папку"""
         if path.exists(self.settings.outputPath):
             for filename in listdir(self.settings.outputPath):
                 remove(path.join(self.settings.outputPath, filename))
 
 
-def GetPresetsFolders(presetFolder: str):
+def GetPresetsFolders(presetFolder: str) -> List[str]:
+    """Получает список папок с пресетами
+
+    Args:
+        presetFolder: папка, в которой расположены пресеты
+
+    Returns:
+        Список путей к папкам с пресетами
+    """
     presetsFolders = []
     for folderName in listdir(presetsFolder):
         if folderName.startswith("preset"):

@@ -8,13 +8,25 @@ from Classes.ProteinAccession import ProteinAccession
 
 
 class ProteinAccessionsDB(dict):
-    necessaryColumns = ["Accession", "N", "Unused"]
+    """Хранит базу данных с Protein Accession в формате: {
+        "номер таблицы": {
+            "имя Accession": ProteinAccession
+        }
+    }
+    """
+    _necessaryColumns = ["Accession", "N", "Unused"]
 
     def __init__(self, folder: str = None):
+        """См. LoadFromFolder"""
         if folder is not None:
             self.LoadFromFolder(folder)
 
-    def LoadFromFolder(self, folder: str):
+    def LoadFromFolder(self, folder: str) -> None:
+        """Загружает Protein таблицы из папки folder
+
+        Args:
+            folder: путь, в котором хранятся Protein таблицы
+        """
         filenames = self._GetProteinFilenames(folder)
         dictionary: Dict[str, Dict[str, List[str]]] = {}
         for filename in filenames:
@@ -24,8 +36,18 @@ class ProteinAccessionsDB(dict):
 
     def LoadFromDict(self,
                      dictionary: Dict[str, Dict[str, List[str]]]) -> None:
+        """Загружает Protein таблицы из словаря, полученного в результате
+        чтения Protein таблиц
+
+        Args:
+            dictionary: словарь вида: {
+                    "номер таблицы": {
+                        "столбец": ["значение1", "значение2", ..., "значениеN"]
+                    }
+                }
+        """
         for tableNum, table in dictionary.items():
-            for columnName in self.necessaryColumns:
+            for columnName in self._necessaryColumns:
                 if columnName not in table:
                     raise ColumnNotFoundError(columnName,
                                               f"{tableNum}_ProteinSummary.txt")
@@ -50,6 +72,15 @@ class ProteinAccessionsDB(dict):
     def GetRepresentative(self,
                           accessions: List[str],
                           seqDB: Dict[str, Sequence]) -> str:
+        """Получает репрезентативный Accession для списка Accession
+
+        Args:
+            accessions: список имён Accession
+            seqDB: база данных последовательностей Accession
+
+        Returns:
+            Имя репрезентативного Accession
+        """
         representativeAccession = ProteinAccession("", Decimal(0), 0)
         for accession in sorted(accessions):
             if(
@@ -67,6 +98,14 @@ class ProteinAccessionsDB(dict):
 
     @staticmethod
     def _GetProteinFilenames(folder: str) -> List[str]:
+        """Получает имена всех Protein файлов по пути folder
+
+        Args:
+            folder: путь к папки с Protein файлами
+
+        Returns:
+            Список имён Protein файлов по пути folder
+        """
         filenames: List[str] = []
         for filename in listdir(folder):
             if filename.endswith("ProteinSummary.txt"):

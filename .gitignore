@@ -136,6 +136,10 @@ venv.bak/
 # mkdocs documentation
 /site
 
+# doxygen documentation
+/latex
+/html
+
 # mypy
 .mypy_cache/
 .dmypy.json

@@ -1,23 +1,20 @@
 from typing import List, Optional
 from decimal import Decimal
+from dataclasses import dataclass, field
 
 
+@dataclass
 class ProteinGroup:
-    representativeAccession: Optional[str]
-    accessions: List[str]
-    unused: Decimal
+    """Хранит Protein группу
 
-    def __init__(
-            self,
-            unused: Decimal = None,
-            accessions: List[str] = None,
-            representativeAccession: str = None) -> None:
-
-        if unused is not None:
-            self.unused = unused
-        if accessions is not None:
-            self.accessions = accessions
-        self.representativeAccession = representativeAccession
+    Attributes:
+        unused: значение unused для всей группы
+        accessions: список Accession
+        representativeAccession: репрезентативный Accession
+    """
+    unused: Decimal = Decimal(0)
+    accessions: List[str] = field(default_factory=list)
+    representativeAccession: Optional[str] = None
 
     def __repr__(self):
         return (f"{self.representativeAccession} "
@@ -26,8 +23,3 @@ class ProteinGroup:
     def __str__(self):
         return (f"{self.representativeAccession} "
                 f"({self.unused}): {self.accessions}")
-
-    def __eq__(self, other):
-        if not isinstance(other, ProteinGroup):
-            return NotImplemented
-        return self.__dict__ == other.__dict__
