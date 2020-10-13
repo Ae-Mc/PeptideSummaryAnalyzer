@@ -18,11 +18,23 @@ class ProteinGroupsDB(dict):
                  proteinAccessionsDB: ProteinAccessionsDB,
                  seqDB: Dict[str, Sequence],
                  folder: str) -> None:
+        """См. LoadFromFolder
+
+        Args:
+            proteinAccessionsDB: база данных с Protein таблицами
+            seqDB: база данных последовательностей Accession
+            folder: путь, в котором хранятся Protein таблицы
+        """
         self.proteinAccessionsDB = proteinAccessionsDB
         self.seqDB = seqDB
         self.LoadFromFolder(folder)
 
     def LoadFromFolder(self, folder: str) -> None:
+        """Загружает Protein таблицы из папки folder
+
+        Args:
+            folder: путь, в котором хранятся Protein таблицы
+        """
         filenames = ProteinAccessionsDB._GetProteinFilenames(folder)
         dictionary: Dict[str, Dict[str, List[str]]] = {}
         for filename in filenames:
@@ -32,6 +44,16 @@ class ProteinGroupsDB(dict):
 
     def LoadFromDict(self,
                      dictionary: Dict[str, Dict[str, List[str]]]) -> None:
+        """Загружает Protein таблицы из словаря, полученного в результате
+        чтения Protein таблиц и создаёт из них группы
+
+        Args:
+            dictionary: словарь вида: {
+                    "номер таблицы": {
+                        "столбец": ["значение1", "значение2", ..., "значениеN"]
+                    }
+                }
+        """
         self.sortedTableNums = sorted([*dictionary], key=lambda x: float(x))
         for tableNum, table in dictionary.items():
             self[tableNum] = []
@@ -58,6 +80,7 @@ class ProteinGroupsDB(dict):
         self.CalculateRepresentatives()
 
     def CalculateRepresentatives(self):
+        """Подсчитывает репрезентативные Accession для всех групп"""
         for tableNum, table in self.items():
             for group in table:
                 group.representativeAccession = (
@@ -65,6 +88,15 @@ class ProteinGroupsDB(dict):
                         group.accessions, self.seqDB))
 
     def GetReplacementsPerTable(self) -> Dict[str, Dict[str, str]]:
+        """Создаёт словарь замен
+
+        Returns:
+            словарь замен вида: {
+                "номер таблицы": {
+                    "что заменять": "на что заменять"
+                }
+            }
+        """
         replacements: Dict[str, Dict[str, str]] = {}
         for tableNum, groups in self.items():
             replacements[tableNum] = {}
