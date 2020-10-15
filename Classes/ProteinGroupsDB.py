@@ -16,7 +16,6 @@ class ProteinGroupsDB(dict):
     skipReversedIfSecondary: bool
 
     def __init__(self,
-                 proteinAccessionsDB: ProteinAccessionsDB,
                  seqDB: Dict[str, Sequence],
                  skipReversedIfSecondary: bool = False,
                  folder: str = None) -> None:
@@ -28,7 +27,6 @@ class ProteinGroupsDB(dict):
             folder: путь, в котором хранятся Protein таблицы
         """
         self.skipReversedIfSecondary = skipReversedIfSecondary
-        self.proteinAccessionsDB = proteinAccessionsDB
         self.seqDB = seqDB
         if folder:
             self.LoadFromFolder(folder)
@@ -39,6 +37,8 @@ class ProteinGroupsDB(dict):
         Args:
             folder: путь, в котором хранятся Protein таблицы
         """
+        self.proteinAccessionsDB = ProteinAccessionsDB(
+            self.skipReversedIfSecondary, folder)
         filenames = ProteinAccessionsDB._GetProteinFilenames(folder)
         dictionary: Dict[str, Dict[str, List[str]]] = {}
         for filename in filenames:
