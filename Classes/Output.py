@@ -136,15 +136,17 @@ class Output:
         outDict = self.ConvertProteinGroupsToOutputFormat(self.proteinGroupsDB)
         with open(path.join(self.outputDirPath, filename), 'w') as outFile:
             outFile.write("Representative\tAccession" +
-                          ("\t{}" * len(self.proteinGroupsDB.sortedTableNums)
-                           ).format(*self.proteinGroupsDB.sortedTableNums) +
+                          ("\t{}" * len(
+                              self.proteinGroupsDB.GetSortedTableNums())
+                           ).format(
+                               *self.proteinGroupsDB.GetSortedTableNums()) +
                           "\n")
             for reprAccession, accessions in sorted(outDict.items()):
                 if len(accessions) == 1:
                     continue
                 outFile.write(
                     f"{reprAccession}\t" +
-                    ("\t{}" * len(self.proteinGroupsDB.sortedTableNums)
+                    ("\t{}" * len(self.proteinGroupsDB.GetSortedTableNums())
                      ).format(*accessions[reprAccession]) + "\n")
 
                 for accession, accessionTables in sorted(accessions.items()):
@@ -152,7 +154,8 @@ class Output:
                         continue
                     outFile.write(
                         f"\t{accession}" +
-                        ("\t{}" * len(self.proteinGroupsDB.sortedTableNums)
+                        ("\t{}" * len(
+                            self.proteinGroupsDB.GetSortedTableNums())
                          ).format(*accessionTables) + "\n")
 
     def ConvertProteinGroupsToOutputFormat(
@@ -211,9 +214,10 @@ class Output:
                     if (accession not in accessions[reprAccession]):
                         accessions[reprAccession][accession] = (
                                 [0 for tableNum in
-                                    proteinGroupsDB.sortedTableNums])
+                                    proteinGroupsDB.GetSortedTableNums()])
                     accessions[reprAccession][accession][
-                        proteinGroupsDB.sortedTableNums.index(tableNum)] = 1
+                        proteinGroupsDB.GetSortedTableNums(
+                        ).index(tableNum)] = 1
         return accessions
 
     def GenerateJointOutputFile(self, filename: str) -> None:

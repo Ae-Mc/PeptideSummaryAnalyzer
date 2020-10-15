@@ -1,23 +1,21 @@
 from typing import Dict, List
 from os import path
 from decimal import Decimal
-from Classes.ProteinAccessionsDB import ProteinAccessionsDB
-from Classes.ProteinGroup import ProteinGroup
-from Classes.ReadTable import ReadTable
-from Classes.Errors import ColumnNotFoundError, AccessionNotFoundError
-from Classes.Sequence import Sequence
+from .ProteinAccessionsDB import ProteinAccessionsDB
+from .ProteinGroup import ProteinGroup
+from .ReadTable import ReadTable
+from .Errors import ColumnNotFoundError, AccessionNotFoundError
+from .Sequence import Sequence
+from .BaseClasses import ProteinDB
 
 
-class ProteinGroupsDB(dict):
+class ProteinGroupsDB(ProteinDB):
     """Хранит Protein группы, разбитые по таблицам
 
     Attributes:
-        sortedTableNums: отсортированные номера таблиц
         proteinAccessionsDB: база данных accession, не разбитая по группам
         seqDB: база данных последовательностей Accession
     """
-    _necessaryColumns = ["Accession", "Unused"]
-    sortedTableNums: List[str]
     proteinAccessionsDB: ProteinAccessionsDB
     seqDB: Dict[str, Sequence]
 
@@ -42,7 +40,7 @@ class ProteinGroupsDB(dict):
         Args:
             folder: путь, в котором хранятся Protein таблицы
         """
-        filenames = ProteinAccessionsDB._GetProteinFilenames(folder)
+        filenames = ProteinDB.GetProteinFilenames(folder)
         dictionary: Dict[str, Dict[str, List[str]]] = {}
         for filename in filenames:
             tableNum = path.split(filename)[1].split('_')[0]
@@ -61,7 +59,6 @@ class ProteinGroupsDB(dict):
                     }
                 }
         """
-        self.sortedTableNums = sorted([*dictionary], key=lambda x: float(x))
         for tableNum, table in dictionary.items():
             self[tableNum] = []
             for columnName in self._necessaryColumns:

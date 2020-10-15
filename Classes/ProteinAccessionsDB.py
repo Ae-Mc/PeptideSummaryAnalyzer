@@ -1,25 +1,20 @@
 from typing import Dict, List
-from os import listdir, path
+from os import path
 from decimal import Decimal
-from Classes.Sequence import Sequence
-from Classes.ReadTable import ReadTable
-from Classes.Errors import ColumnNotFoundError
-from Classes.ProteinAccession import ProteinAccession
+from .Sequence import Sequence
+from .ReadTable import ReadTable
+from .Errors import ColumnNotFoundError
+from .ProteinAccession import ProteinAccession
+from .BaseClasses import ProteinDB
 
 
-class ProteinAccessionsDB(dict):
+class ProteinAccessionsDB(ProteinDB):
     """Хранит базу данных с Protein Accession в формате: {
         "номер таблицы": {
             "имя Accession": ProteinAccession
         }
     }
     """
-    _necessaryColumns = ["Accession", "N", "Unused"]
-
-    def __init__(self, folder: str = None):
-        """См. LoadFromFolder"""
-        if folder is not None:
-            self.LoadFromFolder(folder)
 
     def LoadFromFolder(self, folder: str) -> None:
         """Загружает Protein таблицы из папки folder
@@ -27,7 +22,7 @@ class ProteinAccessionsDB(dict):
         Args:
             folder: путь, в котором хранятся Protein таблицы
         """
-        filenames = self._GetProteinFilenames(folder)
+        filenames = self.GetProteinFilenames(folder)
         dictionary: Dict[str, Dict[str, List[str]]] = {}
         for filename in filenames:
             tableNum = path.split(filename)[1].split('_')[0]
@@ -95,19 +90,3 @@ class ProteinAccessionsDB(dict):
                  seqDB[representativeAccession.name].len)):
                 representativeAccession = self[accession]
         return representativeAccession.name
-
-    @staticmethod
-    def _GetProteinFilenames(folder: str) -> List[str]:
-        """Получает имена всех Protein файлов по пути folder
-
-        Args:
-            folder: путь к папки с Protein файлами
-
-        Returns:
-            Список имён Protein файлов по пути folder
-        """
-        filenames: List[str] = []
-        for filename in listdir(folder):
-            if filename.endswith("ProteinSummary.txt"):
-                filenames.append(path.join(folder, filename))
-        return filenames
