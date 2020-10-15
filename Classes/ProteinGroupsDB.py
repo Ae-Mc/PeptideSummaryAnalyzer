@@ -9,7 +9,14 @@ from Classes.Sequence import Sequence
 
 
 class ProteinGroupsDB(dict):
-    necessaryColumns = ["Accession", "Unused"]
+    """Хранит Protein группы, разбитые по таблицам
+
+    Attributes:
+        sortedTableNums: отсортированные номера таблиц
+        proteinAccessionsDB: база данных accession, не разбитая по группам
+        seqDB: база данных последовательностей Accession
+    """
+    _necessaryColumns = ["Accession", "Unused"]
     sortedTableNums: List[str]
     proteinAccessionsDB: ProteinAccessionsDB
     seqDB: Dict[str, Sequence]
@@ -57,7 +64,7 @@ class ProteinGroupsDB(dict):
         self.sortedTableNums = sorted([*dictionary], key=lambda x: float(x))
         for tableNum, table in dictionary.items():
             self[tableNum] = []
-            for columnName in self.necessaryColumns:
+            for columnName in self._necessaryColumns:
                 if columnName not in table:
                     raise ColumnNotFoundError(
                         columnName, f"{tableNum}_ProteinSummary.txt")
