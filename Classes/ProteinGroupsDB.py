@@ -49,6 +49,22 @@ class ProteinGroupsDB(dict):
     def LoadFromDict(self,
                      dictionary: Dict[str, Dict[str, List[str]]]) -> None:
         """Загружает Protein таблицы из словаря, полученного в результате
+        чтения Protein таблиц и создаёт из них группы, а также вычисляет для
+        них репрезентативные Accession
+
+        Args:
+            dictionary: словарь вида: {
+                    "номер таблицы": {
+                        "столбец": ["значение1", "значение2", ..., "значениеN"]
+                    }
+                }
+        """
+        self.GetAccessionsGroups(dictionary)
+        self.CalculateRepresentatives()
+
+    def GetAccessionsGroups(
+            self, dictionary: Dict[str, Dict[str, List[str]]]) -> None:
+        """Загружает Protein таблицы из словаря, полученного в результате
         чтения Protein таблиц и создаёт из них группы
 
         Args:
@@ -61,33 +77,48 @@ class ProteinGroupsDB(dict):
         self.sortedTableNums = sorted([*dictionary], key=lambda x: float(x))
         for tableNum, table in dictionary.items():
             self[tableNum] = []
-            for columnName in self.necessaryColumns:
-                if columnName not in table:
-                    raise ColumnNotFoundError(
-                        columnName, f"{tableNum}_ProteinSummary.txt")
-            if len(table["Accession"]):
-                curGroup = ProteinGroup(
-                    Decimal(table["Unused"][0]), [table["Accession"][0]])
-                i = 1
-                while i < len(table["Accession"]):
-                    if (table["Accession"][i].startswith("RRRRR")):
-                        if(not self.skipReversedIfSecondary
-                           or i + 1 == len(table["Accession"])
-                           or table["Accession"][i + 1].startswith("RRRRR")):
-                            break
-                        i += 1
-                        continue
+            self.TestNeccessaryColumnNames(table, tableNum)
+            self.GetAccessionsGroupsFromTable(table, tableNum)
 
-                    if Decimal(table["Unused"][i]) != Decimal(0):
-                        curGroup.accessions = sorted(curGroup.accessions)
-                        self[tableNum].append(curGroup)
-                        curGroup = ProteinGroup(
-                            Decimal(table["Unused"][i]), [])
-                    curGroup.accessions.append(table["Accession"][i])
+    def TestNeccessaryColumnNames(
+            self, table: Dict[str, List[str]], tableNum: str) -> None:
+        for columnName in self.necessaryColumns:
+            if columnName not in table:
+                raise ColumnNotFoundError(columnName,
+                                          f"{tableNum}_ProteinSummary.txt")
+
+    def GetAccessionsGroupsFromTable(
+            self, table: Dict[str, List[str]], tableNum: str) -> None:
+        if len(table["Accession"]):
+            curGroup = ProteinGroup(
+                Decimal(table["Unused"][0]), [table["Accession"][0]])
+            reversedFound = False
+            i = 1
+            while i < len(table["Accession"]):
+                if (table["Accession"][i].startswith("RRRRR")):
+                    if self.TestIsSecondaryReversed(table["Accession"], i):
+                        return
+                    if reversedFound:
+                        return
+                    reversedFound = True
                     i += 1
-                curGroup.accessions = sorted(curGroup.accessions)
-                self[tableNum].append(curGroup)
-        self.CalculateRepresentatives()
+                    continue
+
+                if Decimal(table["Unused"][i]) != Decimal(0):
+                    curGroup.accessions = sorted(curGroup.accessions)
+                    self[tableNum].append(curGroup)
+                    curGroup = ProteinGroup(
+                        Decimal(table["Unused"][i]), [])
+                curGroup.accessions.append(table["Accession"][i])
+                i += 1
+            curGroup.accessions = sorted(curGroup.accessions)
+            self[tableNum].append(curGroup)
+
+    def TestIsSecondaryReversed(
+            self, accessionColumn: List[str], i: int) -> bool:
+        return not (not self.skipReversedIfSecondary
+                    or i + 1 == len(accessionColumn)
+                    or accessionColumn[i + 1].startswith("RRRRR"))
 
     def CalculateRepresentatives(self):
         """Подсчитывает репрезентативные Accession для всех групп"""

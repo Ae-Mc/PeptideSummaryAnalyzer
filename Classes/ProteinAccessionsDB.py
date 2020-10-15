@@ -26,7 +26,7 @@ class ProteinAccessionsDB(dict):
                  folder: str = None):
         """См. LoadFromFolder"""
         self.skipReversedIfSecondary = skipReversedIfSecondary
-        if folder is not None:
+        if folder:
             self.LoadFromFolder(folder)
 
     def LoadFromFolder(self, folder: str) -> None:
@@ -60,16 +60,18 @@ class ProteinAccessionsDB(dict):
                     raise ColumnNotFoundError(columnName,
                                               f"{tableNum}_ProteinSummary.txt")
             curUnused: Decimal = Decimal(0)
+            reversedFound = False
             i = 0
             while i < len(table["Accession"]):
                 if Decimal(table["Unused"][i]) != Decimal(0):
                     curUnused = Decimal(table["Unused"][i])
 
                 if (table["Accession"][i].startswith("RRRRR")):
-                    if(not self.skipReversedIfSecondary
-                       or i + 1 == len(table["Accession"])
-                       or table["Accession"][i + 1].startswith("RRRRR")):
-                        break
+                    if self.TestIsSecondaryReversed(table["Accession"], i):
+                        return
+                    if reversedFound:
+                        return
+                    reversedFound = True
                     i += 1
                     continue
 
@@ -82,6 +84,12 @@ class ProteinAccessionsDB(dict):
                 else:
                     self[accession.name] = accession
                 i += 1
+
+    def TestIsSecondaryReversed(
+            self, accessionColumn: List[str], i: int) -> bool:
+        return not (not self.skipReversedIfSecondary
+                    or i + 1 == len(accessionColumn)
+                    or accessionColumn[i + 1].startswith("RRRRR"))
 
     def GetRepresentative(self,
                           accessions: List[str],
