@@ -1,9 +1,9 @@
-from decimal import Decimal
 from dataclasses import dataclass
+from .BaseClasses import BaseProteinAccession
 
 
 @dataclass
-class ProteinAccession:
+class ProteinAccession(BaseProteinAccession):
     """Класс для хранения данных об Accession из файлов ProteinSummary
 
     Attributes:
@@ -11,8 +11,6 @@ class ProteinAccession:
         unused: максимальный unused для данного Accession
         occurences: количество появлений Accession
     """
-    name: str
-    unused: Decimal
     occurences: int = 1
 
     def __str__(self):
