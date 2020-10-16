@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Any
 from os import listdir, path
 
 
@@ -13,7 +13,7 @@ class ProteinDB(dict):
         pass
 
     def LoadFromDict(self,
-                     dictionary: Dict[str, Dict[str, List[str]]]) -> None:
+                     dictionary: Dict[str, Any]) -> None:
         pass
 
     def GetSortedTableNums(self):

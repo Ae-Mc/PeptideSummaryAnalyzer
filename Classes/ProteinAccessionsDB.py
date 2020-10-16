@@ -2,8 +2,7 @@ from typing import Dict, List
 from os import path
 from decimal import Decimal
 from .Sequence import Sequence
-from .ReadTable import ReadTable
-from .Errors import ColumnNotFoundError
+from .ProteinTable import ProteinTable
 from .ProteinAccession import ProteinAccession
 from .BaseClasses import ProteinDB
 
@@ -23,39 +22,37 @@ class ProteinAccessionsDB(ProteinDB):
             folder: путь, в котором хранятся Protein таблицы
         """
         filenames = self.GetProteinFilenames(folder)
-        dictionary: Dict[str, Dict[str, List[str]]] = {}
+        tables: Dict[str, List[ProteinAccession]] = {}
         for filename in filenames:
             tableNum = path.split(filename)[1].split('_')[0]
-            dictionary[tableNum] = ReadTable(filename, unsafeFlag=True)
-        self.LoadFromDict(dictionary)
+            tables[tableNum] = ProteinTable(filename, True)
+        self.LoadFromDict(tables)
 
     def LoadFromDict(self,
-                     dictionary: Dict[str, Dict[str, List[str]]]) -> None:
+                     dictionary: Dict[str, List[ProteinAccession]]) -> None:
         """Загружает Protein таблицы из словаря, полученного в результате
         чтения Protein таблиц
 
         Args:
             dictionary: словарь вида: {
                     "номер таблицы": {
-                        "столбец": ["значение1", "значение2", ..., "значениеN"]
+                        [ProteinAccession,
+                         ProteinAccession,
+                         ...,
+                         ProteinAccession]
                     }
                 }
         """
         for tableNum, table in dictionary.items():
-            for columnName in self._necessaryColumns:
-                if columnName not in table:
-                    raise ColumnNotFoundError(columnName,
-                                              f"{tableNum}_ProteinSummary.txt")
             curUnused: Decimal = Decimal(0)
             i = 0
-            while i < len(table["Accession"]):
-                if table["Accession"][i].startswith("RRRRR"):
+            while i < len(table):
+                if table[i].name.startswith("RRRRR"):
                     break
 
-                if Decimal(table["Unused"][i]) != Decimal(0):
-                    curUnused = Decimal(table["Unused"][i])
-                accession = ProteinAccession(table["Accession"][i],
-                                             curUnused)
+                if table[i].unused != Decimal(0):
+                    curUnused = table[i].unused
+                accession = ProteinAccession(table[i].name, curUnused)
                 if accession.name in self:
                     self[accession.name].unused = max(
                         self[accession.name].unused, accession.unused)
