@@ -5,8 +5,8 @@ from Classes import AccessionTables
 from Classes import ColumnNames
 from Classes import (ApplyBlackList, ApplyConfidenceIDFilter,
                      ApplyGroupFilter, ApplyParamsFilter,
-                     ApplyWhiteList, CalculateAccessionsNormRatios,
-                     GetInput, GetScPsigAndNormFilesSumm)
+                     ApplyWhiteList, CalculateAccessionsNormRatios, GetInput,
+                     GetScPsigAndNormFilesSumm)
 from Classes import Input
 from Classes import Output
 from Classes import PeptideTables
@@ -65,10 +65,12 @@ def main(inputParams: Input = None) -> None:
     peptideTables = PeptideTables(columnNames, inputDir=inputParams.inputPath)
     proteinGroupsDB = None
     if inputParams.isProteinGroupFilter:
-        proteinAccessionsDB = ProteinAccessionsDB(inputParams.inputPath)
+        proteinTables = ProteinAccessionsDB.GetProteinTables(
+            inputParams.inputPath)
+        proteinAccessionsDB = ProteinAccessionsDB(proteinTables)
         proteinGroupsDB = ProteinGroupsDB(proteinAccessionsDB,
                                           inputParams.seqDB,
-                                          inputParams.inputPath)
+                                          proteinTables)
         proteinPerTableList = ProteinPerTableList(proteinGroupsDB)
         peptideTables.ApplyProteinPerTableList(proteinPerTableList)
         peptideTables.ApplyProteinReplacements(

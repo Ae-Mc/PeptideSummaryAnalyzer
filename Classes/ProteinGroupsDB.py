@@ -1,12 +1,11 @@
-from typing import Dict, List
-from os import path
+from typing import Dict
 from decimal import Decimal
 from .ProteinAccessionsDB import ProteinAccessionsDB
 from .ProteinGroup import ProteinGroup
-from .ReadTable import ReadTable
-from .Errors import ColumnNotFoundError, AccessionNotFoundError
+from .ProteinTable import ProteinTable
+from .Errors import AccessionNotFoundError
 from .Sequence import Sequence
-from .BaseClasses import ProteinDB
+from .BaseClasses.ProteinDB import ProteinDB
 
 
 class ProteinGroupsDB(ProteinDB):
@@ -22,7 +21,7 @@ class ProteinGroupsDB(ProteinDB):
     def __init__(self,
                  proteinAccessionsDB: ProteinAccessionsDB,
                  seqDB: Dict[str, Sequence],
-                 folder: str) -> None:
+                 proteinTables: Dict[str, ProteinTable] = None) -> None:
         """См. LoadFromFolder
 
         Args:
@@ -32,23 +31,10 @@ class ProteinGroupsDB(ProteinDB):
         """
         self.proteinAccessionsDB = proteinAccessionsDB
         self.seqDB = seqDB
-        self.LoadFromFolder(folder)
+        if proteinTables:
+            self.LoadFromTables(proteinTables)
 
-    def LoadFromFolder(self, folder: str) -> None:
-        """Загружает Protein таблицы из папки folder
-
-        Args:
-            folder: путь, в котором хранятся Protein таблицы
-        """
-        filenames = ProteinDB.GetProteinFilenames(folder)
-        dictionary: Dict[str, Dict[str, List[str]]] = {}
-        for filename in filenames:
-            tableNum = path.split(filename)[1].split('_')[0]
-            dictionary[tableNum] = ReadTable(filename, unsafeFlag=True)
-        self.LoadFromDict(dictionary)
-
-    def LoadFromDict(self,
-                     dictionary: Dict[str, Dict[str, List[str]]]) -> None:
+    def LoadFromTables(self, proteinTables: Dict[str, ProteinTable]) -> None:
         """Загружает Protein таблицы из словаря, полученного в результате
         чтения Protein таблиц и создаёт из них группы
 
@@ -59,26 +45,22 @@ class ProteinGroupsDB(ProteinDB):
                     }
                 }
         """
-        for tableNum, table in dictionary.items():
+        for tableNum, table in proteinTables.items():
             self[tableNum] = []
-            for columnName in self._necessaryColumns:
-                if columnName not in table:
-                    raise ColumnNotFoundError(
-                        columnName, f"{tableNum}_ProteinSummary.txt")
-            if len(table["Accession"]):
+            if len(table):
                 curGroup = ProteinGroup(
-                    Decimal(table["Unused"][0]), [table["Accession"][0]])
+                    table[0].unused, [table[0].name])
                 i = 1
-                while i < len(table["Accession"]):
-                    if table["Accession"][i].startswith("RRRRR"):
+                while i < len(table):
+                    if table[i].name.startswith("RRRRR"):
                         break
 
-                    if Decimal(table["Unused"][i]) != Decimal(0):
+                    if table[i].unused != Decimal(0):
                         curGroup.accessions = sorted(curGroup.accessions)
                         self[tableNum].append(curGroup)
                         curGroup = ProteinGroup(
-                            Decimal(table["Unused"][i]), [])
-                    curGroup.accessions.append(table["Accession"][i])
+                            Decimal(table[i].unused), [])
+                    curGroup.accessions.append(table[i].name)
                     i += 1
                 self[tableNum].append(curGroup)
         self.CalculateRepresentatives()

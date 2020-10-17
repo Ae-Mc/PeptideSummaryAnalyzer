@@ -1,10 +1,9 @@
 from typing import Dict, List
-from os import path
 from decimal import Decimal
 from .Sequence import Sequence
 from .ProteinTable import ProteinTable
 from .ProteinAccession import ProteinAccession
-from .BaseClasses import ProteinDB
+from .BaseClasses.ProteinDB import ProteinDB
 
 
 class ProteinAccessionsDB(ProteinDB):
@@ -13,23 +12,12 @@ class ProteinAccessionsDB(ProteinDB):
             "имя Accession": ProteinAccession
         }
     }
+
+    Вычисляет максимальные параметры Unused для каждого Accession.
+    Служит для поиска репрезентативного Accession среди списка Accession.
     """
 
-    def LoadFromFolder(self, folder: str) -> None:
-        """Загружает Protein таблицы из папки folder
-
-        Args:
-            folder: путь, в котором хранятся Protein таблицы
-        """
-        filenames = self.GetProteinFilenames(folder)
-        tables: Dict[str, List[ProteinAccession]] = {}
-        for filename in filenames:
-            tableNum = path.split(filename)[1].split('_')[0]
-            tables[tableNum] = ProteinTable(filename, True)
-        self.LoadFromDict(tables)
-
-    def LoadFromDict(self,
-                     dictionary: Dict[str, List[ProteinAccession]]) -> None:
+    def LoadFromTables(self, dictionary: Dict[str, ProteinTable]) -> None:
         """Загружает Protein таблицы из словаря, полученного в результате
         чтения Protein таблиц
 

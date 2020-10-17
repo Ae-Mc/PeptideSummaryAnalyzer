@@ -1,11 +1,11 @@
-from .BaseClasses import Table, BaseProteinAccession
-from .ProteinColumns import ProteinColumns
 from decimal import Decimal
 from typing import List
+from .BaseClasses.Table import Table
+from .BaseClasses.BaseProteinAccession import BaseProteinAccession
+from .ProteinColumns import ProteinColumns
 
 
 class ProteinTable(Table):
-
     columns: ProteinColumns
 
     def __init__(self,

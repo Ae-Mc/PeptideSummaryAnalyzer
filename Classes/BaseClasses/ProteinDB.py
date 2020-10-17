@@ -1,19 +1,26 @@
-from typing import List, Dict, Any
-from os import listdir, path
+from abc import ABC, abstractmethod
+from typing import Dict, List
+from os import path, listdir
+from ..ProteinTable import ProteinTable
 
 
-class ProteinDB(dict):
+class ProteinDB(dict, ABC):
     _necessaryColumns = ["Accession", "Unused"]
 
-    def __init__(self, folder: str = None):
-        if folder:
-            self.LoadFromFolder(folder)
+    def __init__(self, proteinTables: Dict[str, ProteinTable] = None):
+        if proteinTables:
+            self.LoadFromTables(proteinTables)
 
     def LoadFromFolder(self, folder: str) -> None:
-        pass
+        """Загружает Protein таблицы из папки folder
 
-    def LoadFromDict(self,
-                     dictionary: Dict[str, Any]) -> None:
+        Args:
+            folder: путь, в котором хранятся Protein таблицы
+        """
+        self.LoadFromTables(self.GetProteinTables(folder))
+
+    @abstractmethod
+    def LoadFromTables(self, dictionary: Dict[str, ProteinTable]) -> None:
         pass
 
     def GetSortedTableNums(self):
@@ -24,6 +31,25 @@ class ProteinDB(dict):
             ["0.1", "0.2", ..., "10.1"]
         """
         return sorted(self, key=lambda x: float(x))
+
+    @staticmethod
+    def GetProteinTables(folder: str) -> Dict[str, ProteinTable]:
+        """Загружает все Protein файлы по пути folder в классы ProteinTable
+
+        Args:
+            folder: путь к папки с Protein файлами
+
+        Returns:
+            Словарь вида: {
+                "Номер таблицы": ProteinTable
+            }
+        """
+        filenames = ProteinDB.GetProteinFilenames(folder)
+        tables: Dict[str, ProteinTable] = {}
+        for filename in filenames:
+            tableNum = path.split(filename)[1].split('_')[0]
+            tables[tableNum] = ProteinTable(filename, True)
+        return tables
 
     @staticmethod
     def GetProteinFilenames(folder: str) -> List[str]:

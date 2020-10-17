@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from .BaseClasses import BaseProteinAccession
+from .BaseClasses.BaseProteinAccession import BaseProteinAccession
 
 
 @dataclass
