@@ -1,30 +1,30 @@
 from os import listdir
 from typing import Dict, List
-from .ReadTable import ReadTable
-from .ColumnNames import ColumnNames
+from .PeptideColumns import PeptideColumns
+from .PeptideTable import PeptideTable
 from .ProteinPerTableList import ProteinPerTableList
 
 
 class PeptideTables(dict):
     """Словарь вида {
-        "номер таблицы": {
-            "Заголовок":  ["Значение1", "Значение2", ..., "ЗначениеN"],
-        },
+        "номер таблицы": PeptideTable,
     }
 
     Attributes:
         columnNames: имена заголовков
     """
-    columnNames: ColumnNames
+    columnNames: PeptideColumns
 
-    def __init__(self, columnNames: ColumnNames, inputDir: str = None) -> None:
+    def __init__(self,
+                 columnNames: PeptideColumns,
+                 inputDir: str = None) -> None:
         """
         Args:
             columnNames: имена заголовков
             inputDir: путь, из которого считываются таблицы
         """
 
-        self.SetColumnNames(columnNames)
+        self.columnNames = columnNames
 
         if inputDir is not None:
             self.ReadPeptideSummaries(inputDir)
@@ -41,12 +41,8 @@ class PeptideTables(dict):
         for filename in listdir(inputDir):
             if "Peptide" in filename:
                 tableNum = filename.split('_')[0]
-                self[tableNum] = (
-                    ReadTable(inputDir + '/' + filename))
-                curTableColumnNames = list(self[tableNum].keys())
-                for columnName in curTableColumnNames:
-                    if columnName not in self.columnNames.GetColumnNamesList():
-                        del self[tableNum][columnName]
+                self[tableNum] = PeptideTable(inputDir + '/' + filename,
+                                              columns=self.columnNames)
 
     def GetSortedTableNums(self) -> List[str]:
         """Получает отсортированный список номеров таблиц
@@ -61,26 +57,23 @@ class PeptideTables(dict):
 
         Перевёрнутые Accession - это Accession, начинающиеся с RRRRR
         """
+        peptideTable: PeptideTable
         for peptideTable in self.values():
             i = 0
-            while i < len(peptideTable[self.columnNames.accession]):
-                if peptideTable[
-                        self.columnNames.accession][i].startswith("RRRRR"):
+            while i < len(peptideTable):
+                if peptideTable[i].name.startswith("RRRRR"):
                     break
                 i += 1
 
-            if i < len(peptideTable[self.columnNames.accession]):
-                for column in peptideTable.values():
-                    del column[i:]
+            del peptideTable[i:]
 
     def RemoveExcessAccessions(self) -> None:
         """Удаляет все лишние имена, которые идут после ; в имени
         Accession
         """
         for table in self.values():
-            table[self.columnNames.accession] = [
-                accession.split(';')[0] for accession in table[
-                    self.columnNames.accession]]
+            for i in range(len(table)):
+                table[i].name = table[i].name.split(';')[0]
 
     def ApplyProteinPerTableList(
             self, proteinPerTableList: ProteinPerTableList) -> None:
@@ -92,11 +85,10 @@ class PeptideTables(dict):
         """
         for tableNum, table in self.items():
             i = 0
-            while i < len(table[self.columnNames.accession]):
-                if(table[self.columnNames.accession][i] not in
-                   proteinPerTableList[tableNum]):
-                    self.RemoveRow(tableNum, i)
-                    i -= 1
+            while i < len(table):
+                if(table[i].name not in proteinPerTableList[tableNum]):
+                    table.pop(i)
+                    continue
                 i += 1
 
     def ApplyProteinReplacements(
@@ -112,15 +104,6 @@ class PeptideTables(dict):
         """
         for tableNum, table in self.items():
             tableReplacements = proteinReplacements[tableNum]
-            for i in range(0, len(table[self.columnNames.accession])):
-                if table[self.columnNames.accession][i] in tableReplacements:
-                    table[self.columnNames.accession][i] = (tableReplacements[
-                        table[self.columnNames.accession][i]])
-
-    def SetColumnNames(self, columnNames: ColumnNames):
-        self.columnNames = columnNames
-
-    def RemoveRow(self, tableNum: str, rowNum: int) -> None:
-        columns = [column for column in self[tableNum]]
-        for column in columns:
-            del self[tableNum][column][rowNum]
+            for i in range(len(table)):
+                if table[i].name in tableReplacements:
+                    table[i].name = tableReplacements[table[i].name]

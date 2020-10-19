@@ -17,8 +17,9 @@ class ProteinTable(Table):
 
     def Load(self, tableFilename: str) -> List[BaseProteinAccession]:
         super().Load(tableFilename)
-        self.pop(0)
+        self.columns.TestColumnNames(self.pop(0))
         for i, line in enumerate(self):
-            self[i] = BaseProteinAccession(line[self.columns.accession],
-                                           Decimal(line[self.columns.unused]))
+            self[i] = BaseProteinAccession(line[self.columns.accession[0]],
+                                           Decimal(
+                                               line[self.columns.unused[0]]))
         return self
