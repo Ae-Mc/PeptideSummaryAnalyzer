@@ -1,8 +1,8 @@
 from typing import Dict, List
-from Classes.Accession import Accession
-from Classes.Sequence import Sequence
-from Classes.PeptideTables import PeptideTables
-from Classes.ColumnNames import ColumnNames
+from .Accession import Accession
+from .Sequence import Sequence
+from .PeptideTables import PeptideTables
+from .PeptideTable import PeptideTable
 from decimal import Decimal
 
 
@@ -24,18 +24,15 @@ class AccessionTables(dict):
 
     def __init__(self,
                  seqDB: Dict[str, Sequence],
-                 peptideTables: PeptideTables,
-                 columnNames: ColumnNames = None) -> None:
+                 peptideTables: PeptideTables) -> None:
         """См. GetAccessionsPerTable
         (если columnNames == None, то columnNames = ColumnNames())
         """
-        self.GetAccessionsPerTable(
-            seqDB, peptideTables, columnNames or ColumnNames())
+        self.GetAccessionsPerTable(seqDB, peptideTables)
 
     def GetAccessionsPerTable(self,
                               seqDB: Dict[str, Sequence],
-                              peptideTables: PeptideTables,
-                              columnNames: ColumnNames) -> None:
+                              peptideTables: PeptideTables) -> None:
         """Конвертирует PeptideTables в AccessionTables и подсчитывает
         нормализованные значения для каждого Accession
 
@@ -51,19 +48,16 @@ class AccessionTables(dict):
                 }
             peptideTables: класс PeptideTables, который будет конвертирован в
                 AccessionTables
-            columnNames: класс, хранящий названия столбцов с нужными данными
         """
 
         self.clear()
         for tableNum, peptideTable in peptideTables.items():
-            self[tableNum] = self._GetAccessionsFromTable(peptideTable,
-                                                          columnNames)
+            self[tableNum] = self._GetAccessionsFromTable(peptideTable)
             self._CalculateNormParamsForAccessions(self[tableNum], seqDB)
 
     def _GetAccessionsFromTable(
             self,
-            peptideTable: Dict[str, List[str]],
-            columnNames: ColumnNames) -> Dict[str, Accession]:
+            peptideTable: PeptideTable) -> Dict[str, Accession]:
         """Конвертирует PeptideTables в AccessionTables
 
         Получает unused, суммы значений Sc, Precursor Signal и сумму длинн
@@ -76,7 +70,6 @@ class AccessionTables(dict):
                 }
             peptideTables: класс PeptideTables, который будет конвертирован в
                 AccessionTables
-            columnNames: класс, хранящий названия столбцов с нужными данными
 
         Returns:
             Словарь с Accession'ами вида: {
@@ -85,22 +78,18 @@ class AccessionTables(dict):
         """
         accessions: Dict[str, Accession] = {}
         i = 0
-        while i < len(peptideTable[columnNames.accession]):
-            curAccession = (
-                peptideTable[columnNames.accession][i].split(sep=';')[0])
+        while i < len(peptideTable):
+            curAccession = peptideTable[i].name
             if curAccession not in accessions:
                 accessions[curAccession] = Accession(name=curAccession)
             accessions[curAccession].Counts += 1
-            accessions[curAccession].Unused = Decimal(
-                peptideTable[columnNames.unused][i])
-            accessions[curAccession].ScSumm += Decimal(
-                peptideTable[columnNames.sc][i])
+            accessions[curAccession].Unused = Decimal(peptideTable[i].unused)
+            accessions[curAccession].ScSumm += Decimal(peptideTable[i].sc)
             accessions[curAccession].PSignalSumm += (
-                Decimal(peptideTable[columnNames.precursorSignal][i]) if
-                peptideTable[columnNames.precursorSignal][i] != ''
-                else Decimal(0))
-            accessions[curAccession].SeqlenSumm += (
-                len(peptideTable[columnNames.sequence][i]))
+                Decimal(peptideTable[i].precursorSignal) if
+                peptideTable[i].precursorSignal != '' else Decimal(0))
+            accessions[curAccession].SeqlenSumm += len(
+                peptideTable[i].sequence)
             i += 1
         return accessions
 

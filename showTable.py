@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
-from typing import List, Dict
+from typing import List, Tuple
 from sys import argv
-from Classes.ReadTable import ReadTable
+from Classes.ProteinTable import ProteinTable
+from Classes.BaseClasses.Table import Table as BaseTable
+
+
+class Table(BaseTable):
+    def Load(self, a):
+        super().Load(a)
 
 
 class Column:
@@ -31,7 +37,7 @@ class Column:
                 self.width = len(value)
 
 
-class Table:
+class TablePrinter:
     columns: List[Column]
     columnPadding: int
     topLeftCorner: str
@@ -50,7 +56,7 @@ class Table:
     crossSymbol: str
 
     def __init__(self,
-                 table: Dict[str, List[str]] = None,
+                 table: BaseTable = None,
                  filename: str = None,
                  topLeftCorner: str = '┌',
                  topRightCorner: str = '┐',
@@ -86,12 +92,13 @@ class Table:
             self.LoadFile(filename)
 
     def LoadFile(self, filename: str):
-        table = ReadTable(filename, unsafeFlag=True)
+        table = Table(filename, unsafeFlag=True)
         self.LoadTable(table)
 
-    def LoadTable(self, table: Dict[str, List[str]]):
-        for columnHeader, column in table.items():
-            self.columns.append(Column(columnHeader, column))
+    def LoadTable(self, table: BaseTable):
+        for i, column in enumerate(table[0]):
+            self.columns.append(Column(
+                column, [table[val][i] for val in range(1, len(table))]))
 
     def Print(self, columnPadding: int = None):
         if columnPadding is not None:
@@ -150,94 +157,13 @@ if len(argv) > 1:
         columnPadding = 1
         filenames = argv[1:]
     for filename in filenames:
-        fileTable = ReadTable(filename, unsafeFlag=True)
-        columnsToDelete = []
-        if filename.endswith("PeptideSummary.txt"):
-            columnsToDelete = [
-                "N",
-                "Total",
-                "%Cov",
-                "%Cov(50)",
-                "%Cov(95)",
-                "Used",
-                "Names",
-                "Annotation",
-                "Modifications",
-                "Cleavages",
-                "dMass",
-                "Prec MW",
-                "Prec m/z",
-                "Theor MW",
-                "Theor m/z",
-                "Theor z",
-                "Spectrum",
-                "Time",
-                "PrecursorElution",
-                "ProteinModifications",
-                "Obs MW",
-                "Obs m/z",
-                "Acq Time",
-                "PrecursorIntensityAcquisition",
-                "Apex Time (Peptide)",
-                "Elution Peak Width (Peptide)",
-                "MS2Counts"]
-            for i in range(0, len(fileTable["Accessions"])):
-                fileTable["Accessions"][i] = (
-                    fileTable["Accessions"][i].split(';')[0])
-        elif filename.endswith("ProteinSummary.txt"):
-            columnsToDelete = [
-                "Total",
-                "%Cov",
-                "%Cov(50)",
-                "%Cov(95)",
-                "Name",
-                "Species",
-                "Peptides(95%)",
-                "",
-                "Gene Ontology",
-                "Gene Names",
-                "Pathway",
-                "Interactions",
-                "Protein Families",
-                "Subcellular Location",
-                "Function",
-                "Disease",
-                "Tissue Specificity",
-                "Keywords",
-                "Modifications",
-                "Natural Variants",
-                "Glycosylations",
-                "Propeptide",
-                "Signal Peptide",
-                "Initiator Methionine",
-                "Sequence Conflicts",
-                "Sequence Uncertainties",
-                "Alternative Sequence",
-                "Non-Standard Residues",
-                "Lipidations",
-                "Disulfide Bonds",
-                "Cross Links",
-                "Protein Existence",
-                "InterPro",
-                "Polymorphism",
-                "PTM",
-                "RNA Editing",
-                "Active Site",
-                "Binding Site",
-                "Entry",
-                "Entry Name",
-                "Entry Status",
-                "Sequence",
-                "Protein Names",
-                "Organism",
-                "Sequence Length",
-                "Features",
-                "Mass Spectrometry",
-                "Virus Hosts",
-                "Entry Information"
-            ]
-        for columnName in columnsToDelete:
-            if columnName in fileTable:
-                del fileTable[columnName]
-        table = Table(table=fileTable)
-        table.Print(columnPadding=columnPadding)
+        columnNums: Tuple[int, ...] = (0,)
+        table = Table(filename, unsafeFlag=True)
+        if filename.endswith("ProteinSummary.txt"):
+            columnNums = (0, 1, 6, 8, 9,)
+        elif filename.endswith("PeptideSummary.txt"):
+            columnNums = (0, 1, 6, 10, 11, 12, 22)
+        for i, line in enumerate(table):
+            table[i] = [line[j] for j in columnNums]
+        tablePrinter = TablePrinter(table=table)
+        tablePrinter.Print(columnPadding=columnPadding)

@@ -2,21 +2,19 @@
 from decimal import FloatOperation, getcontext
 
 from Classes import AccessionTables
-from Classes import ColumnNames
 from Classes import (ApplyBlackList, ApplyConfidenceIDFilter,
                      ApplyGroupFilter, ApplyParamsFilter,
-                     ApplyWhiteList, CalculateAccessionsNormRatios,
-                     GetInput, GetScPsigAndNormFilesSumm)
+                     ApplyWhiteList, CalculateAccessionsNormRatios, GetInput,
+                     GetScPsigAndNormFilesSumm)
 from Classes import Input
 from Classes import Output
 from Classes import PeptideTables
+from Classes import ProteinAccessionsDB
 from Classes import ProteinGroupsDB
 from Classes import ProteinPerTableList
+from Classes import PeptideColumns, PeptideColumns5
 
-"""Peptide Summary Analyzer
-
-См. README.md
-"""
+"""См. README"""
 
 
 def main(inputParams: Input = None) -> None:
@@ -24,17 +22,17 @@ def main(inputParams: Input = None) -> None:
 
     if inputParams is None:
         inputParams = GetInput()
+    columnNames = PeptideColumns()
     if inputParams.proteinPilotVersion == '5':
-        columnNames = ColumnNames(precursorSignal="Intensity (Peptide)")
-    else:
-        columnNames = ColumnNames()
+        columnNames = PeptideColumns5()
 
     peptideTables = PeptideTables(columnNames, inputDir=inputParams.inputPath)
     proteinGroupsDB = None
     if inputParams.isProteinGroupFilter:
+        proteinTables = ProteinAccessionsDB.GetProteinTables(
+            inputParams.inputPath, inputParams.skipReversedIfSecondary)
         proteinGroupsDB = ProteinGroupsDB(inputParams.seqDB,
-                                          inputParams.skipReversedIfSecondary,
-                                          inputParams.inputPath)
+                                          proteinTables)
         proteinPerTableList = ProteinPerTableList(proteinGroupsDB)
         peptideTables.ApplyProteinPerTableList(proteinPerTableList)
         peptideTables.ApplyProteinReplacements(
@@ -42,30 +40,22 @@ def main(inputParams: Input = None) -> None:
 
     if inputParams.blackList:
         ApplyBlackList(peptideTables,
-                       inputParams.blackList,
-                       columnNames)
+                       inputParams.blackList)
 
     if inputParams.isConfID:
-        ApplyConfidenceIDFilter(inputParams.confID,
-                                peptideTables,
-                                columnNames)
+        ApplyConfidenceIDFilter(inputParams.confID, peptideTables)
     ApplyParamsFilter(inputParams.unused,
                       inputParams.contrib,
                       inputParams.confPeptide,
-                      peptideTables,
-                      columnNames)
+                      peptideTables)
 
-    accessionTables = AccessionTables(inputParams.seqDB,
-                                      peptideTables,
-                                      columnNames=columnNames)
+    accessionTables = AccessionTables(inputParams.seqDB, peptideTables)
     accessionTables.sortedTableNums = peptideTables.GetSortedTableNums()
     filesSumms = GetScPsigAndNormFilesSumm(accessionTables)
     CalculateAccessionsNormRatios(accessionTables, filesSumms)
 
     if inputParams.whiteList:
-        ApplyWhiteList(peptideTables,
-                       inputParams.whiteList,
-                       columnNames)
+        ApplyWhiteList(peptideTables, inputParams.whiteList)
 
     ApplyGroupFilter(accessionTables,
                      inputParams.maxGroupAbsence,

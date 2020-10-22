@@ -2,10 +2,11 @@ from sys import argv
 from typing import List, Dict, Union
 from .Accession import Accession
 from .AccessionTables import AccessionTables
-from .ColumnNames import ColumnNames
 from .Comparable import Comparable
 from .Input import Input
 from .Sequence import Sequence
+from .PeptideTable import PeptideTable
+from .PeptideTables import PeptideTables
 from decimal import Decimal
 
 
@@ -205,95 +206,78 @@ def GetScPsigAndNormFilesSumm(
     return fileSumms
 
 
-def ApplyWhiteList(peptideTables: Dict[str, Dict[str, List[str]]],
-                   whiteList: List[str],
-                   columnNames: ColumnNames) -> None:
+def ApplyWhiteList(peptideTables: PeptideTables,
+                   whiteList: List[str]) -> None:
     """Удаляет из всех таблиц все id, отсутствующие в белом списке
 
     Args:
         peptideTables: словарь с таблицами Peptide вида: {
-                "номер таблицы": {
-                    "столбец": ["строка1", "строка2", ..., "строкаN"]
-                }
+                "номер таблицы": PeptideTable
             }
         whiteList: список Accession, находящихся в белом списке
-        columnNames: имена столбцов
     """
     for curTable in peptideTables.values():
         i = 0
-        while i < len(curTable[columnNames.accession]):
-            if (curTable[columnNames.accession][i].split(';')[0] not in
-                    whiteList):
-                RemoveRow(curTable, i)
+        while i < len(curTable):
+            if (curTable[i].name.split(';')[0] not in whiteList):
+                curTable.pop(i)
                 continue
             i += 1
 
 
-def RemoveAccessionsListFromTable(peptideTable: Dict[str, List[str]],
-                                  blackList: List[str],
-                                  columnNames: ColumnNames) -> None:
+def RemoveAccessionsListFromTable(peptideTable: PeptideTable,
+                                  blackList: List[str]) -> None:
     """Удаляет из таблицы все id, находящиеся в списке blackList
 
     Args:
-        peptideTable: словарь с таблицей Peptide вида: {
-                "столбец": ["строка1", "строка2", ..., "строкаN"]
-            }
+        peptideTable: Peptide таблица
         blackList: список Accession для удаления
-        columnNames: имена столбцов
     """
     i = 0
-    while i < len(peptideTable[columnNames.accession]):
-        if(peptideTable[columnNames.accession][i].split(';')[0] in blackList):
-            RemoveRow(peptideTable, i)
+    while i < len(peptideTable):
+        if(peptideTable[i].name.split(';')[0] in blackList):
+            peptideTable.pop(i)
             continue
         i += 1
 
 
-def ApplyBlackList(peptideTables: Dict[str, Dict[str, List[str]]],
-                   blackList: List[str],
-                   columnNames: ColumnNames) -> None:
+def ApplyBlackList(peptideTables: PeptideTables,
+                   blackList: List[str]) -> None:
     """Удаляет из всех таблиц все id, находящиеся в чёрном списке
 
     Args:
         peptideTables: словарь с таблицами Peptide вида: {
-                "номер таблицы": {
-                    "столбец": ["строка1", "строка2", ..., "строкаN"]
-                }
+                "номер таблицы": PeptideTable
             }
         blackList: список Accession, находящихся в чёрном списке
-        columnNames: имена столбцов
     """
 
     for curTable in peptideTables.values():
-        RemoveAccessionsListFromTable(curTable, blackList, columnNames)
+        RemoveAccessionsListFromTable(curTable, blackList)
 
 
 def TestUnusedContribConfParams(unused: Comparable,
                                 contrib: Comparable,
                                 conf: Comparable,
-                                peptideTable: Dict[str, List[str]],
+                                peptideTable: PeptideTable,
                                 tableNum: str,
-                                tableRowNum: int,
-                                columnNames: ColumnNames) -> bool:
+                                tableRowNum: int) -> bool:
     """Проверка unused, contribution и confidence параметров
 
     Args:
         unused: параметр фильтра unused
         contrib: параметр фильтра contribution
         conf: параметр фильтра confidence
-        peptideTable: словарь с таблицей Peptide вида: {
-                "столбец": ["строка1", "строка2", ..., "строкаN"]
-            }
+        peptideTable: Peptide таблица
         tableNum: номер таблицы, в которой находится значение
         tableRowNum: номер строк в таблице
-        columnNames: имена столбцов
     """
     if(unused.compare(
-        peptideTable[columnNames.unused][tableRowNum], tableNum)
+        peptideTable[tableRowNum].unused, tableNum)
        and contrib.compare(
-           peptideTable[columnNames.contribution][tableRowNum], tableNum)
+           peptideTable[tableRowNum].contribution, tableNum)
        and conf.compare(
-           peptideTable[columnNames.confidence][tableRowNum], tableNum)):
+           peptideTable[tableRowNum].confidence, tableNum)):
         return True
     return False
 
@@ -301,8 +285,7 @@ def TestUnusedContribConfParams(unused: Comparable,
 def ApplyParamsFilter(unused: Comparable,
                       contrib: Comparable,
                       conf: Comparable,
-                      peptideTables: Dict[str, Dict[str, List[str]]],
-                      columnNames: ColumnNames) -> None:
+                      peptideTables: PeptideTables) -> None:
     """Применяем фильтры, завязанные на параметры unused, contribution,
     confidence
 
@@ -310,23 +293,19 @@ def ApplyParamsFilter(unused: Comparable,
         unused: параметр фильтра unused
         contrib: параметр фильтра contribution
         conf: параметр фильтра confidence
-        peptideTable: словарь с таблицей Peptide вида: {
-                "столбец": ["строка1", "строка2", ..., "строкаN"]
+        peptideTables: словарь с таблицами Peptide вида: {
+                "номер таблицы": PeptideTable
             }
-        columnNames: имена столбцов
     """
 
     for tableNum, curTable in peptideTables.items():
-        curTable = peptideTables[tableNum]
-        curTableLen = len(curTable[columnNames.unused])
         i = 0
 
-        while i < curTableLen:
+        while i < len(curTable):
             if not TestUnusedContribConfParams(
-                    unused, contrib, conf, curTable, tableNum, i, columnNames):
-                RemoveRow(curTable, i)
-                i -= 1
-                curTableLen -= 1
+                    unused, contrib, conf, curTable, tableNum, i):
+                curTable.pop(i)
+                continue
             i += 1
 
 
@@ -348,30 +327,26 @@ def TestConfDefaultCondition(confVal: Decimal) -> int:
     return 0
 
 
-def GenerateTableAccessionsBunch(peptideTable: Dict[str, List[str]],
-                                 columnNames: ColumnNames) -> Dict[str, int]:
+def GenerateTableAccessionsBunch(peptideTable: PeptideTable) -> Dict[str, int]:
     """Создание словаря, содержащего все accession из данной таблицы в качестве
     ключей и 0 в качестве значений
 
     Args:
         peptideTable: Таблица-результат чтения PeptideSummary файла с помощью
             Classes.ReadTable
-        columnNames: имена столбцов
 
     Returns:
         Словарь, содержащий все accession данной таблицы в качестве ключей
         и 0 в качестве значений
     """
     accessionBunch: Dict[str, int] = {}
-    for accession in peptideTable[columnNames.accession]:
-        if accession not in accessionBunch:
-            accessionBunch[accession] = 0
+    for line in peptideTable:
+        if line.name not in accessionBunch:
+            accessionBunch[line.name] = 0
     return accessionBunch
 
 
-def ApplyConfidenceDefaultFilter(
-        peptideTables: Dict[str, Dict[str, List[str]]],
-        columnNames: ColumnNames) -> None:
+def ApplyConfidenceDefaultFilter(peptideTables: PeptideTables) -> None:
     """ Применяем Confidence default условие.
 
     Удаляем все ID, у которых нет ни одной строки проходящей default-условие.
@@ -381,33 +356,30 @@ def ApplyConfidenceDefaultFilter(
     Conf >= 95
 
     Args:
-        peptideTable: Таблица-результат чтения PeptideSummary файла с помощью
-            Classes.ReadTable
-        columnNames: имена столбцов
+        peptideTables: словарь вида: {
+                "Номер таблицы": PeptideTable
+            }
     """
     for tableNum, curTable in peptideTables.items():
-        curTableLen = len(curTable[columnNames.unused])
+        curTableLen = len(curTable)
         # Заносим все Accession в список Accession для удаления
         # В процессе чтения списка записи из него будут удаляться
-        blackList = GenerateTableAccessionsBunch(curTable, columnNames)
+        blackList = GenerateTableAccessionsBunch(curTable)
         i = 0
         while i < curTableLen:
-            curAccession = curTable[columnNames.accession][i]
+            curAccession = curTable[i].name
             if curAccession in blackList:
                 blackList[curAccession] += (
                     TestConfDefaultCondition(
-                        Decimal(curTable[columnNames.confidence][i])))
+                        Decimal(curTable[i].confidence)))
                 if blackList[curAccession] > 1:
                     del blackList[curAccession]
             i += 1
-        RemoveAccessionsListFromTable(curTable,
-                                      [*blackList],
-                                      columnNames)
+        RemoveAccessionsListFromTable(curTable, [*blackList])
 
 
 def ApplyConfidenceIDFilter(confID: Comparable,
-                            peptideTables: Dict[str, Dict[str, List[str]]],
-                            columnNames: ColumnNames) -> None:
+                            peptideTables: PeptideTables) -> None:
     """ Применяем Confidence ID фильтр.
 
     Удаляем все ID, у которых нет ни одной строки проходящей условия,
@@ -420,31 +392,25 @@ def ApplyConfidenceIDFilter(confID: Comparable,
     Args:
         confID: параметр фильтра confidence
         peptideTables: словарь с таблицами Peptide вида: {
-                "номер таблицы": {
-                    "столбец": ["строка1", "строка2", ..., "строкаN"]
-                }
+                "номер таблицы": PeptideTables
             }
-        columnNames: имена столбцов
     """
     if confID.val is None:
-        ApplyConfidenceDefaultFilter(peptideTables, columnNames)
+        ApplyConfidenceDefaultFilter(peptideTables)
     else:
         for tableNum, curTable in peptideTables.items():
-            curTableLen = len(curTable[columnNames.unused])
+            curTableLen = len(curTable)
             # Заносим все Accession в список Accession для удаления
             # В процессе чтения списка записи из него будут удаляться
-            blackList = GenerateTableAccessionsBunch(curTable, columnNames)
+            blackList = GenerateTableAccessionsBunch(curTable)
             i = 0
             while i < curTableLen:
-                curAccession = curTable[columnNames.accession][i]
+                curAccession = curTable[i].name
                 if curAccession in blackList:
-                    if confID.compare(curTable[columnNames.confidence][i],
-                                      tableNum):
+                    if confID.compare(curTable[i].confidence, tableNum):
                         del blackList[curAccession]
                 i += 1
-            RemoveAccessionsListFromTable(curTable,
-                                          [*blackList],
-                                          columnNames)
+            RemoveAccessionsListFromTable(curTable, [*blackList])
 
 
 def GetFileLines(filename: str) -> Union[List[str], None]:

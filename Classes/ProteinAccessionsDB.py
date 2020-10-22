@@ -1,82 +1,38 @@
 from typing import Dict, List
-from os import listdir, path
 from decimal import Decimal
-from Classes.Sequence import Sequence
-from Classes.ReadTable import ReadTable
-from Classes.Errors import ColumnNotFoundError
-from Classes.ProteinAccession import ProteinAccession
+from .Sequence import Sequence
+from .ProteinTable import ProteinTable
+from .ProteinAccession import ProteinAccession
+from .BaseClasses.ProteinDB import ProteinDB
 
 
-class ProteinAccessionsDB(dict):
+class ProteinAccessionsDB(ProteinDB):
     """Хранит базу данных с Protein Accession в формате: {
         "номер таблицы": {
             "имя Accession": ProteinAccession
         }
     }
 
-    Attributes:
-        skipReversedIfSecondary: пропускать ли перевёрнутые Accession, если они
-            стоят одни
+    Вычисляет максимальные параметры Unused для каждого Accession.
+    Служит для поиска репрезентативного Accession среди списка Accession.
     """
-    _necessaryColumns = ["Accession", "N", "Unused"]
-    skipReversedIfSecondary: bool
 
-    def __init__(self,
-                 skipReversedIfSecondary: bool = False,
-                 folder: str = None):
-        """См. LoadFromFolder"""
-        self.skipReversedIfSecondary = skipReversedIfSecondary
-        if folder:
-            self.LoadFromFolder(folder)
-
-    def LoadFromFolder(self, folder: str) -> None:
-        """Загружает Protein таблицы из папки folder
-
-        Args:
-            folder: путь, в котором хранятся Protein таблицы
-        """
-        filenames = self._GetProteinFilenames(folder)
-        dictionary: Dict[str, Dict[str, List[str]]] = {}
-        for filename in filenames:
-            tableNum = path.split(filename)[1].split('_')[0]
-            dictionary[tableNum] = ReadTable(filename, unsafeFlag=True)
-        self.LoadFromDict(dictionary)
-
-    def LoadFromDict(self,
-                     dictionary: Dict[str, Dict[str, List[str]]]) -> None:
+    def LoadFromTables(self, proteinTables: Dict[str, ProteinTable]) -> None:
         """Загружает Protein таблицы из словаря, полученного в результате
         чтения Protein таблиц
 
         Args:
-            dictionary: словарь вида: {
-                    "номер таблицы": {
-                        "столбец": ["значение1", "значение2", ..., "значениеN"]
-                    }
+            proteinTables: словарь вида: {
+                    "номер таблицы": ProteinTable
                 }
         """
-        for tableNum, table in dictionary.items():
-            for columnName in self._necessaryColumns:
-                if columnName not in table:
-                    raise ColumnNotFoundError(columnName,
-                                              f"{tableNum}_ProteinSummary.txt")
+        for tableNum, table in proteinTables.items():
             curUnused: Decimal = Decimal(0)
-            reversedFound = False
             i = 0
-            while i < len(table["Accession"]):
-                if Decimal(table["Unused"][i]) != Decimal(0):
-                    curUnused = Decimal(table["Unused"][i])
-
-                if (table["Accession"][i].startswith("RRRRR")):
-                    if self.TestIsSecondaryReversed(table["Accession"], i):
-                        return
-                    if reversedFound:
-                        return
-                    reversedFound = True
-                    i += 1
-                    continue
-
-                accession = ProteinAccession(table["Accession"][i],
-                                             curUnused)
+            while i < len(table):
+                if table[i].unused != Decimal(0):
+                    curUnused = table[i].unused
+                accession = ProteinAccession(table[i].name, curUnused)
                 if accession.name in self:
                     self[accession.name].unused = max(
                         self[accession.name].unused, accession.unused)
@@ -84,12 +40,6 @@ class ProteinAccessionsDB(dict):
                 else:
                     self[accession.name] = accession
                 i += 1
-
-    def TestIsSecondaryReversed(
-            self, accessionColumn: List[str], i: int) -> bool:
-        return not (not self.skipReversedIfSecondary
-                    or i + 1 == len(accessionColumn)
-                    or accessionColumn[i + 1].startswith("RRRRR"))
 
     def GetRepresentative(self,
                           accessions: List[str],
@@ -117,19 +67,3 @@ class ProteinAccessionsDB(dict):
                  seqDB[representativeAccession.name].len)):
                 representativeAccession = self[accession]
         return representativeAccession.name
-
-    @staticmethod
-    def _GetProteinFilenames(folder: str) -> List[str]:
-        """Получает имена всех Protein файлов по пути folder
-
-        Args:
-            folder: путь к папки с Protein файлами
-
-        Returns:
-            Список имён Protein файлов по пути folder
-        """
-        filenames: List[str] = []
-        for filename in listdir(folder):
-            if filename.endswith("ProteinSummary.txt"):
-                filenames.append(path.join(folder, filename))
-        return filenames

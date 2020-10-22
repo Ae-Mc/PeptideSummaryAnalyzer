@@ -1,132 +1,91 @@
-from typing import Dict, List
-from os import path
+from typing import Dict
 from decimal import Decimal
-from Classes.ProteinAccessionsDB import ProteinAccessionsDB
-from Classes.ProteinGroup import ProteinGroup
-from Classes.ReadTable import ReadTable
-from Classes.Errors import ColumnNotFoundError, AccessionNotFoundError
-from Classes.Sequence import Sequence
+from .ProteinAccessionsDB import ProteinAccessionsDB
+from .ProteinGroup import ProteinGroup
+from .ProteinTable import ProteinTable
+from .Errors import AccessionNotFoundError
+from .Sequence import Sequence
+from .BaseClasses.ProteinDB import ProteinDB
 
 
-class ProteinGroupsDB(dict):
-    necessaryColumns = ["Accession", "Unused"]
-    sortedTableNums: List[str]
+class ProteinGroupsDB(ProteinDB):
+    """Хранит Protein группы, разбитые по таблицам
+
+    Attributes:
+        proteinAccessionsDB: база данных accession, не разбитая по группам
+        seqDB: база данных последовательностей Accession
+    """
     proteinAccessionsDB: ProteinAccessionsDB
     seqDB: Dict[str, Sequence]
-    skipReversedIfSecondary: bool
 
     def __init__(self,
                  seqDB: Dict[str, Sequence],
-                 skipReversedIfSecondary: bool = False,
-                 folder: str = None) -> None:
+                 proteinTables: Dict[str, ProteinTable] = None) -> None:
         """См. LoadFromFolder
 
         Args:
             proteinAccessionsDB: база данных с Protein таблицами
             seqDB: база данных последовательностей Accession
-            folder: путь, в котором хранятся Protein таблицы
+            proteinTables: словарь ProteinTable вида: {
+                    "Номер таблицы": ProteinTable
+                }
         """
-        self.skipReversedIfSecondary = skipReversedIfSecondary
         self.seqDB = seqDB
-        if folder:
-            self.LoadFromFolder(folder)
+        if proteinTables:
+            self.LoadFromTables(proteinTables)
 
-    def LoadFromFolder(self, folder: str) -> None:
-        """Загружает Protein таблицы из папки folder
-
-        Args:
-            folder: путь, в котором хранятся Protein таблицы
-        """
-        self.proteinAccessionsDB = ProteinAccessionsDB(
-            self.skipReversedIfSecondary, folder)
-        filenames = ProteinAccessionsDB._GetProteinFilenames(folder)
-        dictionary: Dict[str, Dict[str, List[str]]] = {}
-        for filename in filenames:
-            tableNum = path.split(filename)[1].split('_')[0]
-            dictionary[tableNum] = ReadTable(filename, unsafeFlag=True)
-        self.LoadFromDict(dictionary)
-
-    def LoadFromDict(self,
-                     dictionary: Dict[str, Dict[str, List[str]]]) -> None:
+    def LoadFromTables(self, proteinTables: Dict[str, ProteinTable]) -> None:
         """Загружает Protein таблицы из словаря, полученного в результате
         чтения Protein таблиц и создаёт из них группы, а также вычисляет для
         них репрезентативные Accession
 
         Args:
-            dictionary: словарь вида: {
-                    "номер таблицы": {
-                        "столбец": ["значение1", "значение2", ..., "значениеN"]
-                    }
+            proteinTables: словарь вида: {
+                    "номер таблицы": ProteinTable
                 }
         """
-        self.GetAccessionsGroups(dictionary)
-        self.CalculateRepresentatives()
+        self.GetAccessionsGroups(proteinTables)
+        self.CalculateRepresentatives(proteinTables)
 
     def GetAccessionsGroups(
-            self, dictionary: Dict[str, Dict[str, List[str]]]) -> None:
+            self, proteinTables: Dict[str, ProteinTable]) -> None:
         """Загружает Protein таблицы из словаря, полученного в результате
         чтения Protein таблиц и создаёт из них группы
 
         Args:
-            dictionary: словарь вида: {
-                    "номер таблицы": {
-                        "столбец": ["значение1", "значение2", ..., "значениеN"]
-                    }
+            proteinTables: словарь вида: {
+                    "номер таблицы": ProteinTable
                 }
         """
-        self.sortedTableNums = sorted([*dictionary], key=lambda x: float(x))
-        for tableNum, table in dictionary.items():
+        for tableNum, table in proteinTables.items():
             self[tableNum] = []
-            self.TestNeccessaryColumnNames(table, tableNum)
-            self.GetAccessionsGroupsFromTable(table, tableNum)
-
-    def TestNeccessaryColumnNames(
-            self, table: Dict[str, List[str]], tableNum: str) -> None:
-        for columnName in self.necessaryColumns:
-            if columnName not in table:
-                raise ColumnNotFoundError(columnName,
-                                          f"{tableNum}_ProteinSummary.txt")
-
-    def GetAccessionsGroupsFromTable(
-            self, table: Dict[str, List[str]], tableNum: str) -> None:
-        if len(table["Accession"]):
-            curGroup = ProteinGroup(
-                Decimal(table["Unused"][0]), [table["Accession"][0]])
-            reversedFound = False
-            i = 1
-            while i < len(table["Accession"]):
-                if (table["Accession"][i].startswith("RRRRR")):
-                    if self.TestIsSecondaryReversed(table["Accession"], i):
-                        return
-                    if reversedFound:
-                        return
-                    reversedFound = True
+            if len(table):
+                curGroup = ProteinGroup(table[0].unused, [table[0].name])
+                i = 1
+                while i < len(table):
+                    if table[i].unused != Decimal(0):
+                        curGroup.accessions = sorted(curGroup.accessions)
+                        self[tableNum].append(curGroup)
+                        curGroup = ProteinGroup(table[i].unused, [])
+                    curGroup.accessions.append(table[i].name)
                     i += 1
-                    continue
+                curGroup.accessions = sorted(curGroup.accessions)
+                self[tableNum].append(curGroup)
 
-                if Decimal(table["Unused"][i]) != Decimal(0):
-                    curGroup.accessions = sorted(curGroup.accessions)
-                    self[tableNum].append(curGroup)
-                    curGroup = ProteinGroup(
-                        Decimal(table["Unused"][i]), [])
-                curGroup.accessions.append(table["Accession"][i])
-                i += 1
-            curGroup.accessions = sorted(curGroup.accessions)
-            self[tableNum].append(curGroup)
+    def CalculateRepresentatives(self, proteinTables: Dict[str, ProteinTable]):
+        """Подсчитывает репрезентативные Accession для всех групп
 
-    def TestIsSecondaryReversed(
-            self, accessionColumn: List[str], i: int) -> bool:
-        return not (not self.skipReversedIfSecondary
-                    or i + 1 == len(accessionColumn)
-                    or accessionColumn[i + 1].startswith("RRRRR"))
-
-    def CalculateRepresentatives(self):
-        """Подсчитывает репрезентативные Accession для всех групп"""
+        Args:
+            proteinTables: словарь вида: {
+                    "Номер таблицы": ProteinTable
+                }
+        """
+        proteinAccessionsDB = ProteinAccessionsDB(proteinTables)
         for tableNum, table in self.items():
             for group in table:
                 group.representativeAccession = (
-                    self.proteinAccessionsDB.GetRepresentative(
-                        group.accessions, self.seqDB))
+                    proteinAccessionsDB.GetRepresentative(group.accessions,
+                                                          self.seqDB))
 
     def GetReplacementsPerTable(self) -> Dict[str, Dict[str, str]]:
         """Создаёт словарь замен
