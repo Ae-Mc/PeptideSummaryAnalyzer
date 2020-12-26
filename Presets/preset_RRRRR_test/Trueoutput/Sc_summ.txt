@@ -1,0 +1,6 @@
+Accession	Sequence length	0.1	0.2
+A	10	40	40
+D	20	40	40
+G	8	40	10
+L	9	10	40
+Z	10		40
