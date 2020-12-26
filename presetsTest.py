@@ -52,8 +52,8 @@ class Preset:
             try:
                 self.TestPresetFile(presetFileLines)
             except IOError as e:
-                print(f"Error reading preset {path.split(self.folder)[1]} "
-                      f"{e.args[0]}")
+                print(f"Error reading preset {path.split(self.folder)[1]} ("
+                      f"{e.args[0]})")
                 exit()
             presetFileValues = [
                 line.split(':')[1].strip() for line in presetFileLines
