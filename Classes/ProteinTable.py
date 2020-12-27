@@ -26,14 +26,14 @@ class ProteinTable(Table):
             i = 0
             while i < len(self):
                 self[i] = BaseProteinAccession(
-                    self[i][self.columns.accession[0]], Decimal(
-                        self[i][self.columns.unused[0]]))
-                if(self[i].name.startswith("RRRRR")):
+                    self[i][self.columns.accession[0]],
+                    Decimal(self[i][self.columns.unused[0]]))
+                if self.IsReversed(self[i].name):
                     if reversedFound:
                         break
                     if(i + 1 == len(self)
-                       or self[i + 1][self.columns.accession[0]].startswith(
-                            "RRRRR")):
+                       or self.IsReversed(
+                           self[i + 1][self.columns.accession[0]])):
                         break
                     reversedFound = True
                     self.pop(i)
@@ -53,3 +53,7 @@ class ProteinTable(Table):
                 return self
             del self[i:]
         return self
+
+    @staticmethod
+    def IsReversed(accession: str) -> bool:
+        return accession.startswith("RRRRR")
