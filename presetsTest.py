@@ -1,4 +1,5 @@
 #!/bin/env python
+from traceback import print_exc
 from os import listdir, path, remove
 from typing import List
 from Classes.Input import Input
@@ -34,19 +35,25 @@ class Preset:
 
     def Run(self) -> None:
         """Запуск теста пресета"""
-        try:
-            print(self.folder)
-            proteinMain(self.settings)
-        except Exception as e:
-            print(f"Error running preset {self.folder}")
-            raise e
-        self.TestResult()
+        if self.errorCode == 0:
+            try:
+                print(self.folder)
+                proteinMain(self.settings)
+            except Exception:
+                print(f"Error running preset {self.folder}")
+                print_exc()
+            self.TestResult()
 
     def ReadSettings(self) -> None:
         """Считывание настроек пресета из папки с пресетом"""
         self.settings: Input = Input()
         self.settings.inputPath = path.join(self.folder, "Input")
         self.settings.outputPath = path.join(self.folder, "Output")
+        if not path.exists(path.join(self.folder, "preset.txt")):
+            print(
+                f"ERROR!!! preset.txt file not found in preset {self.folder}")
+            self.errorCode = 1
+            return
         with open(path.join(self.folder, "preset.txt")) as presetFile:
             presetFileLines = presetFile.read().split("\n")
             try:
@@ -54,7 +61,6 @@ class Preset:
             except IOError as e:
                 print(f"Error reading preset {path.split(self.folder)[1]} "
                       f"{e.args[0]}")
-                exit()
             presetFileValues = [
                 line.split(':')[1].strip() for line in presetFileLines
                 if len(line.strip()) > 0]
