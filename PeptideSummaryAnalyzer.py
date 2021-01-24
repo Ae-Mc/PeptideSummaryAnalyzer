@@ -4,7 +4,7 @@ from decimal import FloatOperation, getcontext
 from Classes import AccessionTables
 from Classes import (ApplyBlackList, ApplyConfidenceIDFilter,
                      ApplyGroupFilter, ApplyParamsFilter,
-                     ApplyWhiteList, CalculateAccessionsNormRatios, GetInput,
+                     CalculateAccessionsNormRatios, GetInput,
                      GetScPsigAndNormFilesSumm)
 from Classes import Input
 from Classes import Output
@@ -55,9 +55,6 @@ def main(inputParams: Input = None) -> None:
     accessionTables.sortedTableNums = peptideTables.GetSortedTableNums()
     filesSumms = GetScPsigAndNormFilesSumm(accessionTables)
     CalculateAccessionsNormRatios(accessionTables, filesSumms)
-
-    if inputParams.whiteList:
-        ApplyWhiteList(peptideTables, inputParams.whiteList)
 
     ApplyGroupFilter(accessionTables,
                      inputParams.maxGroupAbsence,

@@ -206,25 +206,6 @@ def GetScPsigAndNormFilesSumm(
     return fileSumms
 
 
-def ApplyWhiteList(peptideTables: PeptideTables,
-                   whiteList: List[str]) -> None:
-    """Удаляет из всех таблиц все id, отсутствующие в белом списке
-
-    Args:
-        peptideTables: словарь с таблицами Peptide вида: {
-                "номер таблицы": PeptideTable
-            }
-        whiteList: список Accession, находящихся в белом списке
-    """
-    for curTable in peptideTables.values():
-        i = 0
-        while i < len(curTable):
-            if (curTable[i].name.split(';')[0] not in whiteList):
-                curTable.pop(i)
-                continue
-            i += 1
-
-
 def RemoveAccessionsListFromTable(peptideTable: PeptideTable,
                                   blackList: List[str]) -> None:
     """Удаляет из таблицы все id, находящиеся в списке blackList

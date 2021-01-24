@@ -4,13 +4,11 @@ from .Comparable import Comparable
 from .Errors import (AccessionNotFoundError,
                      ColumnNotFoundError,
                      RepresentativeAccessionNotFoundError)
-from .Fisher.FisherExactTest import FisherExact
 from .Functions import (ApplyBlackList,
                         ApplyConfidenceDefaultFilter,
                         ApplyConfidenceIDFilter,
                         ApplyGroupFilter,
                         ApplyParamsFilter,
-                        ApplyWhiteList,
                         CalculateAccessionsNormRatios,
                         GetInput,
                         GetScPsigAndNormFilesSumm)

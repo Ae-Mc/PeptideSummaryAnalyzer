@@ -1,5 +1,4 @@
 ProteinPilot Version (4 or 5): 5
-Id list file name:
 ID exclusion list  file name:
 Protein group filter (Y or N): N
 Database file name: test.fasta

@@ -30,7 +30,6 @@ class Input:
     __confID: Comparable
     __isProteinGroupFilter: bool
     isConfID: bool
-    whiteList: Optional[List[str]]
     blackList: Optional[List[str]]
     minGroupsWithAccession: int
     maxGroupAbsence: int
