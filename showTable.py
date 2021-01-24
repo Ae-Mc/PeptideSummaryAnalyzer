@@ -157,13 +157,14 @@ if len(argv) > 1:
         columnPadding = 1
         filenames = argv[1:]
     for filename in filenames:
-        columnNums: Tuple[int, ...] = (0,)
+        columnNums: Tuple[int, ...] = tuple()
         table = Table(filename, unsafeFlag=True)
         if filename.endswith("ProteinSummary.txt"):
             columnNums = (0, 1, 6, 8, 9,)
         elif filename.endswith("PeptideSummary.txt"):
             columnNums = (0, 1, 6, 10, 11, 12, 22)
-        for i, line in enumerate(table):
-            table[i] = [line[j] for j in columnNums]
+        if len(columnNums):
+            for i, line in enumerate(table):
+                table[i] = [line[j] for j in columnNums]
         tablePrinter = TablePrinter(table=table)
         tablePrinter.Print(columnPadding=columnPadding)
