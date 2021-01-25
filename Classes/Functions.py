@@ -1,3 +1,5 @@
+from decimal import Decimal
+from os import listdir, path
 from sys import argv
 from typing import List, Dict, Union
 from .Accession import Accession
@@ -7,7 +9,6 @@ from .Input import Input
 from .Sequence import Sequence
 from .PeptideTable import PeptideTable
 from .PeptideTables import PeptideTables
-from decimal import Decimal
 
 
 def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:
@@ -455,6 +456,22 @@ def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
         return seqDB
 
 
+def FindFastaFile(inputPath: str) -> str:
+    """Ищет fasta файл в папке inputPath
+
+    Args:
+        inputPath: путь к папке, в которой будет производиться поиск fasta
+            файла
+
+    Returns:
+        Путь к fasta файлу, составленный из inputPath и имени fasta файла
+    """
+    for file in listdir(inputPath):
+        if file.endswith('.fasta'):
+            return path.join(inputPath, file)
+    raise FileNotFoundError(f"Fasta file not found in folder \"{inputPath}\"!")
+
+
 def GetInput() -> Input:
     """Получение параметров для запуска обработки
 
@@ -462,17 +479,17 @@ def GetInput() -> Input:
         Класс Input, содержащий все нужные параметры для запуска обработки
     """
     inputParams = Input()
-    inputParams.inputPath = "Input"
-    if len(argv) == 10:
+    inputParams.inputPath = "."
+    inputParams.seqDB = ReadSeqDB(FindFastaFile(inputParams.inputPath))
+    if len(argv) == 9:
         inputParams.blackList = GetFileLines(argv[1])
         inputParams.isProteinGroupFilter = argv[2].strip().lower()
-        inputParams.seqDB = ReadSeqDB(argv[3])
-        inputParams.unused = Comparable(argv[4])
-        inputParams.contrib = Comparable(argv[5])
-        inputParams.confID = argv[6]
-        inputParams.confPeptide = argv[7]
-        inputParams.minGroupsWithAccession = int(argv[8])
-        inputParams.maxGroupAbsence = int(argv[9])
+        inputParams.unused = Comparable(argv[3])
+        inputParams.contrib = Comparable(argv[4])
+        inputParams.confID = argv[5]
+        inputParams.confPeptide = argv[6]
+        inputParams.minGroupsWithAccession = int(argv[7])
+        inputParams.maxGroupAbsence = int(argv[8])
     else:
         print('"ProteinPilot summary analyzer"')
         print("#Protein filter-")
@@ -480,7 +497,6 @@ def GetInput() -> Input:
             input("ID exclusion list: "))
         inputParams.isProteinGroupFilter = input(
             "Protein group filter (Y/N): ").strip()
-        inputParams.seqDB = ReadSeqDB(input("Database file name: "))
         inputParams.unused = Comparable(input("Unused score: "))
         inputParams.contrib = Comparable(input("Contribution: "))
         inputParams.confID = input("Peptide confidence: ")
