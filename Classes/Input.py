@@ -1,6 +1,6 @@
-from typing import Dict, List, Union, Optional
+from typing import List, Union, Optional
 from Classes.Comparable import Comparable
-from Classes.Sequence import Sequence
+from Classes.SequenceDatabase import SequenceDatabase
 
 
 class Input:
@@ -23,7 +23,7 @@ class Input:
     """
     inputPath: str
     outputPath: str = "Output"
-    seqDB: Dict[str, Sequence]
+    seqDB: SequenceDatabase
     unused: Comparable
     contrib: Comparable
     __confPeptide: Comparable

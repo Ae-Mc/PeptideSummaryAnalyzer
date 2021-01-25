@@ -9,6 +9,7 @@ from .Input import Input
 from .Sequence import Sequence
 from .PeptideTable import PeptideTable
 from .PeptideTables import PeptideTables
+from .SequenceDatabase import SequenceDatabase
 
 
 def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:
@@ -411,7 +412,7 @@ def GetFileLines(filename: str) -> Union[List[str], None]:
     return None
 
 
-def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
+def ReadSeqDB(seqDBFilename: str) -> SequenceDatabase:
     """ Считывание последовательностей из файла
 
     Считывание длин последовательностей из файла БД с последовательностями в
@@ -426,7 +427,7 @@ def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
     with open(seqDBFilename) as seqDBFile:
         strings = seqDBFile.read().split('\n')
         seqDBFile.close()
-        seqDB = {}
+        seqDB = SequenceDatabase()
         i = 0
         while(i < len(strings)):
             if len(strings[i]):
@@ -448,8 +449,7 @@ def ReadSeqDB(seqDBFilename: str) -> Dict[str, Sequence]:
                         i += 1
                     i -= 1
                     if not seqDB[seqID].len:
-                        input("""Error! Length of sequence with id {} = 0
-""".format(seqID))
+                        input(f"Error! Length of sequence with id {seqID} = 0")
                         raise(IndexError)
             i += 1
 
