@@ -1,7 +1,6 @@
 ID exclusion list  file name: IDexcl.txt
 Protein group filter (Y or N): N
 Unused:
-Contribution:
 Confidence ID:
 Confidence peptide:
 Min groups with ID: 1

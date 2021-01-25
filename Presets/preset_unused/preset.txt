@@ -1,7 +1,6 @@
 ID exclusion list  file name:
 Protein group filter (Y or N): N
 Unused:>10
-Contribution:
 Confidence ID:
 Confidence peptide:
 Min groups with ID: 1

@@ -1,5 +1,0 @@
-Accession	Description
-A	test A 000
-B	test B 000
-C	test C 000
-W	test W 000
