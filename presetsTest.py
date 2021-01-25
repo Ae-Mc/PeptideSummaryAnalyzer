@@ -4,7 +4,7 @@ from os import listdir, path, remove
 from typing import List
 from Classes.Input import Input
 from Classes.Comparable import Comparable
-from Classes.Functions import ReadSeqDB, GetFileLines
+from Classes.Functions import ReadSeqDB, GetFileLines, FindFastaFile
 from PeptideSummaryAnalyzer import main as proteinMain
 
 
@@ -49,11 +49,12 @@ class Preset:
         self.settings: Input = Input()
         self.settings.inputPath = path.join(self.folder, "Input")
         self.settings.outputPath = path.join(self.folder, "Output")
-        if not path.exists(path.join(self.folder, "preset.txt")):
-            print(
-                f"ERROR!!! preset.txt file not found in preset {self.folder}")
-            self.errorCode = 1
+        try:
+            self.TestPresetFileExistance()
+        except FileNotFoundError as e:
+            print(e.args[0])
             return
+
         with open(path.join(self.folder, "preset.txt")) as presetFile:
             presetFileLines = presetFile.read().split("\n")
             try:
@@ -61,6 +62,8 @@ class Preset:
             except IOError as e:
                 print(f"Error reading preset {path.split(self.folder)[1]} "
                       f"{e.args[0]}")
+                self.errorCode = 1
+                return
             presetFileValues = [
                 line.split(':')[1].strip() for line in presetFileLines
                 if len(line.strip()) > 0]
@@ -70,21 +73,19 @@ class Preset:
             self.settings.blackList = GetFileLines(
                 path.join(self.folder, presetFileValues[0]))
         self.settings.isProteinGroupFilter = presetFileValues[1].lower()
-        self.settings.seqDB = ReadSeqDB(
-            path.join(self.folder, presetFileValues[2]))
-        self.settings.unused = Comparable(presetFileValues[3])
-        self.settings.contrib = Comparable(presetFileValues[4])
-        self.settings.confID = presetFileValues[5]
-        self.settings.confPeptide = presetFileValues[6]
-        self.settings.minGroupsWithAccession = int(presetFileValues[7])
-        self.settings.maxGroupAbsence = int(presetFileValues[8])
+        self.settings.seqDB = ReadSeqDB(FindFastaFile(self.folder))
+        self.settings.unused = Comparable(presetFileValues[2])
+        self.settings.contrib = Comparable(presetFileValues[3])
+        self.settings.confID = presetFileValues[4]
+        self.settings.confPeptide = presetFileValues[5]
+        self.settings.minGroupsWithAccession = int(presetFileValues[6])
+        self.settings.maxGroupAbsence = int(presetFileValues[7])
 
     def TestPresetFile(self, presetFileLines: List[str]) -> None:
         """Проверка того, правильно ли написан файл с настроками пресета"""
         neccessaryStringParts = [
             ("ID exclusion list", "ID blacklist"),
             ("Protein group filter", "Protein group filter"),
-            ("Database", "Database"),
             ("Unused", "Unused"),
             ("Contribution", "Contribution"),
             ("Confidence ID", "Confidence ID"),
@@ -93,11 +94,15 @@ class Preset:
             ("Max missing values", "Max missing values per group")
         ]
 
-        i = 0
-        for stringPart, description in neccessaryStringParts:
+        for i, (stringPart, description) in enumerate(neccessaryStringParts):
             if stringPart.lower() not in presetFileLines[i].lower():
                 raise IOError(description)
-            i += 1
+
+    def TestPresetFileExistance(self) -> None:
+        if not path.exists(path.join(self.folder, "preset.txt")):
+            self.errorCode = 1
+            raise FileNotFoundError(
+                f"ERROR!!! preset.txt file not found in preset {self.folder}")
 
     def TestResult(self) -> None:
         """Проверка выходных файлов"""
