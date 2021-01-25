@@ -474,15 +474,18 @@ def GetInput() -> Input:
         inputParams.minGroupsWithAccession = int(argv[8])
         inputParams.maxGroupAbsence = int(argv[9])
     else:
+        print('"ProteinPilot summary analyzer"')
+        print("#Protein filter-")
         inputParams.blackList = GetFileLines(
-            input("ID exclusion list file name: "))
+            input("ID exclusion list: "))
         inputParams.isProteinGroupFilter = input(
-            "Protein group filter (Y or N): ").strip()
+            "Protein group filter (Y/N): ").strip()
         inputParams.seqDB = ReadSeqDB(input("Database file name: "))
-        inputParams.unused = Comparable(input("Unused: "))
+        inputParams.unused = Comparable(input("Unused score: "))
         inputParams.contrib = Comparable(input("Contribution: "))
-        inputParams.confID = input("Confidence ID: ")
-        inputParams.confPeptide = input("Confidence peptide: ")
+        inputParams.confID = input("Peptide confidence: ")
+        print("#Peptide filter-")
+        inputParams.confPeptide = input("Peptide confidence : ")
         inputParams.minGroupsWithAccession = int(input("Min groups with ID: "))
         inputParams.maxGroupAbsence = int(
             input("Max missing values per group: "))
