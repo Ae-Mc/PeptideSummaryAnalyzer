@@ -23,7 +23,6 @@ class PeptideTable(Table):
                 name=line[self.columns.accession[0]],
                 unused=Decimal(line[self.columns.unused[0]]),
                 confidence=Decimal(line[self.columns.confidence[0]]),
-                contribution=Decimal(line[self.columns.contribution[0]]),
                 sc=Decimal(line[self.columns.sc[0]]),
                 precursorSignal=Decimal(line[self.columns.precursorSignal[0]]),
                 sequence=line[self.columns.sequence[0]]

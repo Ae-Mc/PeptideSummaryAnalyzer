@@ -45,7 +45,6 @@ def main(inputParams: Input = None) -> None:
     if inputParams.isConfID:
         ApplyConfidenceIDFilter(inputParams.confID, peptideTables)
     ApplyParamsFilter(inputParams.unused,
-                      inputParams.contrib,
                       inputParams.confPeptide,
                       peptideTables)
 

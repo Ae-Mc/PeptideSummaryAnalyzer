@@ -25,7 +25,6 @@ class Input:
     outputPath: str = "Output"
     seqDB: SequenceDatabase
     unused: Comparable
-    contrib: Comparable
     __confPeptide: Comparable
     __confID: Comparable
     __isProteinGroupFilter: bool

@@ -239,17 +239,15 @@ def ApplyBlackList(peptideTables: PeptideTables,
         RemoveAccessionsListFromTable(curTable, blackList)
 
 
-def TestUnusedContribConfParams(unused: Comparable,
-                                contrib: Comparable,
-                                conf: Comparable,
-                                peptideTable: PeptideTable,
-                                tableNum: str,
-                                tableRowNum: int) -> bool:
-    """Проверка unused, contribution и confidence параметров
+def TestUnusedConfParams(unused: Comparable,
+                         conf: Comparable,
+                         peptideTable: PeptideTable,
+                         tableNum: str,
+                         tableRowNum: int) -> bool:
+    """Проверка unused confidence параметров
 
     Args:
         unused: параметр фильтра unused
-        contrib: параметр фильтра contribution
         conf: параметр фильтра confidence
         peptideTable: Peptide таблица
         tableNum: номер таблицы, в которой находится значение
@@ -257,8 +255,6 @@ def TestUnusedContribConfParams(unused: Comparable,
     """
     if(unused.compare(
         peptideTable[tableRowNum].unused, tableNum)
-       and contrib.compare(
-           peptideTable[tableRowNum].contribution, tableNum)
        and conf.compare(
            peptideTable[tableRowNum].confidence, tableNum)):
         return True
@@ -266,15 +262,12 @@ def TestUnusedContribConfParams(unused: Comparable,
 
 
 def ApplyParamsFilter(unused: Comparable,
-                      contrib: Comparable,
                       conf: Comparable,
                       peptideTables: PeptideTables) -> None:
-    """Применяем фильтры, завязанные на параметры unused, contribution,
-    confidence
+    """Применяем фильтры, завязанные на параметры unused и confidence
 
     Args:
         unused: параметр фильтра unused
-        contrib: параметр фильтра contribution
         conf: параметр фильтра confidence
         peptideTables: словарь с таблицами Peptide вида: {
                 "номер таблицы": PeptideTable
@@ -285,8 +278,8 @@ def ApplyParamsFilter(unused: Comparable,
         i = 0
 
         while i < len(curTable):
-            if not TestUnusedContribConfParams(
-                    unused, contrib, conf, curTable, tableNum, i):
+            if not TestUnusedConfParams(
+                    unused, conf, curTable, tableNum, i):
                 curTable.pop(i)
                 continue
             i += 1
@@ -481,15 +474,14 @@ def GetInput() -> Input:
     inputParams = Input()
     inputParams.inputPath = "."
     inputParams.seqDB = ReadSeqDB(FindFastaFile(inputParams.inputPath))
-    if len(argv) == 9:
+    if len(argv) == 8:
         inputParams.blackList = GetFileLines(argv[1])
         inputParams.isProteinGroupFilter = argv[2].strip().lower()
         inputParams.unused = Comparable(argv[3])
-        inputParams.contrib = Comparable(argv[4])
-        inputParams.confID = argv[5]
-        inputParams.confPeptide = argv[6]
-        inputParams.minGroupsWithAccession = int(argv[7])
-        inputParams.maxGroupAbsence = int(argv[8])
+        inputParams.confID = argv[4]
+        inputParams.confPeptide = argv[5]
+        inputParams.minGroupsWithAccession = int(argv[6])
+        inputParams.maxGroupAbsence = int(argv[7])
     else:
         print('"ProteinPilot summary analyzer"')
         print("#Protein filter-")
@@ -498,7 +490,6 @@ def GetInput() -> Input:
         inputParams.isProteinGroupFilter = input(
             "Protein group filter (Y/N): ").strip()
         inputParams.unused = Comparable(input("Unused score: "))
-        inputParams.contrib = Comparable(input("Contribution: "))
         inputParams.confID = input("Peptide confidence: ")
         print("#Peptide filter-")
         inputParams.confPeptide = input("Peptide confidence : ")

@@ -14,7 +14,6 @@ class PeptideColumns(ColumnNames):
         precursorSignal: номер и имя столбца Precursor Signal
         sequence: номер и имя столбца Sequence
         confidence: номер и имя столбца Confidence
-        contribution: номер и имя столбца Contribution
     """
 
     accession: Tuple[int, str] = (6, "Accessions")
@@ -23,4 +22,3 @@ class PeptideColumns(ColumnNames):
     precursorSignal: Tuple[int, str] = (25, "Intensity (Peptide)")
     sequence: Tuple[int, str] = (12, "Sequence")
     confidence: Tuple[int, str] = (11, "Conf")
-    contribution: Tuple[int, str] = (10, "Contrib")

@@ -64,9 +64,6 @@ class AccessionTables(dict):
         каждого Accession
 
         Args:
-            seqDB: словарь с последовательностями, считанными из БД, вида: {
-                    "Имя Accession": Sequence
-                }
             peptideTables: класс PeptideTables, который будет конвертирован в
                 AccessionTables
 
