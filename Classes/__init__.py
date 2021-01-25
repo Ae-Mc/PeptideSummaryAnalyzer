@@ -19,4 +19,3 @@ from .ProteinAccessionsDB import ProteinAccessionsDB
 from .ProteinGroupsDB import ProteinGroupsDB
 from .ProteinPerTableList import ProteinPerTableList
 from .PeptideColumns import PeptideColumns
-from .PeptideColumns5 import PeptideColumns5

@@ -26,7 +26,6 @@ class AccessionTables(dict):
                  seqDB: Dict[str, Sequence],
                  peptideTables: PeptideTables) -> None:
         """См. GetAccessionsPerTable
-        (если columnNames == None, то columnNames = ColumnNames())
         """
         self.GetAccessionsPerTable(seqDB, peptideTables)
 

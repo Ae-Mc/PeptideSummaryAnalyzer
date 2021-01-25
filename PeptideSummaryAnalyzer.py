@@ -12,7 +12,7 @@ from Classes import PeptideTables
 from Classes import ProteinAccessionsDB
 from Classes import ProteinGroupsDB
 from Classes import ProteinPerTableList
-from Classes import PeptideColumns, PeptideColumns5
+from Classes import PeptideColumns
 
 """См. README"""
 
@@ -23,8 +23,6 @@ def main(inputParams: Input = None) -> None:
     if inputParams is None:
         inputParams = GetInput()
     columnNames = PeptideColumns()
-    if inputParams.proteinPilotVersion == '5':
-        columnNames = PeptideColumns5()
 
     peptideTables = PeptideTables(columnNames, inputDir=inputParams.inputPath)
     proteinGroupsDB = None

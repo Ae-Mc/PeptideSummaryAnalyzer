@@ -463,22 +463,17 @@ def GetInput() -> Input:
     """
     inputParams = Input()
     inputParams.inputPath = "Input"
-    if len(argv) == 12:
-        inputParams.proteinPilotVersion = argv[1]
-        inputParams.whiteList = GetFileLines(argv[2])
-        inputParams.blackList = GetFileLines(argv[3])
-        inputParams.isProteinGroupFilter = argv[4].strip().lower()
-        inputParams.seqDB = ReadSeqDB(argv[5])
-        inputParams.unused = Comparable(argv[6])
-        inputParams.contrib = Comparable(argv[7])
-        inputParams.confID = argv[8]
-        inputParams.confPeptide = argv[9]
-        inputParams.minGroupsWithAccession = int(argv[10])
-        inputParams.maxGroupAbsence = int(argv[11])
+    if len(argv) == 10:
+        inputParams.blackList = GetFileLines(argv[1])
+        inputParams.isProteinGroupFilter = argv[2].strip().lower()
+        inputParams.seqDB = ReadSeqDB(argv[3])
+        inputParams.unused = Comparable(argv[4])
+        inputParams.contrib = Comparable(argv[5])
+        inputParams.confID = argv[6]
+        inputParams.confPeptide = argv[7]
+        inputParams.minGroupsWithAccession = int(argv[8])
+        inputParams.maxGroupAbsence = int(argv[9])
     else:
-        inputParams.proteinPilotVersion = input(
-            "ProteinPilot Version (4 or 5): ")
-        inputParams.whiteList = GetFileLines(input("ID list file name: "))
         inputParams.blackList = GetFileLines(
             input("ID exclusion list file name: "))
         inputParams.isProteinGroupFilter = input(

@@ -33,7 +33,6 @@ class Input:
     blackList: Optional[List[str]]
     minGroupsWithAccession: int
     maxGroupAbsence: int
-    proteinPilotVersion: str
 
     @property
     def confID(self):
