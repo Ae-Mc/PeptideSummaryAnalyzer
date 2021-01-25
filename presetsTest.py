@@ -65,25 +65,23 @@ class Preset:
                 line.split(':')[1].strip() for line in presetFileLines
                 if len(line.strip()) > 0]
 
-        self.settings.proteinPilotVersion = presetFileValues[0]
         self.settings.blackList = None
-        if len(presetFileValues[1].strip()):
+        if len(presetFileValues[0].strip()):
             self.settings.blackList = GetFileLines(
-                path.join(self.folder, presetFileValues[1]))
-        self.settings.isProteinGroupFilter = presetFileValues[2].lower()
+                path.join(self.folder, presetFileValues[0]))
+        self.settings.isProteinGroupFilter = presetFileValues[1].lower()
         self.settings.seqDB = ReadSeqDB(
-            path.join(self.folder, presetFileValues[3]))
-        self.settings.unused = Comparable(presetFileValues[4])
-        self.settings.contrib = Comparable(presetFileValues[5])
-        self.settings.confID = presetFileValues[6]
-        self.settings.confPeptide = presetFileValues[7]
-        self.settings.minGroupsWithAccession = int(presetFileValues[8])
-        self.settings.maxGroupAbsence = int(presetFileValues[9])
+            path.join(self.folder, presetFileValues[2]))
+        self.settings.unused = Comparable(presetFileValues[3])
+        self.settings.contrib = Comparable(presetFileValues[4])
+        self.settings.confID = presetFileValues[5]
+        self.settings.confPeptide = presetFileValues[6]
+        self.settings.minGroupsWithAccession = int(presetFileValues[7])
+        self.settings.maxGroupAbsence = int(presetFileValues[8])
 
     def TestPresetFile(self, presetFileLines: List[str]) -> None:
         """Проверка того, правильно ли написан файл с настроками пресета"""
         neccessaryStringParts = [
-            ("ProteinPilot", "ProteinPilot Version"),
             ("ID exclusion list", "ID blacklist"),
             ("Protein group filter", "Protein group filter"),
             ("Database", "Database"),
