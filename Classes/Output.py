@@ -45,6 +45,50 @@ class Output:
             self.ConvertProteinGroupsToOutputFormat()
         self.GenerateOutputFiles()
 
+    def ConvertProteinGroupsToOutputFormat(self) -> None:
+        """Представление групп в виде, удобном для вывода {
+                "RID": {
+                    "ID1": {
+                        "0.1": 0,
+                        "1.1": RID_1.1_Unused,
+                        .........
+                        "N.n": 0,
+                    },
+                    "IDX": {
+                        "0.1": RID_0.1_Unused,
+                        "1.1": 0,
+                        .........
+                        "N.n": 0,
+                    }
+                }
+            }
+        """
+        if not self.proteinGroupsDB:
+            return
+        self.formattedProteinGroups = {}
+        groups: List[ProteinGroup]
+        for tableNum, groups in self.proteinGroupsDB.items():
+            for group in groups:
+                reprAccession = group.representativeAccession
+                if reprAccession is None:
+                    raise AccessionNotFoundError(
+                        "Representative accession for group"
+                        f"{group.accessions} not found")
+                if reprAccession not in self.formattedProteinGroups:
+                    self.formattedProteinGroups[reprAccession] = {}
+                for accession in group.accessions:
+                    if (accession
+                            not in self.formattedProteinGroups[reprAccession]):
+                        self.formattedProteinGroups[
+                            reprAccession][accession] = [
+                                Decimal(0) for tableNum in
+                                self.proteinGroupsDB.GetSortedTableNums()]
+                    self.formattedProteinGroups[reprAccession][accession][
+                        self.proteinGroupsDB.GetSortedTableNums().index(
+                            tableNum
+                        )
+                    ] = group.unused
+
     def GenerateOutputFiles(self) -> None:
         """Создаёт все выходные файлы"""
         if not path.exists(self.outputDirPath):
@@ -70,6 +114,7 @@ class Output:
             self.GenerateTableFileByField(field, filename, isAdditionalColumns)
 
         self.GenerateGroupsFile("ProteinGroups.txt")
+        self.GenerateCountProteinsInGroupsFile("Proteins in groups.txt")
         self.GenerateJointOutputFile("output.txt")
 
     def GenerateDescriptionFile(self, filename: str) -> None:
@@ -167,49 +212,28 @@ class Output:
                             self.proteinGroupsDB.GetSortedTableNums())
                          ).format(*accessionTables) + "\n")
 
-    def ConvertProteinGroupsToOutputFormat(self) -> None:
-        """Представление групп в виде, удобном для вывода {
-                "RID": {
-                    "ID1": {
-                        "0.1": 0,
-                        "1.1": RID_1.1_Unused,
-                        .........
-                        "N.n": 0,
-                    },
-                    "IDX": {
-                        "0.1": RID_0.1_Unused,
-                        "1.1": 0,
-                        .........
-                        "N.n": 0,
-                    }
-                }
-            }
+    def GenerateCountProteinsInGroupsFile(self, filename: str) -> None:
+        """Создаёт файл со всеми репрезентативными Accession и количеством
+        Accession в группе
+
+        Репрезентативный Accession не учитывается при подсчёте. Файл имеет вид:
+        Accession    ID in group
+        RID1         0
+        RID2         10
+        RID3         3
+        RID4         0
+
+        Args:
+            filename: имя выходного файла
         """
-        if not self.proteinGroupsDB:
+        if not self.formattedProteinGroups:
             return
-        self.formattedProteinGroups = {}
-        groups: List[ProteinGroup]
-        for tableNum, groups in self.proteinGroupsDB.items():
-            for group in groups:
-                reprAccession = group.representativeAccession
-                if reprAccession is None:
-                    raise AccessionNotFoundError(
-                        "Representative accession for group"
-                        f"{group.accessions} not found")
-                if reprAccession not in self.formattedProteinGroups:
-                    self.formattedProteinGroups[reprAccession] = {}
-                for accession in group.accessions:
-                    if (accession
-                            not in self.formattedProteinGroups[reprAccession]):
-                        self.formattedProteinGroups[
-                            reprAccession][accession] = [
-                                Decimal(0) for tableNum in
-                                self.proteinGroupsDB.GetSortedTableNums()]
-                    self.formattedProteinGroups[reprAccession][accession][
-                        self.proteinGroupsDB.GetSortedTableNums().index(
-                            tableNum
-                        )
-                    ] = group.unused
+        with open(path.join(self.outputDirPath, filename), 'w') as outFile:
+            outFile.write("Accession\tProteins in group\n")
+            for reprAccession, accessions in sorted(
+                self.formattedProteinGroups.items()
+            ):
+                outFile.write(f"{reprAccession}\t{len(accessions) - 1}\n")
 
     def GenerateJointOutputFile(self, filename: str) -> None:
         """Создаёт общий файл с параметрами Accession
