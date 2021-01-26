@@ -1,5 +1,5 @@
-Accession	Sequence length	0.1	0.2	11.11	11.12
-D	20	400	400		
-K	20	400	400	400	400
-W	10	400	400	400	400
-Z	10		400	300	300
+Accession	Description	Sequence length	0.1	0.2	11.11	11.12
+D	test D 000	20	400	400		
+K	test K 000	20	400	400	400	400
+W	test W 000	10	400	400	400	400
+Z	test Z 000	10		400	300	300
