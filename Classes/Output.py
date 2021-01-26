@@ -27,6 +27,8 @@ class Output:
     seqDB: Dict[str, Sequence]
     accessionTables: AccessionTables
     proteinGroupsDB: Optional[ProteinGroupsDB]
+    formattedProteinGroups: Optional[
+        Dict[str, Dict[str, List[Decimal]]]] = None
 
     def __init__(
             self,
@@ -39,6 +41,8 @@ class Output:
         self.outputDirPath: str = outputDirPath
         self.accessionTables: AccessionTables = accessionTables
         self.proteinGroupsDB = proteinGroupsDB
+        if proteinGroupsDB:
+            self.ConvertProteinGroupsToOutputFormat()
         self.GenerateOutputFiles()
 
     def GenerateOutputFiles(self) -> None:
@@ -135,9 +139,8 @@ class Output:
         Args:
             filename: имя выходного файла
         """
-        if self.proteinGroupsDB is None:
+        if not (self.formattedProteinGroups and self.proteinGroupsDB):
             return
-        outDict = self.ConvertProteinGroupsToOutputFormat(self.proteinGroupsDB)
         with open(path.join(self.outputDirPath, filename), 'w') as outFile:
             outFile.write("Representative\tAccession" +
                           ("\t{}" * len(
@@ -145,7 +148,9 @@ class Output:
                            ).format(
                                *self.proteinGroupsDB.GetSortedTableNums()) +
                           "\n")
-            for reprAccession, accessions in sorted(outDict.items()):
+            for reprAccession, accessions in sorted(
+                    self.formattedProteinGroups.items()
+            ):
                 if len(accessions) == 1:
                     continue
                 outFile.write(
@@ -162,40 +167,17 @@ class Output:
                             self.proteinGroupsDB.GetSortedTableNums())
                          ).format(*accessionTables) + "\n")
 
-    def ConvertProteinGroupsToOutputFormat(
-            self, proteinGroupsDB: ProteinGroupsDB
-    ) -> Dict[str, Dict[str, List[int]]]:
+    def ConvertProteinGroupsToOutputFormat(self) -> None:
         """Представление групп в виде, удобном для вывода {
                 "RID": {
                     "ID1": {
                         "0.1": 0,
-                        "1.1": 1,
+                        "1.1": RID_1.1_Unused,
                         .........
                         "N.n": 0,
                     },
                     "IDX": {
-                        "0.1": 1,
-                        "1.1": 0,
-                        .........
-                        "N.n": 0,
-                    }
-                }
-            }
-
-        Args:
-            proteinGroupsDB: база данных Protein групп
-
-        Returns:
-            Представление групп в виде, удобном для вывода: {
-                "RID": {
-                    "ID1": {
-                        "0.1": 0,
-                        "1.1": 1,
-                        .........
-                        "N.n": 0,
-                    },
-                    "IDX": {
-                        "0.1": 1,
+                        "0.1": RID_0.1_Unused,
                         "1.1": 0,
                         .........
                         "N.n": 0,
@@ -203,26 +185,31 @@ class Output:
                 }
             }
         """
-        accessions: Dict[str, Dict[str, List[int]]] = {}
+        if not self.proteinGroupsDB:
+            return
+        self.formattedProteinGroups = {}
         groups: List[ProteinGroup]
-        for tableNum, groups in proteinGroupsDB.items():
+        for tableNum, groups in self.proteinGroupsDB.items():
             for group in groups:
                 reprAccession = group.representativeAccession
                 if reprAccession is None:
                     raise AccessionNotFoundError(
                         "Representative accession for group"
                         f"{group.accessions} not found")
-                if reprAccession not in accessions:
-                    accessions[reprAccession] = {}
+                if reprAccession not in self.formattedProteinGroups:
+                    self.formattedProteinGroups[reprAccession] = {}
                 for accession in group.accessions:
-                    if (accession not in accessions[reprAccession]):
-                        accessions[reprAccession][accession] = (
-                                [0 for tableNum in
-                                    proteinGroupsDB.GetSortedTableNums()])
-                    accessions[reprAccession][accession][
-                        proteinGroupsDB.GetSortedTableNums(
-                        ).index(tableNum)] = 1
-        return accessions
+                    if (accession
+                            not in self.formattedProteinGroups[reprAccession]):
+                        self.formattedProteinGroups[
+                            reprAccession][accession] = [
+                                Decimal(0) for tableNum in
+                                self.proteinGroupsDB.GetSortedTableNums()]
+                    self.formattedProteinGroups[reprAccession][accession][
+                        self.proteinGroupsDB.GetSortedTableNums().index(
+                            tableNum
+                        )
+                    ] = group.unused
 
     def GenerateJointOutputFile(self, filename: str) -> None:
         """Создаёт общий файл с параметрами Accession

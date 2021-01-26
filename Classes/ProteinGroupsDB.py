@@ -11,6 +11,17 @@ from .BaseClasses.ProteinDB import ProteinDB
 class ProteinGroupsDB(ProteinDB):
     """Хранит Protein группы, разбитые по таблицам
 
+    Формат хранения:
+    {
+        "Номер таблицы": [
+            ProteinGroup1,
+            ProteinGroup2,
+            ProteinGroup3,
+            ...,
+            ProteinGroupN
+        ]
+    }
+
     Attributes:
         proteinAccessionsDB: база данных accession, не разбитая по группам
         seqDB: база данных последовательностей Accession
