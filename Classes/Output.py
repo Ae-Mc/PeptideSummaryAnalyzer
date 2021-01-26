@@ -49,6 +49,8 @@ class Output:
             self.accessionTables.GenerateAccessionsBunchOverAllTables())
         self.GenerateDescriptionFile(filename="description.txt")
 
+        # поле типа bool обозначает нужно ли добавлять столбцы Description и
+        # Sequence Length
         fieldsToFiles: Tuple[Tuple[str, str, bool], ...] = (
             ("Counts", "counts.txt", False),
             ("ScNormToFileNormRatio", "Sc_norm.txt", True),
@@ -60,8 +62,8 @@ class Output:
             ("Unused", "unused.txt", False)
         )
 
-        for field, filename, isSeqlen in fieldsToFiles:
-            self.GenerateTableFileByField(field, filename, isSeqlen)
+        for field, filename, isAdditionalColumns in fieldsToFiles:
+            self.GenerateTableFileByField(field, filename, isAdditionalColumns)
 
         self.GenerateGroupsFile("ProteinGroups.txt")
         self.GenerateJointOutputFile("output.txt")
@@ -83,7 +85,7 @@ class Output:
             self,
             fieldName: str,
             filename: str,
-            isSeqlen: bool) -> None:
+            isAdditionalColumns: bool) -> None:
         """Создаёт файл с Accession, разбитым по таблицам, где каждой таблице и
         каждому Accession соответствует значение поля fieldName для данного
         Accession в данной таблице
@@ -91,20 +93,22 @@ class Output:
         Args:
             fieldName: имя поля Accession
             filename: имя выходного файла
-            isSeqlen: нужно ли добавлять столбец с Sequence Length
+            isAdditionalColumns: нужно ли добавлять столбцы Description и
+                Sequence Length
         """
         with open(path.join(self.outputDirPath, filename),
                   'w') as outFile:
             outFile.write("Accession")
-            if isSeqlen:
-                outFile.write("\tSequence length")
+            if isAdditionalColumns:
+                outFile.write("\tDescription\tSequence length")
             outFile.write(
                 ("\t{}" * len(self.accessionTables.sortedTableNums)).format(
                     *self.accessionTables.sortedTableNums))
             for accession in sorted(self._accessionsBunch.keys()):
                 outFile.write(f"\n{accession}")
-                if isSeqlen:
-                    outFile.write(f"\t{self.seqDB[accession].len}")
+                if isAdditionalColumns:
+                    outFile.write(f"\t{self.seqDB[accession].desc}"
+                                  f"\t{self.seqDB[accession].len}")
                 for tableNum in self.accessionTables.sortedTableNums:
                     table = self.accessionTables[tableNum]
                     if accession in table:
