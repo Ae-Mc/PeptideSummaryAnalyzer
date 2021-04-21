@@ -499,6 +499,7 @@ def GetInput() -> Input:
         inputParams.confID = input("Peptide confidence: ")
         print("#Peptide filter-")
         inputParams.confPeptide = input("Peptide confidence : ")
+        print("#Output filter-")
         inputParams.minGroupsWithAccession = int(input("Min groups with ID: "))
         inputParams.maxGroupAbsence = int(
             input("Max missing values per group: "))

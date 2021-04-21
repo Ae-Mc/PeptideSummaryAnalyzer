@@ -260,6 +260,7 @@ class Output:
                 f"\nPeptide confidence: {self.inputParams.confID}"
                 f"\n#Peptide filter-"
                 f"\nPeptide confidence: {self.inputParams.confPeptide}"
+                f"\n#Output filter-"
                 f"\nMin groups with ID: "
                 + str(self.inputParams.minGroupsWithAccession)
                 + f"\nMax missing values per group: "
