@@ -14,5 +14,5 @@ class ColumnNames:
             curColumn = columnNames[position]
             if curColumn != self.__dict__[field.name][1]:
                 raise ValueError(f"Unknown column on position {position}!"
-                                 f" Expected {self.__dict__[field.name][1]}"
-                                 f", got {curColumn}")
+                                 f' Expected "{self.__dict__[field.name][1]}"'
+                                 f', got "{curColumn}"')
