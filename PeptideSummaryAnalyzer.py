@@ -42,7 +42,7 @@ def main(inputParams: Input = None) -> None:
         ApplyBlackList(peptideTables,
                        inputParams.blackList[1])
 
-    if inputParams.isConfID is not None:
+    if inputParams.isConfID:
         ApplyConfidenceIDFilter(inputParams.confID, peptideTables)
     ApplyParamsFilter(inputParams.unused,
                       inputParams.confPeptide,

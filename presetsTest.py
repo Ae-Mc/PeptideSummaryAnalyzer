@@ -4,7 +4,8 @@ from os import listdir, path, remove
 from typing import List
 from Classes.Input import Input
 from Classes.Comparable import Comparable
-from Classes.Functions import ReadSeqDB, GetFileLines, FindFastaFile
+from Classes.SequenceDatabase import SequenceDatabase
+from Classes.Functions import GetFileLines, FindFastaFile
 from PeptideSummaryAnalyzer import main as proteinMain
 
 
@@ -69,11 +70,13 @@ class Preset:
                 if len(line.strip()) > 0]
 
         self.settings.blackList = None
+        blackList = GetFileLines(path.join(self.folder, presetFileValues[0]))
         if len(presetFileValues[0].strip()):
-            self.settings.blackList = GetFileLines(
-                path.join(self.folder, presetFileValues[0]))
+            self.settings.blackList = (None if blackList is None
+                                       else (presetFileValues[0], blackList))
         self.settings.isProteinGroupFilter = presetFileValues[1].lower()
-        self.settings.seqDB = ReadSeqDB(FindFastaFile(self.folder))
+        self.settings.seqDB = SequenceDatabase.fromFile(
+            FindFastaFile(self.folder))
         self.settings.unused = Comparable(presetFileValues[2])
         self.settings.confID = presetFileValues[3]
         self.settings.confPeptide = presetFileValues[4]

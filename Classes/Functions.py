@@ -1,12 +1,11 @@
 from decimal import Decimal
 from os import listdir, path
 from sys import argv
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Optional
 from .Accession import Accession
 from .AccessionTables import AccessionTables
 from .Comparable import Comparable
 from .Input import Input
-from .Sequence import Sequence
 from .PeptideTable import PeptideTable
 from .PeptideTables import PeptideTables
 from .SequenceDatabase import SequenceDatabase
@@ -405,50 +404,6 @@ def GetFileLines(filename: str) -> Union[List[str], None]:
     return None
 
 
-def ReadSeqDB(seqDBFilename: str) -> SequenceDatabase:
-    """ Считывание последовательностей из файла
-
-    Считывание длин последовательностей из файла БД с последовательностями в
-    словарь классов Sequence вида {"Accession": Sequence}
-
-    Args:
-        seqDBFilename: Имя файла с последовательностями
-    Returns:
-        Словарь вида {"Accession": Sequence}
-    """
-
-    with open(seqDBFilename) as seqDBFile:
-        strings = seqDBFile.read().split('\n')
-        seqDBFile.close()
-        seqDB = SequenceDatabase()
-        i = 0
-        while(i < len(strings)):
-            if len(strings[i]):
-                if strings[i][0] == '>':
-                    seqID = strings[i].split(' ')[0][1:]
-                    seqDB[seqID] = Sequence()
-                    if len(strings[i].split(' ')) > 1:
-                        seqDB[seqID].desc = strings[i].split(' ')[1]
-                        for word in strings[i].split(' ')[2:]:
-                            if word.startswith("OS="):
-                                break
-                            seqDB[seqID].desc += ' ' + word
-                    i += 1
-                    while ((i < len(strings)) and (
-                            not len(strings[i]) or strings[i][0] != '>')):
-                        seqDB[seqID].seq += ''.join(
-                            [ch for ch in strings[i]
-                             if ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"])
-                        i += 1
-                    i -= 1
-                    if not seqDB[seqID].len:
-                        input(f"Error! Length of sequence with id {seqID} = 0")
-                        raise(IndexError)
-            i += 1
-
-        return seqDB
-
-
 def FindFastaFile(inputPath: str) -> str:
     """Ищет fasta файл в папке inputPath
 
@@ -474,7 +429,8 @@ def GetInput() -> Input:
     inputParams = Input()
     inputParams.rootPath = "."
     inputParams.inputPath = "./Input"
-    inputParams.seqDB = ReadSeqDB(FindFastaFile(inputParams.rootPath))
+    inputParams.seqDB = SequenceDatabase.fromFile(
+        FindFastaFile(inputParams.rootPath))
     if len(argv) == 8:
         blackListLines = GetFileLines(argv[1])
         inputParams.blackList = (
