@@ -107,7 +107,13 @@ class Comparable:
         return True
 
     def __str__(self):
-        return f"{self.op} {self.val}"
+        if self.op is not None and self.val is not None:
+            return f"{self.op} {self.val}"
+        else:
+            return ""
 
     def __repr__(self):
-        return f"{self.op} {self.val}"
+        if self.op is not None and self.val is not None:
+            return f"{self.op} {self.val}"
+        else:
+            return ""

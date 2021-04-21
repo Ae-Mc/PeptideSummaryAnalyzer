@@ -1,4 +1,4 @@
-from typing import List, Union, Optional
+from typing import List, Union, Optional, Tuple
 from Classes.Comparable import Comparable
 from Classes.SequenceDatabase import SequenceDatabase
 
@@ -21,6 +21,7 @@ class Input:
         proteinPilotVersion: версия ProteinPilot (от этого зависит формат
             таблиц)
     """
+    rootPath: str
     inputPath: str
     outputPath: str = "Output"
     seqDB: SequenceDatabase
@@ -29,7 +30,7 @@ class Input:
     __confID: Comparable
     __isProteinGroupFilter: bool
     isConfID: bool
-    blackList: Optional[List[str]]
+    blackList: Optional[Tuple[str, List[str]]]
     minGroupsWithAccession: int
     maxGroupAbsence: int
 

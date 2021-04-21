@@ -472,10 +472,13 @@ def GetInput() -> Input:
         Класс Input, содержащий все нужные параметры для запуска обработки
     """
     inputParams = Input()
-    inputParams.inputPath = "."
-    inputParams.seqDB = ReadSeqDB(FindFastaFile(inputParams.inputPath))
+    inputParams.rootPath = "."
+    inputParams.inputPath = "./Input"
+    inputParams.seqDB = ReadSeqDB(FindFastaFile(inputParams.rootPath))
     if len(argv) == 8:
-        inputParams.blackList = GetFileLines(argv[1])
+        blackListLines = GetFileLines(argv[1])
+        inputParams.blackList = (
+            (argv[1], blackListLines) if blackListLines is not None else None)
         inputParams.isProteinGroupFilter = argv[2].strip().lower()
         inputParams.unused = Comparable(argv[3])
         inputParams.confID = argv[4]
@@ -485,8 +488,11 @@ def GetInput() -> Input:
     else:
         print('"ProteinPilot summary analyzer"')
         print("#Protein filter-")
-        inputParams.blackList = GetFileLines(
-            input("ID exclusion list: "))
+        blackListFile = input("ID exclusion list: ")
+        blackListLines = GetFileLines(blackListFile)
+        inputParams.blackList = (
+            (blackListFile, blackListLines) if blackListLines is not None
+            else None)
         inputParams.isProteinGroupFilter = input(
             "Protein group filter (Y/N): ").strip()
         inputParams.unused = Comparable(input("Unused score: "))

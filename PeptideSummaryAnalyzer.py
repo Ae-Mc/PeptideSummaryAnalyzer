@@ -26,7 +26,7 @@ def main(inputParams: Input = None) -> None:
 
     peptideTables = PeptideTables(columnNames, inputDir=inputParams.inputPath)
     proteinGroupsDB = None
-    if inputParams.isProteinGroupFilter:
+    if inputParams.isProteinGroupFilter is not None:
         proteinTables = ProteinAccessionsDB.GetProteinTables(
             inputParams.inputPath)
         proteinAccessionsDB = ProteinAccessionsDB(proteinTables)
@@ -38,11 +38,11 @@ def main(inputParams: Input = None) -> None:
         peptideTables.ApplyProteinReplacements(
             proteinGroupsDB.GetReplacementsPerTable())
 
-    if inputParams.blackList:
+    if inputParams.blackList is not None:
         ApplyBlackList(peptideTables,
-                       inputParams.blackList)
+                       inputParams.blackList[1])
 
-    if inputParams.isConfID:
+    if inputParams.isConfID is not None:
         ApplyConfidenceIDFilter(inputParams.confID, peptideTables)
     ApplyParamsFilter(inputParams.unused,
                       inputParams.confPeptide,
@@ -57,7 +57,7 @@ def main(inputParams: Input = None) -> None:
                      inputParams.maxGroupAbsence,
                      inputParams.minGroupsWithAccession)
 
-    Output(inputParams.outputPath,
+    Output(inputParams,
            seqDB=inputParams.seqDB,
            accessionTables=accessionTables,
            proteinGroupsDB=proteinGroupsDB)

@@ -24,7 +24,11 @@ class PeptideTable(Table):
                 unused=Decimal(line[self.columns.unused[0]]),
                 confidence=Decimal(line[self.columns.confidence[0]]),
                 sc=Decimal(line[self.columns.sc[0]]),
-                precursorSignal=Decimal(line[self.columns.precursorSignal[0]]),
+                precursorSignal=(
+                    Decimal(line[self.columns.precursorSignal[0]])
+                    if len(line[self.columns.precursorSignal[0]].strip()) > 0
+                    else Decimal(0)
+                ),
                 sequence=line[self.columns.sequence[0]]
             )
         return self

@@ -1,3 +1,4 @@
+from decimal import localcontext, Decimal
 from typing import Dict, Tuple, List, Optional
 from os import makedirs, path
 from Classes.AccessionTables import AccessionTables
@@ -6,7 +7,7 @@ from Classes.Accession import Accession
 from Classes.ProteinGroupsDB import ProteinGroupsDB
 from Classes.ProteinGroup import ProteinGroup
 from Classes.Errors import AccessionNotFoundError
-from decimal import localcontext, Decimal
+from Classes.Input import Input
 
 
 class Output:
@@ -22,7 +23,7 @@ class Output:
             }
         proteinGroupsDB: база данных с Protein группами
     """
-    outputDirPath: str
+    inputParams: Input
     _accessionsBunch: Dict[str, Dict[str, Accession]]
     seqDB: Dict[str, Sequence]
     accessionTables: AccessionTables
@@ -32,13 +33,13 @@ class Output:
 
     def __init__(
             self,
-            outputDirPath: str,
+            inputParams: Input,
             seqDB: Dict[str, Sequence],
             accessionTables: AccessionTables,
             proteinGroupsDB: ProteinGroupsDB = None) -> None:
 
         self.seqDB: Dict[str, Sequence] = seqDB
-        self.outputDirPath: str = outputDirPath
+        self.inputParams: str = inputParams
         self.accessionTables: AccessionTables = accessionTables
         self.proteinGroupsDB = proteinGroupsDB
         if proteinGroupsDB:
@@ -91,8 +92,8 @@ class Output:
 
     def GenerateOutputFiles(self) -> None:
         """Создаёт все выходные файлы"""
-        if not path.exists(self.outputDirPath):
-            makedirs(self.outputDirPath)
+        if not path.exists(self.inputParams.outputPath):
+            makedirs(self.inputParams.outputPath)
         self._accessionsBunch = (
             self.accessionTables.GenerateAccessionsBunchOverAllTables())
         self.GenerateDescriptionFile(filename="description.txt")
@@ -115,6 +116,7 @@ class Output:
 
         self.GenerateGroupsFile("ProteinGroups.txt")
         self.GenerateCountProteinsInGroupsFile("Proteins in groups.txt")
+        self.GenerateSettingsFile("settings.txt")
         self.GenerateJointOutputFile("output.txt")
 
     def GenerateDescriptionFile(self, filename: str) -> None:
@@ -123,7 +125,8 @@ class Output:
         Args:
             filename: имя выходного файла
         """
-        with open(path.join(self.outputDirPath, filename), 'w') as descFile:
+        with open(path.join(self.inputParams.outputPath, filename),
+                  'w') as descFile:
             descFile.write("Accession\tDescription")
             for accession in sorted(self._accessionsBunch.keys()):
                 if self.seqDB[accession].len:
@@ -145,7 +148,7 @@ class Output:
             isAdditionalColumns: нужно ли добавлять столбцы Description и
                 Sequence Length
         """
-        with open(path.join(self.outputDirPath, filename),
+        with open(path.join(self.inputParams.outputPath, filename),
                   'w') as outFile:
             outFile.write("Accession")
             if isAdditionalColumns:
@@ -186,7 +189,8 @@ class Output:
         """
         if not (self.formattedProteinGroups and self.proteinGroupsDB):
             return
-        with open(path.join(self.outputDirPath, filename), 'w') as outFile:
+        with open(path.join(self.inputParams.outputPath, filename),
+                  'w') as outFile:
             outFile.write("Representative\tAccession" +
                           ("\t{}" * len(
                               self.proteinGroupsDB.GetSortedTableNums())
@@ -228,12 +232,39 @@ class Output:
         """
         if not self.formattedProteinGroups:
             return
-        with open(path.join(self.outputDirPath, filename), 'w') as outFile:
+        with open(path.join(self.inputParams.outputPath, filename),
+                  'w') as outFile:
             outFile.write("Accession\tProteins in group\n")
             for reprAccession, accessions in sorted(
                 self.formattedProteinGroups.items()
             ):
                 outFile.write(f"{reprAccession}\t{len(accessions) - 1}\n")
+
+    def GenerateSettingsFile(self, filename: str) -> None:
+        """Создаёт файл с информацией о параметрах запуска скрипта
+
+        Args:
+            filename: имя выходного файла
+        """
+        with open(path.join(self.inputParams.outputPath, filename),
+                  'w') as outFile:
+            outFile.write(
+                "#Protein filter-"
+                f"\nID exclusion list: " + (
+                    self.inputParams.blackList[0] if (
+                        self.inputParams.blackList is not None
+                    ) else "") +
+                f"\nProtein group filter: " + (
+                    "Y" if self.inputParams.isProteinGroupFilter else "Y") +
+                f"\nUnused: {self.inputParams.unused}"
+                f"\nPeptide confidence: {self.inputParams.confID}"
+                f"\n#Peptide filter-"
+                f"\nPeptide confidence: {self.inputParams.confPeptide}"
+                f"\nMin groups with ID: "
+                + str(self.inputParams.minGroupsWithAccession)
+                + f"\nMax missing values per group: "
+                + str(self.inputParams.maxGroupAbsence)
+            )
 
     def GenerateJointOutputFile(self, filename: str) -> None:
         """Создаёт общий файл с параметрами Accession
@@ -241,7 +272,8 @@ class Output:
         Args:
             filename: имя выходного файла
         """
-        with open(path.join(self.outputDirPath, filename), 'w') as outFile:
+        with open(path.join(self.inputParams.outputPath, filename),
+                  'w') as outFile:
             outFile.write("Accession\tFilename\tUnused\tseq_length_summ\t" +
                           "counts\tSc_summ\tPep_intensity__summ\tSc_norm\t" +
                           "Pep_intensity__norm\tSP_2\tseq_length")
