@@ -11,7 +11,8 @@ from .Functions import (ApplyBlackList,
                         ApplyParamsFilter,
                         CalculateAccessionsNormRatios,
                         GetInput,
-                        GetScPsigAndNormFilesSumm)
+                        GetScPsigAndNormFilesSumm,
+                        TestFastaAccessions)
 from .Output import Output
 from .Input import Input
 from .PeptideTables import PeptideTables
