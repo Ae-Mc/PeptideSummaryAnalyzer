@@ -1,11 +1,14 @@
 from decimal import Decimal
 from os import listdir, path
 from sys import argv
-from typing import List, Dict, Union, Optional
+from typing import List, Dict, Union, Optional, Set
 from .Accession import Accession
 from .AccessionTables import AccessionTables
 from .Comparable import Comparable
 from .Input import Input
+from .ProteinAccession import ProteinAccession
+from .ProteinTable import ProteinTable
+from .PeptideAccession import PeptideAccession
 from .PeptideTable import PeptideTable
 from .PeptideTables import PeptideTables
 from .SequenceDatabase import SequenceDatabase
@@ -418,6 +421,32 @@ def FindFastaFile(inputPath: str) -> str:
         if file.endswith('.fasta'):
             return path.join(inputPath, file)
     raise FileNotFoundError(f"Fasta file not found in folder \"{inputPath}\"!")
+
+
+def TestFastaAccessions(
+        seqDB: SequenceDatabase,
+        peptideTables: PeptideTables,
+        proteinTables: Optional[Dict[str, ProteinTable]] = None) -> None:
+    peptideTable: PeptideTable
+    notFoundAccessions: Set[str] = set()
+    for tableNum, peptideTable in peptideTables.items():
+        peptideAccession: PeptideAccession
+        for peptideAccession in peptideTable:
+            if (peptideAccession.name not in seqDB
+                    and not peptideAccession.name.startswith('RRRRR')):
+                notFoundAccessions.add(peptideAccession.name)
+    if proteinTables is not None:
+        proteinTable: ProteinTable
+        for tableNum, proteinTable in proteinTables.items():
+            proteinAccession: ProteinAccession
+            for proteinAccession in proteinTable:
+                if (proteinAccession.name not in seqDB
+                        and not proteinAccession.name.startswith('RRRRR')):
+                    notFoundAccessions.add(proteinAccession.name)
+    if len(notFoundAccessions) > 0:
+        print(f"ERROR! missing {len(notFoundAccessions)} sequences:\n\t"
+              + ('\n\t'.join(sorted(notFoundAccessions))))
+        raise KeyError("ERROR! Missing sequences (check above)!")
 
 
 def GetInput() -> Input:
