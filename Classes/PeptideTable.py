@@ -6,6 +6,7 @@ from .PeptideColumns import PeptideColumns
 
 
 class PeptideTable(Table):
+    """Считывает PeptideTable в список вида List[PeptideAccession]"""
     columns: PeptideColumns
 
     def __init__(self,
