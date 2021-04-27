@@ -1,3 +1,0 @@
-Accession	Description	Sequence length	0.1	0.2	11.11	11.12
-A	test A 000	10				40
-W	test W 000	10	40	40	40	40
