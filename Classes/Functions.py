@@ -393,7 +393,7 @@ def GetFileLines(filename: str) -> Union[List[str], None]:
         Список строк файла, без символов переноса строки
     """
 
-    if len(filename):
+    if not (filename.endswith('\\') or filename.endswith('/')):
         with open(filename) as tfile:
             return tfile.read().split('\n')
     return None
