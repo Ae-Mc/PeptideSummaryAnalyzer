@@ -35,7 +35,7 @@ class AccessionTables(dict):
         """Конвертирует PeptideTables в AccessionTables и подсчитывает
         нормализованные значения для каждого Accession
 
-        Получает unused, суммы значений Sc, Precursor Signal и сумму длинн
+        Получает суммы значений Sc, Precursor Signal и сумму длинн
         последовательностей для каждого Accession, а также нормализованные
         значения Precursor Signal и Sc для каждого файла.
         Этот метод не заполняет поля ScNormToFileNormRatio,
@@ -59,7 +59,7 @@ class AccessionTables(dict):
             peptideTable: PeptideTable) -> Dict[str, Accession]:
         """Конвертирует PeptideTables в AccessionTables
 
-        Получает unused, суммы значений Sc, Precursor Signal и сумму длинн
+        Получает суммы значений Sc, Precursor Signal и сумму длинн
         последовательностей и подсчитывает количество строк с Accession для
         каждого Accession
 
@@ -79,7 +79,6 @@ class AccessionTables(dict):
             if curAccession not in accessions:
                 accessions[curAccession] = Accession(name=curAccession)
             accessions[curAccession].Counts += 1
-            accessions[curAccession].Unused = Decimal(peptideTable[i].unused)
             accessions[curAccession].ScSumm += Decimal(peptideTable[i].sc)
             accessions[curAccession].PSignalSumm += (
                 Decimal(peptideTable[i].precursorSignal) if

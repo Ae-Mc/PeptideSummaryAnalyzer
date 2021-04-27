@@ -241,35 +241,28 @@ def ApplyBlackList(peptideTables: PeptideTables,
         RemoveAccessionsListFromTable(curTable, blackList)
 
 
-def TestUnusedConfParams(unused: Comparable,
-                         conf: Comparable,
-                         peptideTable: PeptideTable,
-                         tableNum: str,
-                         tableRowNum: int) -> bool:
-    """Проверка unused confidence параметров
+def TestConfParams(conf: Comparable,
+                   peptideTable: PeptideTable,
+                   tableNum: str,
+                   tableRowNum: int) -> bool:
+    """Проверка confidence параметра
 
     Args:
-        unused: параметр фильтра unused
         conf: параметр фильтра confidence
         peptideTable: Peptide таблица
         tableNum: номер таблицы, в которой находится значение
         tableRowNum: номер строк в таблице
     """
-    if(unused.compare(
-        peptideTable[tableRowNum].unused, tableNum)
-       and conf.compare(
-           peptideTable[tableRowNum].confidence, tableNum)):
+    if(conf.compare(peptideTable[tableRowNum].confidence, tableNum)):
         return True
     return False
 
 
-def ApplyParamsFilter(unused: Comparable,
-                      conf: Comparable,
-                      peptideTables: PeptideTables) -> None:
-    """Применяем фильтры, завязанные на параметры unused и confidence
+def ApplyPeptideConfidenceFilter(conf: Comparable,
+                                 peptideTables: PeptideTables) -> None:
+    """Применяем фильтр, завязанный на параметр confidence
 
     Args:
-        unused: параметр фильтра unused
         conf: параметр фильтра confidence
         peptideTables: словарь с таблицами Peptide вида: {
                 "номер таблицы": PeptideTable
@@ -280,8 +273,7 @@ def ApplyParamsFilter(unused: Comparable,
         i = 0
 
         while i < len(curTable):
-            if not TestUnusedConfParams(
-                    unused, conf, curTable, tableNum, i):
+            if not TestConfParams(conf, curTable, tableNum, i):
                 curTable.pop(i)
                 continue
             i += 1
@@ -460,16 +452,15 @@ def GetInput() -> Input:
     inputParams.inputPath = "./Input"
     inputParams.seqDB = SequenceDatabase.fromFile(
         FindFastaFile(inputParams.rootPath))
-    if len(argv) == 8:
+    if len(argv) == 7:
         blackListLines = GetFileLines(argv[1])
         inputParams.blackList = (
             (argv[1], blackListLines) if blackListLines is not None else None)
         inputParams.isProteinGroupFilter = argv[2].strip().lower()
-        inputParams.unused = Comparable(argv[3])
-        inputParams.confID = argv[4]
-        inputParams.confPeptide = argv[5]
-        inputParams.minGroupsWithAccession = int(argv[6])
-        inputParams.maxGroupAbsence = int(argv[7])
+        inputParams.confID = argv[3]
+        inputParams.confPeptide = argv[4]
+        inputParams.minGroupsWithAccession = int(argv[5])
+        inputParams.maxGroupAbsence = int(argv[6])
     else:
         print('"ProteinPilot summary analyzer"')
         print("#Protein filter-")
@@ -480,7 +471,6 @@ def GetInput() -> Input:
             else None)
         inputParams.isProteinGroupFilter = input(
             "Protein group filter (Y/N): ").strip()
-        inputParams.unused = Comparable(input("Unused score: "))
         inputParams.confID = input("Peptide confidence: ")
         print("#Peptide filter-")
         inputParams.confPeptide = input("Peptide confidence : ")

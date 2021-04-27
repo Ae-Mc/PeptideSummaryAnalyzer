@@ -3,7 +3,7 @@ from decimal import FloatOperation, getcontext
 
 from Classes import AccessionTables
 from Classes import (ApplyBlackList, ApplyConfidenceIDFilter,
-                     ApplyGroupFilter, ApplyParamsFilter,
+                     ApplyGroupFilter, ApplyProteinConfidenceFilter,
                      CalculateAccessionsNormRatios, GetInput,
                      GetScPsigAndNormFilesSumm, TestFastaAccessions)
 from Classes import Input
@@ -45,11 +45,9 @@ def main(inputParams: Input = None) -> None:
         ApplyBlackList(peptideTables,
                        inputParams.blackList[1])
 
-    if inputParams.isConfID:
+    if inputParams.isConfID is True:
         ApplyConfidenceIDFilter(inputParams.confID, peptideTables)
-    ApplyParamsFilter(inputParams.unused,
-                      inputParams.confPeptide,
-                      peptideTables)
+    ApplyPeptideConfidenceFilter(inputParams.confPeptide, peptideTables)
 
     accessionTables = AccessionTables(inputParams.seqDB, peptideTables)
     accessionTables.sortedTableNums = peptideTables.GetSortedTableNums()

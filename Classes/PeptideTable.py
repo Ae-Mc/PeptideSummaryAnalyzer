@@ -22,7 +22,6 @@ class PeptideTable(Table):
         for i, line in enumerate(self):
             self[i] = PeptideAccession(
                 name=line[self.columns.accession[0]],
-                unused=Decimal(line[self.columns.unused[0]]),
                 confidence=Decimal(line[self.columns.confidence[0]]),
                 sc=Decimal(line[self.columns.sc[0]]),
                 precursorSignal=(

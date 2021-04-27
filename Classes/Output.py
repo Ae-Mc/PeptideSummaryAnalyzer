@@ -108,7 +108,6 @@ class Output:
             ("PSignalSumm", "Pep_intensity_summ.txt", True),
             ("PSignalAndScNormRatiosAverage", "SP_2.txt", False),
             ("SeqlenSumm", "seq_length_summ.txt", False),
-            ("Unused", "unused.txt", False)
         )
 
         for field, filename, isAdditionalColumns in fieldsToFiles:
@@ -256,9 +255,10 @@ class Output:
                     ) else "") +
                 f"\nProtein group filter: " + (
                     "Y" if self.inputParams.isProteinGroupFilter else "Y") +
-                f"\nUnused: {self.inputParams.unused}"
-                f"\nPeptide confidence: {self.inputParams.confID}"
-                f"\n#Peptide filter-"
+                f"\nPeptide confidence: " + (
+                    str(self.inputParams.confID) if self.inputParams.isConfID
+                    else '')
+                + f"\n#Peptide filter-"
                 f"\nPeptide confidence: {self.inputParams.confPeptide}"
                 f"\n#Output filter-"
                 f"\nMin groups with ID: "
@@ -284,13 +284,12 @@ class Output:
                                        key=lambda x: float(x)):
                     accession = accessionTables[tableNum]
                     outFile.write(
-                        ("\n{accession}\t{tableNum}\t{unused}\t" +
+                        ("\n{accession}\t{tableNum}\t" +
                          "{seqlenSumm}\t{counts}\t{scSumm}\t" +
                          "{pSignalSumm}\t{scNorm}\t{pSignalNorm}\t" +
                          "{sp2}\t{seqlen}").format(
                              accession=accessionName,
                              tableNum=tableNum,
-                             unused=accession.Unused,
                              seqlenSumm=accession.SeqlenSumm,
                              counts=accession.Counts,
                              scSumm=accession.ScSumm,

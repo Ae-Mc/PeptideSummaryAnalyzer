@@ -78,18 +78,16 @@ class Preset:
         self.settings.isProteinGroupFilter = presetFileValues[1].lower()
         self.settings.seqDB = SequenceDatabase.fromFile(
             FindFastaFile(self.folder))
-        self.settings.unused = Comparable(presetFileValues[2])
-        self.settings.confID = presetFileValues[3]
-        self.settings.confPeptide = presetFileValues[4]
-        self.settings.minGroupsWithAccession = int(presetFileValues[5])
-        self.settings.maxGroupAbsence = int(presetFileValues[6])
+        self.settings.confID = presetFileValues[2]
+        self.settings.confPeptide = presetFileValues[3]
+        self.settings.minGroupsWithAccession = int(presetFileValues[4])
+        self.settings.maxGroupAbsence = int(presetFileValues[5])
 
     def TestPresetFile(self, presetFileLines: List[str]) -> None:
         """Проверка того, правильно ли написан файл с настроками пресета"""
         neccessaryStringParts = [
             ("ID exclusion list", "ID blacklist"),
             ("Protein group filter", "Protein group filter"),
-            ("Unused", "Unused"),
             ("Confidence ID", "Confidence ID"),
             ("Confidence peptide", "Confidence peptide"),
             ("Min groups", "Min groups"),

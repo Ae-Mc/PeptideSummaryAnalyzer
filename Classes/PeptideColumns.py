@@ -9,7 +9,6 @@ class PeptideColumns(ColumnNames):
 
     Attributes:
         accession: номер и имя столбца Accession
-        unused: номер и имя столбца Unused
         sc: номер и имя столбца Sc
         precursorSignal: номер и имя столбца Precursor Signal
         sequence: номер и имя столбца Sequence
@@ -17,7 +16,6 @@ class PeptideColumns(ColumnNames):
     """
 
     accession: Tuple[int, str] = (6, "Accessions")
-    unused: Tuple[int, str] = (1, "Unused")
     sc: Tuple[int, str] = (22, "Sc")
     precursorSignal: Tuple[int, str] = (25, "Intensity (Peptide)")
     sequence: Tuple[int, str] = (12, "Sequence")

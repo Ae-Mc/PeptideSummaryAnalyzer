@@ -11,7 +11,6 @@ class Input:
         inputPath: путь для таблиц
         outputPath: путь для выходных файлов
         seqDB: база данных с длинами последовательностей для Accession
-        unused: параметр фильтра unused
         confID: параметр фильтра confID
         confPeptide: параметр фильтра confPeptide
         blackList: чёрный список Accession
@@ -22,7 +21,6 @@ class Input:
     inputPath: str
     outputPath: str = "Output"
     seqDB: SequenceDatabase
-    unused: Comparable
     __confPeptide: Comparable
     __confID: Comparable
     __isProteinGroupFilter: bool

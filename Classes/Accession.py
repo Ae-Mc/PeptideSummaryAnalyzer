@@ -26,7 +26,6 @@ class Accession:
             ScNormToFileNormRatio и PSignalNormToFileNormRatio
     """
     name: str = ""
-    Unused: Decimal = Decimal(0)
     ScSumm: Decimal = Decimal(0)
     ScNorm: Decimal = Decimal(0)
     ScNormToFileNormRatio: Decimal = Decimal(0)
