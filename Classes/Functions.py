@@ -36,7 +36,7 @@ def CountAccessionLackInGroup(
         accession: Имя accession, для которого считается отсутствие в группе
         group: Список номеров таблиц, входящих в группу
         accessionsPerTable: Словарь, ключом в котором является номер таблицы, а
-            ключом — словарь, в котором, в свою очередь, ключом
+            значением — словарь, в котором, в свою очередь, ключом
             является имя accession, а значением — экземпляр
             класса Classes.Accession
 
@@ -348,8 +348,8 @@ def ApplyConfidenceDefaultFilter(peptideTables: PeptideTables) -> None:
         RemoveAccessionsListFromTable(curTable, [*blackList])
 
 
-def ApplyConfidenceIDFilter(confID: Comparable,
-                            peptideTables: PeptideTables) -> None:
+def ApplyProteinConfidenceFilter(confID: Comparable,
+                                 peptideTables: PeptideTables) -> None:
     """ Применяем Confidence ID фильтр.
 
     Удаляем все ID, у которых нет ни одной строки проходящей условия,
@@ -457,7 +457,7 @@ def GetInput() -> Input:
         inputParams.blackList = (
             (argv[1], blackListLines) if blackListLines is not None else None)
         inputParams.isProteinGroupFilter = argv[2].strip().lower()
-        inputParams.confID = argv[3]
+        inputParams.proteinConfidence = argv[3]
         inputParams.confPeptide = argv[4]
         inputParams.minGroupsWithAccession = int(argv[5])
         inputParams.maxGroupAbsence = int(argv[6])
@@ -471,7 +471,7 @@ def GetInput() -> Input:
             else None)
         inputParams.isProteinGroupFilter = input(
             "Protein group filter (Y/N): ").strip()
-        inputParams.confID = input("Peptide confidence: ")
+        inputParams.proteinConfidence = input("Peptide confidence: ")
         print("#Peptide filter-")
         inputParams.confPeptide = input("Peptide confidence : ")
         print("#Output filter-")

@@ -22,26 +22,26 @@ class Input:
     outputPath: str = "Output"
     seqDB: SequenceDatabase
     __confPeptide: Comparable
-    __confID: Comparable
+    __proteinConfidence: Comparable
     __isProteinGroupFilter: bool
-    isConfID: bool
+    isProteinConfidence: bool
     blackList: Optional[Tuple[str, List[str]]]
     minGroupsWithAccession: int
     maxGroupAbsence: int
 
     @property
-    def confID(self):
-        return self.__confID
+    def proteinConfidence(self):
+        return self.__proteinConfidence
 
-    @confID.setter
-    def confID(self, val):
-        self.isConfID = True
+    @proteinConfidence.setter
+    def proteinConfidence(self, val):
+        self.isProteinConfidence = True
         if val.strip() == "default":
-            self.__confID = Comparable(None, None)
+            self.__proteinConfidence = Comparable(None, None)
         elif len(val.strip()):
-            self.__confID = Comparable(val)
+            self.__proteinConfidence = Comparable(val)
         else:
-            self.isConfID = False
+            self.isProteinConfidence = False
 
     @property
     def confPeptide(self):

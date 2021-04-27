@@ -78,7 +78,7 @@ class Preset:
         self.settings.isProteinGroupFilter = presetFileValues[1].lower()
         self.settings.seqDB = SequenceDatabase.fromFile(
             FindFastaFile(self.folder))
-        self.settings.confID = presetFileValues[2]
+        self.settings.proteinConfidence = presetFileValues[2]
         self.settings.confPeptide = presetFileValues[3]
         self.settings.minGroupsWithAccession = int(presetFileValues[4])
         self.settings.maxGroupAbsence = int(presetFileValues[5])

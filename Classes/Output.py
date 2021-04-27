@@ -256,7 +256,8 @@ class Output:
                 f"\nProtein group filter: " + (
                     "Y" if self.inputParams.isProteinGroupFilter else "Y") +
                 f"\nPeptide confidence: " + (
-                    str(self.inputParams.confID) if self.inputParams.isConfID
+                    str(self.inputParams.proteinConfidence)
+                    if self.inputParams.isProteinConfidence
                     else '')
                 + f"\n#Peptide filter-"
                 f"\nPeptide confidence: {self.inputParams.confPeptide}"
