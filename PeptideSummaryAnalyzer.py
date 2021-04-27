@@ -26,7 +26,7 @@ def main(inputParams: Input = None) -> None:
 
     peptideTables = PeptideTables(columnNames, inputDir=inputParams.inputPath)
     proteinGroupsDB = None
-    if inputParams.isProteinGroupFilter is not None:
+    if inputParams.isProteinGroupFilter is True:
         proteinTables = ProteinAccessionsDB.GetProteinTables(
             inputParams.inputPath)
         TestFastaAccessions(inputParams.seqDB, peptideTables, proteinTables)
