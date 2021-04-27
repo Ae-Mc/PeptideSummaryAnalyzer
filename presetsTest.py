@@ -1,6 +1,7 @@
 #!/bin/env python
 from traceback import print_exc
 from os import listdir, path, remove
+from sys import argv
 from typing import List
 from Classes.Input import Input
 from Classes.Comparable import Comparable
@@ -160,16 +161,25 @@ def GetPresetsFolders(presetFolder: str) -> List[str]:
 
 
 def main():
-    presetsFolders = GetPresetsFolders(presetsFolder)
     errorCode = 0
-    for folder in presetsFolders:
+    if len(argv) == 2:
+        folder = argv[1]
         preset = Preset(folder)
         preset.ReadSettings()
         preset.ClearOutputFolder()
         preset.Run()
         if preset.errorCode:
             errorCode = preset.errorCode
-        print()
+    else:
+        presetsFolders = GetPresetsFolders(presetsFolder)
+        for folder in presetsFolders:
+            preset = Preset(folder)
+            preset.ReadSettings()
+            preset.ClearOutputFolder()
+            preset.Run()
+            if preset.errorCode:
+                errorCode = preset.errorCode
+            print()
     exit(errorCode)
 
 
