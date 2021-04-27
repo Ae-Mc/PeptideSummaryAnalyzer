@@ -99,13 +99,13 @@ class Output:
         # поле типа bool обозначает нужно ли добавлять столбцы Description и
         # Sequence Length
         fieldsToFiles: Tuple[Tuple[str, str, bool], ...] = (
-            ("Counts", "counts.txt", False),
+            ("Counts", "Pep_counts.txt", False),
             ("ScNormToFileNormRatio", "Sc_norm.txt", True),
             ("ScSumm", "Sc_summ.txt", True),
             ("PSignalNormToFileNormRatio", "Pep_intensity_norm.txt", True),
             ("PSignalSumm", "Pep_intensity_summ.txt", True),
             ("PSignalAndScNormRatiosAverage", "SP_2.txt", False),
-            ("SeqlenSumm", "seq_length_summ.txt", False),
+            ("SeqlenSumm", "Pep_seq_length_summ.txt", False),
         )
 
         for field, filename, isAdditionalColumns in fieldsToFiles:
