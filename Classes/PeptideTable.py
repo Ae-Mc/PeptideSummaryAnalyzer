@@ -33,3 +33,9 @@ class PeptideTable(Table):
                 sequence=line[self.columns.sequence[0]]
             )
         return self
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return '[\n ' + "\n ".join([str(e) for e in self]) + '\n]'
