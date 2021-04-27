@@ -14,18 +14,6 @@ from .PeptideTables import PeptideTables
 from .SequenceDatabase import SequenceDatabase
 
 
-def RemoveRow(table: Dict[str, List[str]], rowNum: int) -> None:
-    """Удаляет строку из таблицы, полученной с помощью .ReadTable.ReadTable
-
-    Args:
-        table Таблица, из которой происходит удаление
-        rowNum Номер строки в таблице
-    """
-    columns = [column for column in table]
-    for column in columns:
-        del table[column][rowNum]
-
-
 def CountAccessionLackInGroup(
         accession: str,
         group: List[str],

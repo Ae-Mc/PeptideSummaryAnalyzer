@@ -1,8 +1,7 @@
 from .Accession import Accession
 from .AccessionTables import AccessionTables
 from .Comparable import Comparable
-from .Errors import (AccessionNotFoundError,
-                     ColumnNotFoundError,
+from .Errors import (ColumnNotFoundError,
                      RepresentativeAccessionNotFoundError)
 from .Functions import (ApplyBlackList,
                         ApplyPeptideConfidenceFilter,

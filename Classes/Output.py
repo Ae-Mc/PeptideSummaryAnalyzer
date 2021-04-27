@@ -6,7 +6,7 @@ from Classes.Sequence import Sequence
 from Classes.Accession import Accession
 from Classes.ProteinGroupsDB import ProteinGroupsDB
 from Classes.ProteinGroup import ProteinGroup
-from Classes.Errors import AccessionNotFoundError
+from Classes.Errors import RepresentativeAccessionNotFoundError
 from Classes.Input import Input
 
 
@@ -72,9 +72,7 @@ class Output:
             for group in groups:
                 reprAccession = group.representativeAccession
                 if reprAccession is None:
-                    raise AccessionNotFoundError(
-                        "Representative accession for group"
-                        f"{group.accessions} not found")
+                    raise RepresentativeAccessionNotFoundError(group)
                 if reprAccession not in self.formattedProteinGroups:
                     self.formattedProteinGroups[reprAccession] = {}
                 for accession in group.accessions:

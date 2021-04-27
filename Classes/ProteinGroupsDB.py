@@ -3,7 +3,7 @@ from decimal import Decimal
 from .ProteinAccessionsDB import ProteinAccessionsDB
 from .ProteinGroup import ProteinGroup
 from .ProteinTable import ProteinTable
-from .Errors import AccessionNotFoundError
+from .Errors import RepresentativeAccessionNotFoundError
 from .Sequence import Sequence
 from .BaseClasses.ProteinDB import ProteinDB
 
@@ -100,9 +100,7 @@ class ProteinGroupsDB(ProteinDB):
             group: ProteinGroup
             for group in groups:
                 if group.representativeAccession is None:
-                    raise AccessionNotFoundError(
-                        "Representative accession for group"
-                        f"{group.accessions} not found")
+                    raise RepresentativeAccessionNotFoundError(group)
                 for accession in group.accessions:
                     replacements[tableNum][accession] = (
                         group.representativeAccession)

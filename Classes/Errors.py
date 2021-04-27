@@ -1,9 +1,3 @@
-class AccessionNotFoundError(Exception):
-    """Если Accession не был найден"""
-    def __init__(self, message):
-        self.message = message
-
-
 class ColumnNotFoundError(Exception):
     """Если столбец не был найден"""
     def __init__(self, columnName: str, filename: str = None):
