@@ -130,6 +130,7 @@ def CalculateAccessionsNormRatios(
         accessionTables: AccessionTables,
         tableSumms: Dict[str, Dict[str, Decimal]]) -> None:
     """Подсчёт нормализованных значений PSignalNormToFileNormRatio и
+    ScNormToFileNormRatio
 
     Нормализованные значения PSignalNormToFileNormRatio и ScNormToFileNormRatio
     это отношения ScNorm/PsignalNorm accession к сумме всех ScNorm/PsignalNorm
@@ -151,9 +152,6 @@ def CalculateAccessionsNormRatios(
                 (accession.PSignalNorm
                  / curSumm["PSignalNorm"]) if curSumm["PSignalNorm"] != 0
                 else Decimal(0))
-            accession.PSignalAndScNormRatiosAverage = (
-                (accession.ScNormToFileNormRatio
-                 + accession.PSignalNormToFileNormRatio) / 2)
 
 
 def GetScPsigAndNormFilesSumm(

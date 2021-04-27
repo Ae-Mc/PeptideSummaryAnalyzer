@@ -34,4 +34,3 @@ class Accession:
     PSignalNormToFileNormRatio: Decimal = Decimal(0)
     SeqlenSumm: int = 0
     Counts: int = 0
-    PSignalAndScNormRatiosAverage: Decimal = Decimal(0)

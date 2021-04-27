@@ -104,7 +104,6 @@ class Output:
             ("ScSumm", "Sc_summ.txt", True),
             ("PSignalNormToFileNormRatio", "Pep_intensity_norm.txt", True),
             ("PSignalSumm", "Pep_intensity_summ.txt", True),
-            ("PSignalAndScNormRatiosAverage", "SP_2.txt", False),
             ("SeqlenSumm", "Pep_seq_length_summ.txt", False),
         )
 
@@ -276,7 +275,7 @@ class Output:
                   'w') as outFile:
             outFile.write("Accession\tFilename\tUnused\tseq_length_summ\t" +
                           "counts\tSc_summ\tPep_intensity__summ\tSc_norm\t" +
-                          "Pep_intensity__norm\tSP_2\tseq_length")
+                          "Pep_intensity__norm\tseq_length")
             for accessionName, accessionTables in sorted(
                     self._accessionsBunch.items()):
                 for tableNum in sorted(accessionTables.keys(),
@@ -286,7 +285,7 @@ class Output:
                         ("\n{accession}\t{tableNum}\t" +
                          "{seqlenSumm}\t{counts}\t{scSumm}\t" +
                          "{pSignalSumm}\t{scNorm}\t{pSignalNorm}\t" +
-                         "{sp2}\t{seqlen}").format(
+                         "{seqlen}").format(
                              accession=accessionName,
                              tableNum=tableNum,
                              seqlenSumm=accession.SeqlenSumm,
@@ -295,5 +294,4 @@ class Output:
                              pSignalSumm=accession.PSignalSumm,
                              scNorm=accession.ScNormToFileNormRatio,
                              pSignalNorm=accession.PSignalNormToFileNormRatio,
-                             sp2=accession.PSignalAndScNormRatiosAverage,
                              seqlen=self.seqDB[accessionName].len))
