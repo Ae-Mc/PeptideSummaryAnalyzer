@@ -94,7 +94,6 @@ class Output:
             makedirs(self.inputParams.outputPath)
         self._accessionsBunch = (
             self.accessionTables.GenerateAccessionsBunchOverAllTables())
-        self.GenerateDescriptionFile(filename="description.txt")
 
         # поле типа bool обозначает нужно ли добавлять столбцы Description и
         # Sequence Length
@@ -114,20 +113,6 @@ class Output:
         self.GenerateCountProteinsInGroupsFile("Proteins in groups.txt")
         self.GenerateSettingsFile("settings.txt")
         self.GenerateJointOutputFile("output.txt")
-
-    def GenerateDescriptionFile(self, filename: str) -> None:
-        """Создаёт файл с описаниями каждого Accession
-
-        Args:
-            filename: имя выходного файла
-        """
-        with open(path.join(self.inputParams.outputPath, filename),
-                  'w') as descFile:
-            descFile.write("Accession\tDescription")
-            for accession in sorted(self._accessionsBunch.keys()):
-                if self.seqDB[accession].len:
-                    descFile.write("\n{}\t{}".format(
-                        accession, self.seqDB[accession].desc))
 
     def GenerateTableFileByField(
             self,
