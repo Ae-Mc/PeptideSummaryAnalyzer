@@ -1,5 +1,5 @@
 from decimal import localcontext, Decimal
-from typing import Dict, Tuple, List, Optional
+from typing import Dict, Tuple, List, Optional, Set
 from os import makedirs, path
 from Classes.AccessionTables import AccessionTables
 from Classes.Sequence import Sequence
@@ -99,16 +99,17 @@ class Output:
         # Sequence Length
         fieldsToFiles: Tuple[Tuple[str, str, bool], ...] = (
             ("Counts", "Pep_counts.txt", False),
-            ("ScNormToFileNormRatio", "Sc_norm.txt", True),
-            ("ScSumm", "Sc_summ.txt", True),
-            ("PSignalNormToFileNormRatio", "Pep_intensity_norm.txt", True),
-            ("PSignalSumm", "Pep_intensity_summ.txt", True),
             ("SeqlenSumm", "Pep_seq_length_summ.txt", False),
+            ("ScNormToFileNormRatio", "Sc_norm.txt", False),
+            ("ScSumm", "Sc_summ.txt", False),
+            ("PSignalNormToFileNormRatio", "Pep_intensity_norm.txt", False),
+            ("PSignalSumm", "Pep_intensity_summ.txt", False),
         )
 
         for field, filename, isAdditionalColumns in fieldsToFiles:
             self.GenerateTableFileByField(field, filename, isAdditionalColumns)
 
+        self.GenerateSequencesFiles(("sequences.fasta", "sequences.txt"))
         self.GenerateGroupsFile("ProteinGroups.txt")
         self.GenerateCountProteinsInGroupsFile("Proteins in groups.txt")
         self.GenerateSettingsFile("settings.txt")
@@ -160,6 +161,39 @@ class Output:
                             outFile.write("\t{}".format(val))
                     else:
                         outFile.write('\t')
+
+    def GenerateSequencesFiles(self, filenames: Tuple[str, str]) -> None:
+        """Генерирует списки последовательностей по найденным Accession
+
+        Args:
+            filenames: имена выходных файлов - первый элемент для fasta файла,
+                второй - для txt файла, который можно будет импортировать в
+                Excel
+        """
+        fastaFilename = filenames[0]
+        txtFilename = filenames[1]
+        accessionsBunch: Set[Sequence] = set()
+        for tableName, table in self.accessionTables.items():
+            for accessionName in table:
+                accessionsBunch.add(accessionName)
+        sortedAccessionsBunch = sorted(accessionsBunch)
+        with open(self.GetJoinedOutputFilename(fastaFilename), 'w') as outFile:
+            for accessionName in sortedAccessionsBunch:
+                currentSeqence = self.seqDB[accessionName]
+                outFile.write(f'>{accessionName}')
+                if len(currentSeqence.desc) > 0:
+                    outFile.write(f' {currentSeqence.desc}')
+                outFile.write('\n')
+                for i in range(0, currentSeqence.len, 60):
+                    outFile.write(
+                        currentSeqence.seq[i:min(i + 60, currentSeqence.len)])
+                    outFile.write('\n')
+
+        with open(self.GetJoinedOutputFilename(txtFilename), 'w') as outFile:
+            outFile.write('ID\tSequence\n')
+            for accessionName in sortedAccessionsBunch:
+                outFile.write(
+                    f'{accessionName}\t{self.seqDB[accessionName].seq}\n')
 
     def GenerateGroupsFile(self, filename: str) -> None:
         """Создаёт файл с Protein группами
