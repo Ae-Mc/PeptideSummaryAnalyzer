@@ -129,8 +129,7 @@ class Output:
             isAdditionalColumns: нужно ли добавлять столбцы Description и
                 Sequence Length
         """
-        with open(path.join(self.inputParams.outputPath, filename),
-                  'w') as outFile:
+        with open(self.GetJoinedOutputFilename(filename), 'w') as outFile:
             outFile.write("Accession")
             if isAdditionalColumns:
                 outFile.write("\tDescription\tSequence length")
@@ -170,8 +169,7 @@ class Output:
         """
         if not (self.formattedProteinGroups and self.proteinGroupsDB):
             return
-        with open(path.join(self.inputParams.outputPath, filename),
-                  'w') as outFile:
+        with open(self.GetJoinedOutputFilename(filename), 'w') as outFile:
             outFile.write("Representative\tAccession" +
                           ("\t{}" * len(
                               self.proteinGroupsDB.GetSortedTableNums())
@@ -213,8 +211,7 @@ class Output:
         """
         if not self.formattedProteinGroups:
             return
-        with open(path.join(self.inputParams.outputPath, filename),
-                  'w') as outFile:
+        with open(self.GetJoinedOutputFilename(filename), 'w') as outFile:
             outFile.write("Accession\tProteins in group\n")
             for reprAccession, accessions in sorted(
                 self.formattedProteinGroups.items()
@@ -227,7 +224,7 @@ class Output:
         Args:
             filename: имя выходного файла
         """
-        with open(path.join(self.inputParams.outputPath, filename),
+        with open(self.GetJoinedOutputFilename(filename),
                   'w') as outFile:
             outFile.write(
                 "#Protein filter-"
@@ -256,8 +253,7 @@ class Output:
         Args:
             filename: имя выходного файла
         """
-        with open(path.join(self.inputParams.outputPath, filename),
-                  'w') as outFile:
+        with open(self.GetJoinedOutputFilename(filename), 'w') as outFile:
             outFile.write("Accession\tFilename\tUnused\tseq_length_summ\t" +
                           "counts\tSc_summ\tPep_intensity__summ\tSc_norm\t" +
                           "Pep_intensity__norm\tseq_length")
@@ -280,3 +276,6 @@ class Output:
                              scNorm=accession.ScNormToFileNormRatio,
                              pSignalNorm=accession.PSignalNormToFileNormRatio,
                              seqlen=self.seqDB[accessionName].len))
+
+    def GetJoinedOutputFilename(self, filename: str):
+        return path.join(self.inputParams.outputPath, filename)
