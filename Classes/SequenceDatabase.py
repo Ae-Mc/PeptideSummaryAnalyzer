@@ -28,7 +28,7 @@ class SequenceDatabase(dict):
                 if len(strings[i]):
                     if strings[i][0] == '>':
                         seqID = strings[i].split(' ')[0][1:]
-                        seqDB[seqID] = Sequence()
+                        seqDB[seqID] = Sequence(accession=seqID)
                         if len(strings[i].split(' ')) > 1:
                             seqDB[seqID].desc = strings[i].split(' ')[1]
                             for word in strings[i].split(' ')[2:]:

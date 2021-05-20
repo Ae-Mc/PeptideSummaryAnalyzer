@@ -10,9 +10,15 @@ class Sequence:
         desc: описание последовательности
         seq: сама последовательность
     """
+    accession: str = ""
     len: int = 0
     desc: str = ""
     __seq: str = ""
+
+    def __init__(self, accession: str = "", desc: str = "", seq: str = ""):
+        self.accession = accession
+        self.desc = desc
+        self.seq = seq
 
     @property
     def seq(self):
