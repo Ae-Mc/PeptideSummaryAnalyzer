@@ -4,7 +4,6 @@ from os import listdir, path, remove
 from sys import argv
 from typing import List
 from Classes.Input import Input
-from Classes.Comparable import Comparable
 from Classes.SequenceDatabase import SequenceDatabase
 from Classes.Functions import GetFileLines, FindFastaFile
 from PeptideSummaryAnalyzer import main as proteinMain
@@ -68,30 +67,35 @@ class Preset:
                 return
             presetFileValues = [
                 line.split(':')[1].strip() for line in presetFileLines
-                if len(line.strip()) > 0]
+                if len(line.split(':')) > 1]
 
         self.settings.blackList = None
-        blackList = GetFileLines(path.join(self.folder, presetFileValues[0]))
-        if len(presetFileValues[0].strip()):
+        blackList = GetFileLines(path.join(self.folder, presetFileValues[1]))
+        if len(presetFileValues[1].strip()):
             self.settings.blackList = (None if blackList is None
-                                       else (presetFileValues[0], blackList))
-        self.settings.isProteinGroupFilter = presetFileValues[1].lower()
+                                       else (presetFileValues[1], blackList))
+        self.settings.isProteinGroupFilter = presetFileValues[2].lower()
         self.settings.seqDB = SequenceDatabase.fromFile(
             FindFastaFile(self.folder))
-        self.settings.proteinConfidence = presetFileValues[2]
-        self.settings.confPeptide = presetFileValues[3]
-        self.settings.minGroupsWithAccession = int(presetFileValues[4])
-        self.settings.maxGroupAbsence = int(presetFileValues[5])
+        self.settings.proteinConfidence = presetFileValues[3]
+        self.settings.confPeptide = presetFileValues[4]
+        self.settings.minGroupsWithAccession = int(presetFileValues[5])
+        self.settings.maxGroupAbsence = int(presetFileValues[6])
 
     def TestPresetFile(self, presetFileLines: List[str]) -> None:
         """Проверка того, правильно ли написан файл с настроками пресета"""
         neccessaryStringParts = [
+            ('ProteinPilot summary analyzer', 'Program name'),
+            ('#Protein filter-', 'Protein filter header'),
+            ('FDR', 'Global FDR value'),
             ("ID exclusion list", "ID blacklist"),
             ("Protein group filter", "Protein group filter"),
-            ("Confidence ID", "Confidence ID"),
-            ("Confidence peptide", "Confidence peptide"),
+            ("Peptide confidence", "Protein group filter peptide confidence"),
+            ('#Peptide filter-', 'Peptide filter header'),
+            ("Peptide confidence", "Peptide filter peptide confidence"),
+            ('#Output filter-', 'Output filter header'),
             ("Min groups", "Min groups"),
-            ("Max missing values", "Max missing values per group")
+            ("Max missing values", "Max missing values per group"),
         ]
 
         for i, (stringPart, description) in enumerate(neccessaryStringParts):
