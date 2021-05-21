@@ -42,6 +42,7 @@ class PeptideTables(dict):
             if "Peptide" in filename:
                 tableNum = filename.split('_')[0]
                 self[tableNum] = PeptideTable(inputDir + '/' + filename,
+                                              unsafeFlag=True,
                                               columns=self.columnNames)
 
     def GetSortedTableNums(self) -> List[str]:
