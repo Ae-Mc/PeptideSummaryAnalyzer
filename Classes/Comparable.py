@@ -69,7 +69,10 @@ class Comparable:
         self.op = ''.join([ch for ch in paramString if ch in "!=<>"])
 
         paramValue = paramString[len(self.op):].strip()
-        self.val = paramValue
+        if paramValue.strip() == '':
+            self.val = None
+        else:
+            self.val = paramValue
 
     def _LoadFromFile(self, filename: str):
         """Получение значений параметра из файла
@@ -107,13 +110,10 @@ class Comparable:
         return True
 
     def __str__(self):
-        if self.op is not None and self.val is not None:
-            return f"{self.op} {self.val}"
-        else:
-            return ""
+        return self.__repr__()
 
     def __repr__(self):
-        if self.op is not None and self.val is not None:
+        if not (self.op is None or self.val is None):
             return f"{self.op} {self.val}"
         else:
             return ""
