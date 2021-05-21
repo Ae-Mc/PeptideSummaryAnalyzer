@@ -261,19 +261,23 @@ class Output:
         with open(self.GetJoinedOutputFilename(filename),
                   'w') as outFile:
             outFile.write(
-                "#Protein filter-"
-                f"\nID exclusion list: " + (
-                    self.inputParams.blackList[0] if (
+                '"ProteinPilot summary analyzer"'
+                "\n#Protein filter-"
+                # TODO
+                "\nGlobal FDR critical value (<% k r or default): default"
+                f"\nID exclusion list:" + (
+                    ' ' + self.inputParams.blackList[0] if (
                         self.inputParams.blackList is not None
                     ) else "") +
-                f"\nProtein group filter: " + (
-                    "Y" if self.inputParams.isProteinGroupFilter else "Y") +
-                f"\nPeptide confidence: " + (
-                    str(self.inputParams.proteinConfidence)
+                f"\nProtein group filter (Y/N or collapse): " + (
+                    "Y" if self.inputParams.isProteinGroupFilter else "N") +
+                f"\nPeptide confidence:" + (
+                    ' ' + str(self.inputParams.proteinConfidence)
                     if self.inputParams.isProteinConfidence
                     else '')
                 + f"\n#Peptide filter-"
-                f"\nPeptide confidence: {self.inputParams.confPeptide}"
+                "\nPeptide confidence:"
+                f"{(' ' + str(self.inputParams.confPeptide)).strip()}"
                 f"\n#Output filter-"
                 f"\nMin groups with ID: "
                 + str(self.inputParams.minGroupsWithAccession)
