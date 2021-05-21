@@ -1,0 +1,12 @@
+"ProteinPilot summary analyzer"
+#Protein filter-
+Global FDR critical value (<% k r or default): default
+ID exclusion list:
+Protein group filter (Y/N or collapse):N
+Unused score:
+Peptide confidence:
+#Peptide filter-
+Peptide confidence:
+#Output filter-
+Min groups with ID:1
+Max missing values per group:1
