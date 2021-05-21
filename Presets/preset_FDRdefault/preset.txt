@@ -3,7 +3,6 @@
 Global FDR critical value (<% k r or default): default
 ID exclusion list:
 Protein group filter (Y/N or collapse):N
-Unused score:
 Peptide confidence:
 #Peptide filter-
 Peptide confidence:
