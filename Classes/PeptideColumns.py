@@ -15,8 +15,8 @@ class PeptideColumns(ColumnNames):
         confidence: номер и имя столбца Confidence
     """
 
-    accession: Tuple[int, str] = (6, "Accessions")
-    sc: Tuple[int, str] = (22, "Sc")
-    precursorSignal: Tuple[int, str] = (25, "Intensity (Peptide)")
-    sequence: Tuple[int, str] = (12, "Sequence")
-    confidence: Tuple[int, str] = (11, "Conf")
+    accession: Tuple[int, str] = (3, "Accessions")
+    sc: Tuple[int, str] = (20, "Score")
+    precursorSignal: Tuple[int, str] = (23, "Intensity (Peptide)")
+    sequence: Tuple[int, str] = (8, "Sequence")
+    confidence: Tuple[int, str] = (6, "Best Conf (Peptide)")
