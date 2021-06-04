@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional, Union, Dict
 
 
 class Comparable:
@@ -15,11 +15,12 @@ class Comparable:
             Также может быть равно None, в этом случае все операции сравнения
             вернут истину
     """
-    op: str
-    __val: str
+
+    op: Optional[str]
+    __val: Optional[Union[str, Dict[str, str]]]
     __isFileToCompare: bool
 
-    def __init__(self, op: str = "", val: str = None) -> None:
+    def __init__(self, op: str = None, val: str = None) -> None:
         self.__isFileToCompare: bool = True
         if val is not None:
             self.op = op
@@ -41,8 +42,9 @@ class Comparable:
             self.__val = value
             self.__isFileToCompare = False
         except (TypeError, ValueError):
-            if (value is None
-                    or (isinstance(value, str) and len(value.strip()) == 0)):
+            if value is None or (
+                isinstance(value, str) and len(value.strip()) == 0
+            ):
                 self.__val = value
             elif isinstance(value, dict):
                 self.__val = value
@@ -66,10 +68,10 @@ class Comparable:
             < paramList.txt"""
 
         paramString = paramString.strip()
-        self.op = ''.join([ch for ch in paramString if ch in "!=<>"])
+        self.op = "".join([ch for ch in paramString if ch in "!=<>"])
 
-        paramValue = paramString[len(self.op):].strip()
-        if paramValue.strip() == '':
+        paramValue = paramString[len(self.op) :].strip()
+        if paramValue.strip() == "":
             self.val = None
         else:
             self.val = paramValue
@@ -81,18 +83,17 @@ class Comparable:
             filename: имя файла, из которого будут считываться значения
         """
         with open(filename) as paramStringFile:
-            strings = paramStringFile.read().replace(' ', '\t').split('\n')
+            strings = paramStringFile.read().replace(" ", "\t").split("\n")
             paramStrings = {}
             for string in strings:
                 string = string.strip()
                 if len(string):
-                    paramStrings[string.split('\t')[0]] = (
-                        string.split('\t')[1])
+                    paramStrings[string.split("\t")[0]] = string.split("\t")[1]
             self.val = paramStrings
 
-    def compare(self,
-                value: Union[str, float, int],
-                filename: str = None) -> bool:
+    def compare(
+        self, value: Union[str, float, int], filename: str = None
+    ) -> bool:
         """Сравнивает значение с параметром
 
         Args:
@@ -103,9 +104,13 @@ class Comparable:
         """
         if self.val is None:
             return True
-        elif not self.__isFileToCompare:
+        elif isinstance(self.val, str) or self.__isFileToCompare:
             return eval(f"{value}{self.op}{self.val}")
-        elif self.val and filename in self.val:
+        elif (
+            self.val is not None
+            and filename is not None
+            and filename in self.val
+        ):
             return eval(f"{value}{self.op}{self.val[filename]}")
         return True
 

@@ -17,6 +17,7 @@ class Input:
         minGroupsWithAccession: минимум групп с Accession
         maxGroupAbsence: максимальное количество таблиц в группе без Accession
     """
+
     rootPath: str
     inputPath: str
     outputPath: str = "Output"
@@ -37,7 +38,7 @@ class Input:
     def proteinConfidence(self, val):
         self.isProteinConfidence = True
         if val.strip() == "default":
-            self.__proteinConfidence = Comparable(None, None)
+            self.__proteinConfidence = Comparable()
         elif len(val.strip()):
             self.__proteinConfidence = Comparable(val)
         else:
@@ -59,6 +60,6 @@ class Input:
     def isProteinGroupFilter(self, value: Union[str, bool]):
         if isinstance(value, str):
             value = value.lower()
-            self.__isProteinGroupFilter = True if value == 'y' else False
+            self.__isProteinGroupFilter = True if value == "y" else False
         else:
             self.__isProteinGroupFilter = value
