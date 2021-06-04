@@ -10,9 +10,11 @@ class Input:
         rootPath: путь для поиска базы данных fasta
         inputPath: путь для таблиц
         outputPath: путь для выходных файлов
+        fdr: параметры FDR фильтра
         seqDB: база данных с длинами последовательностей для Accession
-        confID: параметр фильтра confID
-        confPeptide: параметр фильтра confPeptide
+        proteinConfidence: параметр фильтра Protein confidence
+        proteinGroupingConfidence: параметр фильтра Protein grouping (conf)
+        confPeptide: параметр фильтра Peptide confidence
         blackList: чёрный список Accession
         minGroupsWithAccession: минимум групп с Accession
         maxGroupAbsence: максимальное количество таблиц в группе без Accession
@@ -21,10 +23,11 @@ class Input:
     rootPath: str
     inputPath: str
     outputPath: str = "Output"
+    fdr: str
     seqDB: SequenceDatabase
-    __confPeptide: Comparable
     __proteinConfidence: Comparable
-    __isProteinGroupFilter: bool
+    __proteinGroupingConfidence: Comparable
+    __confPeptide: Comparable
     isProteinConfidence: bool
     blackList: Optional[Tuple[str, List[str]]]
     minGroupsWithAccession: int
@@ -45,21 +48,17 @@ class Input:
             self.isProteinConfidence = False
 
     @property
+    def proteinGroupingConfidence(self):
+        return self.__proteinGroupingConfidence
+
+    @proteinGroupingConfidence.setter
+    def proteinGroupingConfidence(self, val):
+        self.__proteinGroupingConfidence = Comparable(val)
+
+    @property
     def confPeptide(self):
         return self.__confPeptide
 
     @confPeptide.setter
     def confPeptide(self, val):
         self.__confPeptide = Comparable(val)
-
-    @property
-    def isProteinGroupFilter(self):
-        return self.__isProteinGroupFilter
-
-    @isProteinGroupFilter.setter
-    def isProteinGroupFilter(self, value: Union[str, bool]):
-        if isinstance(value, str):
-            value = value.lower()
-            self.__isProteinGroupFilter = True if value == "y" else False
-        else:
-            self.__isProteinGroupFilter = value
