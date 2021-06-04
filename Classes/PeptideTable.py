@@ -7,12 +7,15 @@ from .PeptideColumns import PeptideColumns
 
 class PeptideTable(Table):
     """Считывает PeptideTable в список вида List[PeptideAccession]"""
+
     columns: PeptideColumns
 
-    def __init__(self,
-                 tableFilename: str = None,
-                 unsafeFlag: bool = False,
-                 columns: PeptideColumns = PeptideColumns()):
+    def __init__(
+        self,
+        tableFilename: str = None,
+        unsafeFlag: bool = False,
+        columns: PeptideColumns = PeptideColumns(),
+    ):
         self.columns = columns
         super().__init__(tableFilename, unsafeFlag)
 
@@ -29,7 +32,7 @@ class PeptideTable(Table):
                     if len(line[self.columns.precursorSignal[0]].strip()) > 0
                     else Decimal(0)
                 ),
-                sequence=line[self.columns.sequence[0]]
+                sequence=line[self.columns.sequence[0]],
             )
         return self
 
@@ -37,4 +40,4 @@ class PeptideTable(Table):
         return self.__repr__()
 
     def __repr__(self):
-        return '[\n ' + "\n ".join([str(e) for e in self]) + '\n]'
+        return "[\n " + "\n ".join([str(e) for e in self]) + "\n]"
