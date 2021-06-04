@@ -1,0 +1,9 @@
+Peptide Locus	Best N (Peptide)	All N	Accessions	Names	Start Position	Best Conf (Peptide)	Best Hypoth Conf	Sequence	Modifications	Protein Modifications	Cleavages	dMass	Obs MW	Obs m/z	Theor MW	Theor m/z	Theor z	Redundant Acqs	Best Spectrum	Score	Feature Prob	Acq Time	Intensity (Peptide)	Intensity at Acq	Apex Time (Peptide)	Elution Peak Width (Peptide)	Sum MS2 Counts	f Seq Signal	f Seq Fam Signal	Max Peptide in Seq Fam	Specific	Used for Quant	Quant Annotation
+1.001	1	1	A	A	0	99.00000095	0	AAAAA				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+2.001	1	1	A	A	0	95	0	CCCCC				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+3.001	2	2	B	B	0	99.00000095	0	AAAAA				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+4.001	2	2	B	B	0	95	0	CCCCC				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+5.001	3	3	C	C	0	99.00000095	0	AAAAA				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+6.001	3	3	C	C	0	95	0	CCCCC				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+7.001	4	4	F	F	0	99.00000095	0	AAAAA				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+8.001	4	4	F	F	0	95	0	CCCCC				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	2		

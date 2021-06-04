@@ -1,0 +1,5 @@
+Accession	prot in group
+A	6
+J	3
+K	1
+M	3

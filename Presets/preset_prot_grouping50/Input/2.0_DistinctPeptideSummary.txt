@@ -1,0 +1,21 @@
+Peptide Locus	Best N (Peptide)	All N	Accessions	Names	Start Position	Best Conf (Peptide)	Best Hypoth Conf	Sequence	Modifications	Protein Modifications	Cleavages	dMass	Obs MW	Obs m/z	Theor MW	Theor m/z	Theor z	Redundant Acqs	Best Spectrum	Score	Feature Prob	Acq Time	Intensity (Peptide)	Intensity at Acq	Apex Time (Peptide)	Elution Peak Width (Peptide)	Sum MS2 Counts	f Seq Signal	f Seq Fam Signal	Max Peptide in Seq Fam	Specific	Used for Quant	Quant Annotation
+1.001	1	1	C; A	C; A	0	99.00000095	0	AAAAA				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+2.001	1	1	C; B	C; B	0	95	0	CCCCC				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+3.001	1	1	C; A; B	C; A; B	0	94	0	DDDDD				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+4.001	1	1	C; A; B	C; A; B	0	50	0	EEEEE				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+5.001	2	2	F; E	F; E	0	99.00000095	0	AAAAA				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+6.001	2	2	F; E	F; E	0	95	0	CCCCC				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+7.001	2	2	F; D	F; D	0	94	0	DDDDD				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+8.001	2	2	F; E; D	F; E; D	0	50	0	EEEEE				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+9.001	3	3	J	J	0	99.00000095	0	AAAAA				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+10.001	3	3	J; I	J; I	0	95	0	CCCCC				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+11.001	3	3	J; G	J; G	0	94	0	DDDDD				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+12.001	3	3	J; I; G	J; I; G	0	50	0	EEEEE				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+13.001	4	4	K	K	0	99.00000095	0	AAAAA				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+14.001	4	4	K	K	0	95	0	CCCCC				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	2		
+15.001	4	4	K	K	0	94	0	DDDDD				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	3		
+16.001	4	4; 5	K; L; M	K; L; M	0	50	0	EEEEE				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	4		
+17.001	5	4	L; M	L; M	0	99.00000095	0	AAAAA				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	1		
+18.001	5	4	L; M; N	L; M; N	0	95	0	CCCCC				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	2		
+19.001	5	4	L; M; N	L; M; N	0	94	0	DDDDD				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	3		
+20.001	5	4	L; M; N	L; M; N	0	50	0	EEEEE				0	1	1	1	1	1	1	0	10	1	0	100		0			1	1	True	4		

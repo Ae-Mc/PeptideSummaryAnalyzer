@@ -1,0 +1,11 @@
+Accession	Description	Sequence length	0.0	0.1	1.0	1.1
+B	test B 000	20	0	0.3	0	0.3
+C	test C 000	15	0	0.4	0	0.4
+D	test D 000	20	0.222222222	0	0.222222222	0
+F	test F 000	20	0	0.3	0	0.3
+G	test G 000	8	0.555555556	0	0.555555556	0
+K	test K 000	20	0.222222222	0	0.222222222	0
+
+
+
+

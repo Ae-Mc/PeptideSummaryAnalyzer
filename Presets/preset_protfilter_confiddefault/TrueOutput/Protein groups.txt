@@ -1,0 +1,13 @@
+Representative	Accession	0.0	1.0	2.0	3.0
+B		3	4	3	
+	A	4	3	3	
+	C	3	3	4	
+E		2	3	3	4
+	D	4	4	2	
+	F	2	3	4	
+J		2	3	4	3
+	I	2	4	2	4
+	G	4	3	2	3
+K					4
+	M				2
+	N				1

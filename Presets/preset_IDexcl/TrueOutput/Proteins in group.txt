@@ -1,0 +1,7 @@
+Accession	prot in group
+B	1
+C	1
+D	1
+F	1
+G	1
+K	1

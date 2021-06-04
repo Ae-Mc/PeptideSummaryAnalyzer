@@ -1,0 +1,6 @@
+Accession	Description	Sequence length	0.0	1.0	2.0	3.0
+B	test B 000	10	400	400	400	0
+E	test E 000	10	400	400	400	400
+J	test J 000	10	400	400	400	400
+K	test K 000	20	0	0	0	400
+
