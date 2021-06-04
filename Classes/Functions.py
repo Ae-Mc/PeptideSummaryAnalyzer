@@ -1,3 +1,6 @@
+from Classes.PeptideRow import PeptideRow
+from Classes.RawPeptideTable import RawPeptideTable
+from Classes.RawPeptideTables import RawPeptideTables
 from decimal import Decimal
 from os import listdir, path
 from sys import argv
@@ -15,9 +18,10 @@ from .SequenceDatabase import SequenceDatabase
 
 
 def CountAccessionLackInGroup(
-        accession: str,
-        group: List[str],
-        accessionsPerTable: Dict[str, Dict[str, Accession]]) -> int:
+    accession: str,
+    group: List[str],
+    accessionsPerTable: Dict[str, Dict[str, Accession]],
+) -> int:
     """Подсчитывает количество файлов, не содержащих данный accession, в группе
 
     Args:
@@ -39,10 +43,11 @@ def CountAccessionLackInGroup(
 
 
 def CountGroupsWithAccession(
-        groups: Dict[str, List[str]],
-        accession: str,
-        maxGroupAbsence: int,
-        accessionsPerTable: Dict[str, Dict[str, Accession]]) -> int:
+    groups: Dict[str, List[str]],
+    accession: str,
+    maxGroupAbsence: int,
+    accessionsPerTable: Dict[str, Dict[str, Accession]],
+) -> int:
     """Подсчёт количества групп, в которых данный accession отсутствует не
     более maxGroupAbsence раз
 
@@ -62,15 +67,18 @@ def CountGroupsWithAccession(
 
     groupsWithAccessionCount = len(groups)
     for tableNames in groups.values():
-        if CountAccessionLackInGroup(accession,
-                                     tableNames,
-                                     accessionsPerTable) > maxGroupAbsence:
+        if (
+            CountAccessionLackInGroup(
+                accession, tableNames, accessionsPerTable
+            )
+            > maxGroupAbsence
+        ):
             groupsWithAccessionCount -= 1
     return groupsWithAccessionCount
 
 
 def GenerateGroupsBunch(
-        accessionsPerTable: Dict[str, Dict[str, Accession]]
+    accessionsPerTable: Dict[str, Dict[str, Accession]]
 ) -> Dict[str, List[str]]:
     groups: Dict[str, List[str]] = {}
     """Создаёт словарь с группами, в котором ключом является номер группы, а
@@ -88,16 +96,18 @@ def GenerateGroupsBunch(
     """
 
     for tableNum in accessionsPerTable.keys():
-        groupNum = tableNum.split('.')[0]
+        groupNum = tableNum.split(".")[0]
         if groupNum not in groups:
             groups[groupNum] = []
         groups[groupNum].append(tableNum)
     return groups
 
 
-def ApplyGroupFilter(accessionTables: AccessionTables,
-                     maxGroupAbsence: int,
-                     minGroupsWithAccession: int) -> None:
+def ApplyGroupFilter(
+    accessionTables: AccessionTables,
+    maxGroupAbsence: int,
+    minGroupsWithAccession: int,
+) -> None:
     """Применение фильтра по группам к AccessionTables
 
     Таблицы, начинающиеся с одинакового числа входят в одну группу, например:
@@ -118,17 +128,18 @@ def ApplyGroupFilter(accessionTables: AccessionTables,
 
     accessionBunch = accessionTables.GenerateAccessionsBunchOverAllTables()
     for accession in accessionBunch:
-        if CountGroupsWithAccession(
-                groups,
-                accession,
-                maxGroupAbsence,
-                accessionTables) < minGroupsWithAccession:
+        if (
+            CountGroupsWithAccession(
+                groups, accession, maxGroupAbsence, accessionTables
+            )
+            < minGroupsWithAccession
+        ):
             accessionTables.RemoveAccessionFromAllTables(accession)
 
 
 def CalculateAccessionsNormRatios(
-        accessionTables: AccessionTables,
-        tableSumms: Dict[str, Dict[str, Decimal]]) -> None:
+    accessionTables: AccessionTables, tableSumms: Dict[str, Dict[str, Decimal]]
+) -> None:
     """Подсчёт нормализованных значений PSignalNormToFileNormRatio и
     ScNormToFileNormRatio
 
@@ -145,13 +156,15 @@ def CalculateAccessionsNormRatios(
     for tableNum, curSumm in tableSumms.items():
         for accession in accessionTables[tableNum].values():
             accession.ScNormToFileNormRatio = (
-                (accession.ScNorm
-                 / curSumm["ScNorm"]) if curSumm["ScNorm"] != 0
-                else Decimal(0))
+                (accession.ScNorm / curSumm["ScNorm"])
+                if curSumm["ScNorm"] != 0
+                else Decimal(0)
+            )
             accession.PSignalNormToFileNormRatio = (
-                (accession.PSignalNorm
-                 / curSumm["PSignalNorm"]) if curSumm["PSignalNorm"] != 0
-                else Decimal(0))
+                (accession.PSignalNorm / curSumm["PSignalNorm"])
+                if curSumm["PSignalNorm"] != 0
+                else Decimal(0)
+            )
 
 
 def GetScPsigAndNormFilesSumm(
@@ -196,8 +209,9 @@ def GetScPsigAndNormFilesSumm(
     return fileSumms
 
 
-def RemoveAccessionsListFromTable(peptideTable: PeptideTable,
-                                  blackList: List[str]) -> None:
+def RemoveAccessionsListFromTable(
+    peptideTable: PeptideTable, blackList: List[str]
+) -> None:
     """Удаляет из таблицы все id, находящиеся в списке blackList
 
     Args:
@@ -206,31 +220,35 @@ def RemoveAccessionsListFromTable(peptideTable: PeptideTable,
     """
     i = 0
     while i < len(peptideTable):
-        if(peptideTable[i].name.split(';')[0] in blackList):
+        if peptideTable[i].name.split(";")[0] in blackList:
             peptideTable.pop(i)
             continue
         i += 1
 
 
-def ApplyBlackList(peptideTables: PeptideTables,
-                   blackList: List[str]) -> None:
+def ApplyBlackList(
+    rawPeptideTables: RawPeptideTables, blackList: List[str]
+) -> None:
     """Удаляет из всех таблиц все id, находящиеся в чёрном списке
 
     Args:
-        peptideTables: словарь с таблицами Peptide вида: {
-                "номер таблицы": PeptideTable
+        rawPeptideTables: словарь с таблицами Peptide вида: {
+                "номер таблицы": RawPeptideTable
             }
         blackList: список Accession, находящихся в чёрном списке
     """
 
-    for curTable in peptideTables.values():
-        RemoveAccessionsListFromTable(curTable, blackList)
+    curTable: RawPeptideTable
+    for curTable in rawPeptideTables.values():
+        curTable.RemoveRowsWithAccessions(blackList)
 
 
-def TestConfParams(conf: Comparable,
-                   peptideTable: PeptideTable,
-                   tableNum: str,
-                   tableRowNum: int) -> bool:
+def TestConfParams(
+    conf: Comparable,
+    peptideTable: PeptideTable,
+    tableNum: str,
+    tableRowNum: int,
+) -> bool:
     """Проверка confidence параметра
 
     Args:
@@ -239,13 +257,14 @@ def TestConfParams(conf: Comparable,
         tableNum: номер таблицы, в которой находится значение
         tableRowNum: номер строк в таблице
     """
-    if(conf.compare(peptideTable[tableRowNum].confidence, tableNum)):
+    if conf.compare(peptideTable[tableRowNum].confidence, tableNum):
         return True
     return False
 
 
-def ApplyPeptideConfidenceFilter(conf: Comparable,
-                                 peptideTables: PeptideTables) -> None:
+def ApplyPeptideConfidenceFilter(
+    conf: Comparable, peptideTables: PeptideTables
+) -> None:
     """Применяем фильтр, завязанный на параметр confidence
 
     Args:
@@ -303,7 +322,7 @@ def GenerateTableAccessionsBunch(peptideTable: PeptideTable) -> Dict[str, int]:
 
 
 def ApplyConfidenceDefaultFilter(peptideTables: PeptideTables) -> None:
-    """ Применяем Confidence default условие.
+    """Применяем Confidence default условие.
 
     Удаляем все ID, у которых нет ни одной строки проходящей default-условие.
 
@@ -316,7 +335,7 @@ def ApplyConfidenceDefaultFilter(peptideTables: PeptideTables) -> None:
                 "Номер таблицы": PeptideTable
             }
     """
-    for tableNum, curTable in peptideTables.items():
+    for curTable in peptideTables.values():
         curTableLen = len(curTable)
         # Заносим все Accession в список Accession для удаления
         # В процессе чтения списка записи из него будут удаляться
@@ -325,18 +344,19 @@ def ApplyConfidenceDefaultFilter(peptideTables: PeptideTables) -> None:
         while i < curTableLen:
             curAccession = curTable[i].name
             if curAccession in blackList:
-                blackList[curAccession] += (
-                    TestConfDefaultCondition(
-                        Decimal(curTable[i].confidence)))
+                blackList[curAccession] += TestConfDefaultCondition(
+                    Decimal(curTable[i].confidence)
+                )
                 if blackList[curAccession] > 1:
                     del blackList[curAccession]
             i += 1
         RemoveAccessionsListFromTable(curTable, [*blackList])
 
 
-def ApplyProteinConfidenceFilter(confID: Comparable,
-                                 peptideTables: PeptideTables) -> None:
-    """ Применяем Confidence ID фильтр.
+def ApplyProteinConfidenceFilter(
+    confID: Comparable, peptideTables: PeptideTables
+) -> None:
+    """Применяем Confidence ID фильтр.
 
     Удаляем все ID, у которых нет ни одной строки проходящей условия,
     заданные confID.
@@ -379,11 +399,13 @@ def GetFileLines(filename: str) -> Union[List[str], None]:
         Список строк файла, без символов переноса строки
     """
 
-    if not (filename.endswith('\\')
-            or filename.endswith('/')
-            or len(filename.strip()) == 0):
+    if not (
+        filename.endswith("\\")
+        or filename.endswith("/")
+        or len(filename.strip()) == 0
+    ):
         with open(filename) as tfile:
-            return tfile.read().split('\n')
+            return tfile.read().split("\n")
     return None
 
 
@@ -398,34 +420,38 @@ def FindFastaFile(inputPath: str) -> str:
         Путь к fasta файлу, составленный из inputPath и имени fasta файла
     """
     for file in listdir(inputPath):
-        if file.endswith('.fasta'):
+        if file.endswith(".fasta"):
             return path.join(inputPath, file)
-    raise FileNotFoundError(f"Fasta file not found in folder \"{inputPath}\"!")
+    raise FileNotFoundError(f'Fasta file not found in folder "{inputPath}"!')
 
 
 def TestFastaAccessions(
-        seqDB: SequenceDatabase,
-        peptideTables: PeptideTables,
-        proteinTables: Optional[Dict[str, ProteinTable]] = None) -> None:
-    peptideTable: PeptideTable
+    seqDB: SequenceDatabase,
+    rawPeptideTables: RawPeptideTables,
+    proteinTables: Optional[Dict[str, ProteinTable]] = None,
+) -> None:
+    rawPeptideTable: RawPeptideTable
     notFoundAccessions: Set[str] = set()
-    for tableNum, peptideTable in peptideTables.items():
-        peptideAccession: PeptideAccession
-        for peptideAccession in peptideTable:
-            if (peptideAccession.name not in seqDB
-                    and not peptideAccession.name.startswith('RRRRR')):
-                notFoundAccessions.add(peptideAccession.name)
+    for rawPeptideTable in rawPeptideTables.values():
+        peptideRow: PeptideRow
+        for peptideRow in rawPeptideTable:
+            for accession in peptideRow.accessions:
+                if accession not in seqDB and not IsReversed(accession):
+                    notFoundAccessions.add(accession)
     if proteinTables is not None:
         proteinTable: ProteinTable
-        for tableNum, proteinTable in proteinTables.items():
+        for proteinTable in proteinTables.values():
             proteinAccession: ProteinAccession
             for proteinAccession in proteinTable:
-                if (proteinAccession.name not in seqDB
-                        and not proteinAccession.name.startswith('RRRRR')):
+                if proteinAccession.name not in seqDB and not IsReversed(
+                    proteinAccession.name
+                ):
                     notFoundAccessions.add(proteinAccession.name)
     if len(notFoundAccessions) > 0:
-        print(f"ERROR! missing {len(notFoundAccessions)} sequences:\n\t"
-              + ('\n\t'.join(sorted(notFoundAccessions))))
+        print(
+            f"ERROR! missing {len(notFoundAccessions)} sequences:\n\t"
+            + ("\n\t".join(sorted(notFoundAccessions)))
+        )
         raise KeyError("ERROR! Missing sequences (check above)!")
 
 
@@ -439,31 +465,47 @@ def GetInput() -> Input:
     inputParams.rootPath = "."
     inputParams.inputPath = "./Input"
     inputParams.seqDB = SequenceDatabase.fromFile(
-        FindFastaFile(inputParams.rootPath))
-    if len(argv) == 7:
+        FindFastaFile(inputParams.rootPath)
+    )
+    if len(argv) == 8:
         blackListLines = GetFileLines(argv[1])
+        inputParams.fdr = argv[1]
         inputParams.blackList = (
-            (argv[1], blackListLines) if blackListLines is not None else None)
-        inputParams.isProteinGroupFilter = argv[2].strip().lower()
-        inputParams.proteinConfidence = argv[3]
-        inputParams.confPeptide = argv[4]
-        inputParams.minGroupsWithAccession = int(argv[5])
-        inputParams.maxGroupAbsence = int(argv[6])
+            (argv[2], blackListLines) if blackListLines is not None else None
+        )
+        inputParams.proteinConfidence = argv[4]
+        inputParams.proteinGroupingConfidence = argv[5]
+        inputParams.confPeptide = argv[6]
+        inputParams.minGroupsWithAccession = int(argv[7])
+        inputParams.maxGroupAbsence = int(argv[8])
     else:
         print('"ProteinPilot summary analyzer"')
-        print("#Protein filter-")
+        print("#Protein filter")
+        inputParams.fdr = input(
+            "Global FDR critical value (<% k or default): "
+        )
         blackListFile = input("ID exclusion list: ")
         blackListLines = GetFileLines(blackListFile)
         inputParams.blackList = (
-            (blackListFile, blackListLines) if blackListLines is not None
-            else None)
-        inputParams.isProteinGroupFilter = input(
-            "Protein group filter (Y/N): ").strip()
-        inputParams.proteinConfidence = input("Peptide confidence: ")
-        print("#Peptide filter-")
-        inputParams.confPeptide = input("Peptide confidence : ")
-        print("#Output filter-")
+            (blackListFile, blackListLines)
+            if blackListLines is not None
+            else None
+        )
+        inputParams.proteinConfidence = input(
+            "Peptide confidence (value or default): "
+        )
+        inputParams.proteinGroupingConfidence = input(
+            "Protein grouping (conf): "
+        )
+        print("#Peptide filter")
+        inputParams.confPeptide = input("Peptide confidence (value): ")
+        print("#Output filter")
         inputParams.minGroupsWithAccession = int(input("Min groups with ID: "))
         inputParams.maxGroupAbsence = int(
-            input("Max missing values per group: "))
+            input("Max missing values per group: ")
+        )
     return inputParams
+
+
+def IsReversed(accession: str) -> bool:
+    return accession.startswith("RRRRR")

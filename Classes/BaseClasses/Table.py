@@ -15,7 +15,7 @@ class Table(ABC, list):
                  tableFilename: str = None,
                  unsafeFlag: bool = False):
         self.unsafeFlag = unsafeFlag
-        if tableFilename:
+        if tableFilename is not None:
             self.Load(tableFilename)
 
     @abstractmethod
