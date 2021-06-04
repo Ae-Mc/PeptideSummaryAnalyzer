@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
+from Classes.FDRFilter import FDRFilter
+from Classes.RawPeptideTables import RawPeptideTables
 from decimal import FloatOperation, getcontext
 
 from Classes import AccessionTables
-from Classes import (ApplyBlackList, ApplyPeptideConfidenceFilter,
-                     ApplyGroupFilter, ApplyProteinConfidenceFilter,
-                     CalculateAccessionsNormRatios, GetInput,
-                     GetScPsigAndNormFilesSumm, TestFastaAccessions)
+from Classes import (
+    ApplyBlackList,
+    ApplyPeptideConfidenceFilter,
+    ApplyGroupFilter,
+    ApplyProteinConfidenceFilter,
+    CalculateAccessionsNormRatios,
+    GetInput,
+    GetScPsigAndNormFilesSumm,
+    TestFastaAccessions,
+)
 from Classes import Input
 from Classes import Output
 from Classes import PeptideTables
-from Classes import ProteinAccessionsDB
-from Classes import ProteinGroupsDB
-from Classes import ProteinPerTableList
 from Classes import PeptideColumns
 
 """См. README"""
@@ -24,30 +29,23 @@ def main(inputParams: Input = None) -> None:
         inputParams = GetInput()
     columnNames = PeptideColumns()
 
-    peptideTables = PeptideTables(columnNames, inputDir=inputParams.inputPath)
-    proteinGroupsDB = None
-    if inputParams.isProteinGroupFilter is True:
-        proteinTables = ProteinAccessionsDB.GetProteinTables(
-            inputParams.inputPath)
-        TestFastaAccessions(inputParams.seqDB, peptideTables, proteinTables)
-        proteinAccessionsDB = ProteinAccessionsDB(proteinTables)
-        proteinGroupsDB = ProteinGroupsDB(proteinAccessionsDB,
-                                          inputParams.seqDB,
-                                          proteinTables)
-        proteinPerTableList = ProteinPerTableList(proteinGroupsDB)
-        peptideTables.ApplyProteinPerTableList(proteinPerTableList)
-        peptideTables.ApplyProteinReplacements(
-            proteinGroupsDB.GetReplacementsPerTable())
-    else:
-        TestFastaAccessions(inputParams.seqDB, peptideTables)
+    rawPeptideTables = RawPeptideTables(
+        columnNames, inputDir=inputParams.inputPath
+    )
+
+    # TODO: FDR filter
+    FDRFilter(rawPeptideTables=rawPeptideTables).ApplyDefaultFilter()
 
     if inputParams.blackList is not None:
-        ApplyBlackList(peptideTables,
-                       inputParams.blackList[1])
+        ApplyBlackList(rawPeptideTables, inputParams.blackList[1])
+
+    TestFastaAccessions(inputParams.seqDB, rawPeptideTables)
+    peptideTables = PeptideTables(rawPeptideTables, seqDB=inputParams.seqDB)
 
     if inputParams.isProteinConfidence is True:
-        ApplyProteinConfidenceFilter(inputParams.proteinConfidence,
-                                     peptideTables)
+        ApplyProteinConfidenceFilter(
+            inputParams.proteinConfidence, peptideTables
+        )
     ApplyPeptideConfidenceFilter(inputParams.confPeptide, peptideTables)
 
     accessionTables = AccessionTables(inputParams.seqDB, peptideTables)
@@ -55,14 +53,18 @@ def main(inputParams: Input = None) -> None:
     filesSumms = GetScPsigAndNormFilesSumm(accessionTables)
     CalculateAccessionsNormRatios(accessionTables, filesSumms)
 
-    ApplyGroupFilter(accessionTables,
-                     inputParams.maxGroupAbsence,
-                     inputParams.minGroupsWithAccession)
+    ApplyGroupFilter(
+        accessionTables,
+        inputParams.maxGroupAbsence,
+        inputParams.minGroupsWithAccession,
+    )
 
-    Output(inputParams,
-           seqDB=inputParams.seqDB,
-           accessionTables=accessionTables,
-           proteinGroupsDB=proteinGroupsDB)
+    Output(
+        inputParams,
+        seqDB=inputParams.seqDB,
+        accessionTables=accessionTables,
+        proteinGroupsDB=None,
+    )
 
 
 if __name__ == "__main__":
