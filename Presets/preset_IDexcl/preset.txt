@@ -1,11 +1,12 @@
 "ProteinPilot summary analyzer"
 #Protein filter
-Global FDR critical value (<% k r or default):
+Global FDR critical value (<% k or default):
 ID exclusion list: IDexcl.txt
 Peptide confidence (value or default):
 Protein grouping (conf):
 #Peptide filter
-Peptide confidence:
+Peptide confidence (value):
 #Output filter
 Min groups with ID:
 Max missing values per group:
+Extract sequences? (Y/N)N
