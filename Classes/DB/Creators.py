@@ -1,7 +1,7 @@
 from sqlite3.dbapi2 import Cursor
 
 
-class Initializers:
+class Creators:
     """Отвечает за создание таблиц
 
     Attributes:
@@ -14,10 +14,10 @@ class Initializers:
 
     def createAllTables(self):
         self.createSequenceTable()
+        self.createExclusionTable()
         self.createPeptideRowTable()
         self.createPeptideAccessionTable()
-        self.createAccessionTable()
-        self.createExclusionTable()
+        self.createPeptideTable()
 
     def createSequenceTable(self) -> None:
         self.cursor.execute(
@@ -29,16 +29,11 @@ class Initializers:
             );"""
         )
 
-    def createAccessionTable(self) -> None:
+    def createExclusionTable(self) -> None:
         self.cursor.execute(
-            """CREATE TABLE accession_table (
+            """CREATE TABLE exclusion (
                 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                table_number TEXT NOT NULL,
-                accession TEXT NOT NULL,
-                confidence FLOAT NOT NULL,
-                score FLOAT NOT NULL,
-                precursor_signal FLOAT NOT NULL,
-                sequence TEXT NOT NULL
+                accession TEXT NOT NULL UNIQUE
             );"""
         )
 
@@ -49,7 +44,7 @@ class Initializers:
                 table_number TEXT NOT NULL,
                 confidence FLOAT NOT NULL,
                 score FLOAT NOT NULL,
-                precursor_signal FLOAT NOT NULL,
+                peptide_intensity FLOAT NOT NULL,
                 sequence TEXT NOT NULL
             );"""
         )
@@ -66,10 +61,15 @@ class Initializers:
             );"""
         )
 
-    def createExclusionTable(self) -> None:
+    def createPeptideTable(self) -> None:
         self.cursor.execute(
-            """CREATE TABLE exclusion (
+            """CREATE TABLE peptide (
                 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                accession TEXT NOT NULL UNIQUE
+                table_number TEXT NOT NULL,
+                accession TEXT NOT NULL,
+                confidence FLOAT NOT NULL,
+                score FLOAT NOT NULL,
+                peptide_intensity FLOAT NOT NULL,
+                sequence TEXT NOT NULL
             );"""
         )

@@ -1,7 +1,8 @@
+from Classes.DB.Fillers import Fillers
 from Classes.DB.FDR import FDR
 from Classes.DB.ParamFilters import ParamFilters
 from typing import Any, Iterable, List, Tuple
-from Classes.DB.Initializers import Initializers
+from Classes.DB.Creators import Creators
 from Classes.Functions import IsReversed
 from sqlite3.dbapi2 import Connection, Cursor, connect
 
@@ -21,7 +22,7 @@ class DB:
 
     connection: Connection
     cursor: Cursor
-    initializers: Initializers
+    initializers: Creators
     paramFilters: ParamFilters
     fdr: FDR
 
@@ -29,8 +30,9 @@ class DB:
         self.connection = connect(":memory:")
         self.cursor = self.connection.cursor()
         self.connection.create_function("IS_REVERSED", 1, IsReversed)
-        self.initializers = Initializers(self.cursor)
+        self.initializers = Creators(self.cursor)
         self.initializers.createAllTables()
+        self.fillers = Fillers(self)
         self.paramFilters = ParamFilters(self.cursor)
         self.fdr = FDR(self.cursor)
 

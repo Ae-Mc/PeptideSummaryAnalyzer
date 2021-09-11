@@ -1,14 +1,13 @@
-from Classes.DB.db import DB
-from Classes.PeptideRow import PeptideRow
+from pprint import pprint
 from sqlite3 import Connection, Cursor
 from typing import Any, Iterable, List, Tuple
+
+from Classes.DB.db import DB
+from Classes.Functions import FindFastaFile, GetFileLines
+from Classes.Input import Input
 from Classes.PeptideColumns import PeptideColumns
 from Classes.RawPeptideTables import RawPeptideTables
-from Classes.Input import Input
-from pprint import pprint
-from Classes.Functions import FindFastaFile, GetFileLines
 from Classes.SequenceDatabase import SequenceDatabase
-from Classes.Sequence import Sequence
 
 
 class tempDB:
@@ -68,46 +67,11 @@ if __name__ == "__main__":
     db = DB()
     inp.seqDB = SequenceDatabase.fromFile(FindFastaFile(inp.rootPath))
     # Заполняем таблицу для хранения информации о последовательностях
-    sequence: Sequence
-    for sequence in inp.seqDB.values():
-        db.execute(
-            r"""INSERT INTO sequence (
-                accession, description, sequence
-            ) VALUES (
-                    (?), (?), (?)
-            );""",
-            [sequence.accession, sequence.desc, sequence.seq],
-        )
-    for tableNum in peptideTables.GetSortedTableNums():
-        row: PeptideRow
-        for row in peptideTables[tableNum]:
-            db.execute(
-                """INSERT INTO peptide_row (
-                    table_number, confidence, score, precursor_signal, sequence
-                ) VALUES (
-                    (?), (?), (?), (?), (?)
-                );""",
-                [
-                    tableNum,
-                    float(row.confidence),
-                    float(row.sc),
-                    float(row.precursorSignal),
-                    row.sequence,
-                ],
-            )
-            rowID = db.cursor.lastrowid
-            for accession in row.accessions:
-                db.execute(
-                    """INSERT INTO peptide_accession (
-                        row_id, accession
-                    ) VALUES (
-                        (?), (?)
-                    );""",
-                    [rowID, accession],
-                )
+    db.fillers.fillSequence(inp.seqDB)
+    db.fillers.fillPeptide(peptideTables)
     # Получение всех accession, не присутствующих в .fasta бд
     absenceAccessions = db.execute(
-        """SELECT DISTINCT accession FROM peptide_accession
+        r"""SELECT DISTINCT accession FROM peptide_accession
         WHERE (
             NOT IS_REVERSED(accession)
             AND accession NOT IN (SELECT accession FROM sequence)
@@ -115,25 +79,18 @@ if __name__ == "__main__":
     ).fetchall()
     if len(absenceAccessions) > 0:
         raise IndexError(
-            "Accessions not found in .fasta file:\n\t"
-            + "\n\t".join(absenceAccessions)
+            "Accessions not found in .fasta file:\n\t" + "\n\t".join(absenceAccessions)
         )
 
     try:
-        for accession in GetFileLines(inp.rootPath + "/IDexcl.txt") or []:
-            db.execute(
-                f"""INSERT INTO exclusion (accession) VALUES ("{accession}")"""
-            )
+        db.fillers.fillExclusion(GetFileLines(inp.rootPath + "/IDexcl.txt") or [])
     except FileNotFoundError:
         print("ID exclusion file not found")
 
     db.fdr.default()
 
     # Применение ID exclusion фильтра
-    if (
-        db.execute("SELECT COUNT(*) FROM exclusion LIMIT(1)").fetchall()[0][0]
-        > 0
-    ):
+    if db.execute("SELECT COUNT(*) FROM exclusion LIMIT(1)").fetchall()[0][0] > 0:
         db.execute(
             """DELETE FROM peptide_accession
             WHERE accession IN (SELECT accession FROM exclusion);"""
