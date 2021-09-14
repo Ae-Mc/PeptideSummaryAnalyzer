@@ -63,45 +63,22 @@ if __name__ == "__main__":
     inp = Input()
     inp.rootPath = "./Presets/preset_IDexcl"
     inp.inputPath = inp.rootPath + "/Input"
+    inp.seqDB = SequenceDatabase.fromFile(FindFastaFile(inp.rootPath))
     peptideTables = RawPeptideTables(PeptideColumns(), inp.inputPath)
     db = DB()
-    inp.seqDB = SequenceDatabase.fromFile(FindFastaFile(inp.rootPath))
-    # Заполняем таблицу для хранения информации о последовательностях
+
+    # Заполняем таблицы
     db.fillers.fillSequence(inp.seqDB)
     db.fillers.fillPeptide(peptideTables)
-    # Получение всех accession, не присутствующих в .fasta бд
-    absenceAccessions = db.execute(
-        r"""SELECT DISTINCT accession FROM peptide_accession
-        WHERE (
-            NOT IS_REVERSED(accession)
-            AND accession NOT IN (SELECT accession FROM sequence)
-        );"""
-    ).fetchall()
-    if len(absenceAccessions) > 0:
-        raise IndexError(
-            "Accessions not found in .fasta file:\n\t" + "\n\t".join(absenceAccessions)
-        )
 
+    db.functions.testFastaDatabase()
     try:
         db.fillers.fillExclusion(GetFileLines(inp.rootPath + "/IDexcl.txt") or [])
     except FileNotFoundError:
         print("ID exclusion file not found")
 
     db.fdr.default()
-
-    # Применение ID exclusion фильтра
-    if db.execute("SELECT COUNT(*) FROM exclusion LIMIT(1)").fetchall()[0][0] > 0:
-        db.execute(
-            """DELETE FROM peptide_accession
-            WHERE accession IN (SELECT accession FROM exclusion);"""
-        )
-        db.execute(
-            """DELETE FROM peptide_row
-            WHERE id IN (SELECT peptide_row.id AS id
-                FROM peptide_row LEFT JOIN peptide_accession
-                    ON row_id = peptide_row.id
-                WHERE row_id IS NULL);"""
-        )
+    db.functions.applyExclusion()
 
     print("Количество появлений каждого accession по всем таблицам")
     pprint(
