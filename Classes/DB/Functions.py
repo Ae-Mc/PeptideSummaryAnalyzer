@@ -73,6 +73,22 @@ class Functions:
                 );
                 """
             )
+            self.removeLeftoversFromPeptideRow()
 
     def applyConfidenceDefault(self) -> None:
-        self.cursor.execute("""""")
+        self.cursor.execute(
+            """DELETE FROM peptide_accession AS paout WHERE id IN (
+                SELECT DISTINCT pain.id
+                FROM peptide_accession pain JOIN peptide_row pr ON pain.row_id = pr.id
+                WHERE confidence < 99
+                GROUP BY table_number, accession
+                HAVING COUNT(*) < 2 OR MAX(confidence) < 95
+            );"""
+        )
+        self.removeLeftoversFromPeptideRow()
+
+    def removeLeftoversFromPeptideRow(self) -> None:
+        self.cursor.execute(
+            """DELETE FROM peptide_row
+            WHERE id NOT IN (SELECT DISTINCT row_id FROM peptide_accession);"""
+        )
