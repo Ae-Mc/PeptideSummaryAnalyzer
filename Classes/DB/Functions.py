@@ -54,15 +54,19 @@ class Functions:
                     WHERE row_id IS NULL);"""
             )
 
-    def applyConfidenceValue(self, confidence: Comparable) -> None:
+    def applyPeptideConfidenceValue(self, confidence: Comparable) -> None:
         if confidence.op is not None:
             self.cursor.execute(
                 f"""DELETE FROM peptide_accession WHERE id IN (
                     SELECT t3.id
-                    FROM peptide_accession t3 LEFT JOIN peptide_row t4 ON t3.row_id = t4.id
+                    FROM peptide_accession t3
+                         LEFT JOIN peptide_row t4
+                         ON t3.row_id = t4.id
                     WHERE NOT EXISTS (
                         SELECT table_number, accession
-                        FROM peptide_accession t1 LEFT JOIN peptide_row t2 on t1.row_id = t2.id
+                        FROM peptide_accession t1 
+                             LEFT JOIN peptide_row t2
+                             ON t1.row_id = t2.id
                         WHERE (
                             confidence {confidence.op} {confidence.val}
                             AND t2.table_number = t4.table_number
@@ -75,7 +79,7 @@ class Functions:
             )
             self.removeLeftoversFromPeptideRow()
 
-    def applyConfidenceDefault(self) -> None:
+    def applyPeptideConfidenceDefault(self) -> None:
         self.cursor.execute(
             """DELETE FROM peptide_accession AS paout WHERE id IN (
                 SELECT DISTINCT pain.id
