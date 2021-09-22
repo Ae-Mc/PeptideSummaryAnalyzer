@@ -17,8 +17,8 @@ class Functions:
     def testFastaDatabase(self) -> None:
         """Проверка, все ли Accession из peptide_accession присутствуют в .fasta БД.
 
-        В случае, если какие-то Accession не найдены, вызывает IndexError, выводя все не
-        найденные Accession"""
+        В случае, если какие-то Accession не найдены, вызывает IndexError, выводя все
+        ненайденные Accession"""
 
         absenceAccessions = self.cursor.execute(
             r"""SELECT DISTINCT accession FROM peptide_accession
@@ -30,7 +30,7 @@ class Functions:
         if len(absenceAccessions) > 0:
             raise IndexError(
                 "Accessions not found in .fasta file:\n\t"
-                + "\n\t".join(absenceAccessions)
+                + "\n\t".join(map(lambda x: x[0], absenceAccessions))
             )
 
     def applyExclusion(self) -> None:
