@@ -1,7 +1,7 @@
+from Classes.DB.ProteinGrouping import ProteinGrouping
 from Classes.DB.Functions import Functions
 from Classes.DB.Fillers import Fillers
 from Classes.DB.FDR import FDR
-from Classes.DB.ParamFilters import ParamFilters
 from typing import Any, Iterable, List, Tuple
 from Classes.DB.Creators import Creators
 from sqlite3.dbapi2 import Connection, Cursor, connect
@@ -16,8 +16,7 @@ class DB:
         connection: соединение с БД
         cursor: connection.cuesor()
         initializers: класс отвечающий за создание таблиц
-        paramFilters: класс, отвечающий за фильтрацию по параметрам confidence
-            и contribution
+        proteinGrouping: класс, отвечающий за работу protein grouping фильтра
         fdr: класс с FDR фильтрами"""
 
     connection: Connection
@@ -25,7 +24,7 @@ class DB:
     initializers: Creators
     functions: Functions
     fillers: Fillers
-    paramFilters: ParamFilters
+    paramFilters: ProteinGrouping
     fdr: FDR
 
     def __init__(self) -> None:
@@ -36,7 +35,7 @@ class DB:
         self.initializers.createAllTables()
         self.functions = Functions(self.cursor)
         self.fillers = Fillers(self.cursor)
-        self.paramFilters = ParamFilters(self.cursor)
+        self.proteinGrouping = ProteinGrouping(self.cursor)
         self.fdr = FDR(self.cursor)
 
     def getDB(self) -> List[Tuple[Any]]:
@@ -50,6 +49,12 @@ class DB:
 
     def execute(self, sql: str, parameters: Iterable[Any] = []) -> Cursor:
         return self.cursor.execute(sql, parameters)
+
+    def prettyFetchAll(self, sql: str, parameters: Iterable[Any] = []) -> list:
+        cursor = self.cursor.execute(sql, parameters)
+        result = cursor.fetchall()
+        result.insert(0, tuple(map(lambda x: x[0], cursor.description)))
+        return result
 
     def close(self) -> None:
         self.connection.close()
