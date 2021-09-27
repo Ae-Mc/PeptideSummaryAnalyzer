@@ -28,6 +28,7 @@ class Creators:
         self.createRepresentativeTable()
         self.createGroupTable()
         self.createPeptideWithSum()
+        self.createJointPeptideTableView()
 
     def createSequenceTable(self) -> None:
         self.cursor.execute(
@@ -65,10 +66,16 @@ class Creators:
                 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 row_id INTEGER NOT NULL,
                 accession TEXT NOT NULL,
-                FOREIGN KEY (row_id)
-                    REFERENCES peptide_row (id)
-                    ON DELETE CASCADE
+                FOREIGN KEY (row_id) REFERENCES peptide_row (id) ON DELETE CASCADE
             );"""
+        )
+
+    def createJointPeptideTableView(self) -> None:
+        self.cursor.execute(
+            """CREATE VIEW peptide_joint AS
+            SELECT row.*, p_acc.accession
+            FROM peptide_row row INNER JOIN peptide_accession p_acc
+                ON row.id = p_acc.row_id"""
         )
 
     def createPeptideTable(self) -> None:
@@ -88,8 +95,10 @@ class Creators:
         self.cursor.execute(
             """CREATE TABLE representative (
                 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                row_id INTEGER NOT NULL,
                 table_number TEXT NOT NULL,
-                accession TEXT NOT NULL
+                representative TEXT NOT NULL,
+                FOREIGN KEY (row_id) REFERENCES peptide_row (id) ON DELETE CASCADE
             );"""
         )
 
