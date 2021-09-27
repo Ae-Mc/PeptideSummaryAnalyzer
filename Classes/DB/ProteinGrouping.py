@@ -67,23 +67,41 @@ class ProteinGrouping:
             ORDER BY accession;"""
         )
 
-    def applyProteinGrouping(self):
-        return self.cursor.execute(
-            """SELECT
-                row.id,
-                p_acc.accession AS representative_accession,
-                MAX(count_per_table),
-                MAX(general_count),
-                MAX(LENGTH(sequence.sequence))
-            FROM
-                peptide_row row JOIN peptide_accession p_acc
-                    ON row.id=p_acc.row_id
-                LEFT JOIN accession_count_per_table t_count
-                    ON t_count.table_number = row.table_number
-                    AND t_count.accession = p_acc.accession
-                LEFT JOIN general_accession_count g_count
-                    ON g_count.accession = p_acc.accession
-                LEFT JOIN sequence ON p_acc.accession = sequence.accession
-            GROUP BY row.id
-            HAVING MAX(count_per_table, general_count);"""
-        ).fetchall()
+    def applyProteinGrouping(self) -> None:
+        self.cursor.execute(
+            """INSERT INTO representative (row_id, table_number, representative)
+            SELECT id as row_id, table_number, accession FROM (
+                SELECT
+                    joint.id,
+                    joint.accession,
+                    joint.table_number,
+                    row_number() OVER (
+                        PARTITION BY joint.id
+                        ORDER BY
+                            count_per_table DESC,
+                            general_count DESC,
+                            LENGTH(sequence.sequence) DESC,
+                            joint.id DESC
+                    ) AS seqnum
+                FROM
+                    peptide_joint joint
+                    LEFT JOIN accession_count_per_table t_count
+                        ON t_count.table_number = joint.table_number
+                        AND t_count.accession = joint.accession
+                    LEFT JOIN general_accession_count g_count
+                        ON g_count.accession = joint.accession
+                    LEFT JOIN sequence ON joint.accession = sequence.accession
+            ) WHERE seqnum = 1;"""
+        )
+        self.cursor.execute(
+            """INSERT INTO accession_group (
+                representative_id,
+                accession,
+                count_in_table
+            ) SELECT repr.id, joint.accession, count_per_table
+            FROM peptide_joint joint
+                INNER JOIN representative repr ON joint.id = repr.row_id
+                INNER JOIN accession_count_per_table t_count
+                        ON t_count.table_number = joint.table_number
+                        AND t_count.accession = joint.accession;"""
+        )
