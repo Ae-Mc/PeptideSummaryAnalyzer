@@ -105,3 +105,22 @@ class ProteinGrouping:
                         ON t_count.table_number = joint.table_number
                         AND t_count.accession = joint.accession;"""
         )
+
+    def fillPeptideTable(self) -> None:
+        self.cursor.execute(
+            """INSERT INTO peptide (
+                table_number,
+                accession,
+                confidence,
+                score,
+                peptide_intensity,
+                sequence
+            ) SELECT
+                row.table_number,
+                representative,
+                confidence,
+                score,
+                peptide_intensity,
+                sequence
+            FROM peptide_row row JOIN representative repr ON row.id = row_id"""
+        )
