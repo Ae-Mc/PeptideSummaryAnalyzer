@@ -58,7 +58,7 @@ class DB:
         result.insert(0, tuple(map(lambda x: x[0], cursor.description)))
         return result
 
-    def prettyPrintRepresentatives(self, file: TextIO = stdout):
+    def prettyPrintRepresentatives(self, file: TextIO = stdout) -> None:
         rows = self.execute(
             """SELECT repr.*, acc_g.accession, acc_g.count_in_table
             FROM representative repr

@@ -30,7 +30,7 @@ class Fillers:
                 [sequence.accession, sequence.desc, sequence.seq],
             )
 
-    def fillPeptide(self, peptideTables: RawPeptideTables):
+    def fillRawPeptide(self, peptideTables: RawPeptideTables):
         for tableNum in peptideTables.GetSortedTableNums():
             row: PeptideRow
             for row in peptideTables[tableNum]:
