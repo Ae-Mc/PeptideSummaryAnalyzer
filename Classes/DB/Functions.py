@@ -58,19 +58,15 @@ class Functions:
         if confidence.op is not None:
             self.cursor.execute(
                 f"""DELETE FROM peptide_accession WHERE id IN (
-                    SELECT t3.id
-                    FROM peptide_accession t3
-                         LEFT JOIN peptide_row t4
-                         ON t3.row_id = t4.id
+                    SELECT j2.id
+                    FROM peptide_joint j2
                     WHERE NOT EXISTS (
                         SELECT table_number, accession
-                        FROM peptide_accession t1 
-                             LEFT JOIN peptide_row t2
-                             ON t1.row_id = t2.id
+                        FROM peptide_joint j1
                         WHERE (
                             confidence {confidence.op} {confidence.val}
-                            AND t2.table_number = t4.table_number
-                            AND t3.accession = t1.accession
+                            AND j1.table_number = j2.table_number
+                            AND j1.accession = j2.accession
                         )
                         GROUP BY table_number, accession
                     )
@@ -82,8 +78,8 @@ class Functions:
     def applyPeptideConfidenceDefault(self) -> None:
         self.cursor.execute(
             """DELETE FROM peptide_accession AS paout WHERE id IN (
-                SELECT DISTINCT pain.id
-                FROM peptide_accession pain JOIN peptide_row pr ON pain.row_id = pr.id
+                SELECT DISTINCT id
+                FROM peptide_joint
                 WHERE confidence < 99
                 GROUP BY table_number, accession
                 HAVING COUNT(*) < 2 OR MAX(confidence) < 95
@@ -96,3 +92,10 @@ class Functions:
             """DELETE FROM peptide_row
             WHERE id NOT IN (SELECT DISTINCT row_id FROM peptide_accession);"""
         )
+
+    def applyPeptideConfidenceValue2(self, confidence: Comparable) -> None:
+        if confidence.op is not None:
+            self.cursor.execute(
+                f"""DELETE FROM peptide
+                WHERE NOT (confidence {confidence.op} {confidence.val});"""
+            )
