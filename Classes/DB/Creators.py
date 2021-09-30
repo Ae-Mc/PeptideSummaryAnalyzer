@@ -118,6 +118,7 @@ class Creators:
                 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 table_number TEXT NOT NULL,
                 accession TEXT NOT NULL,
+                count INT NOT NULL,
                 sc_sum FLOAT NOT NULL,
                 peptide_intensity_sum FLOAT NOT NULL,
                 sc_norm FLOAT NOT NULL,
