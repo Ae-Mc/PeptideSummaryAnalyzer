@@ -1,3 +1,4 @@
+from Classes.DB.Summaries import Summaries
 from sqlite3.dbapi2 import Connection, Cursor, connect
 from sys import stdout
 from typing import Any, Dict, Iterable, List, TextIO, Tuple
@@ -19,7 +20,9 @@ class DB:
         cursor: connection.cuesor()
         initializers: класс отвечающий за создание таблиц
         proteinGrouping: класс, отвечающий за работу protein grouping фильтра
-        fdr: класс с FDR фильтрами"""
+        fdr: класс с FDR фильтрами
+        summaries: класс, отвечающий за заполнение последней таблицы - peptide_with_sum
+    """
 
     connection: Connection
     cursor: Cursor
@@ -28,6 +31,7 @@ class DB:
     fillers: Fillers
     paramFilters: ProteinGrouping
     fdr: FDR
+    summaries: Summaries
 
     def __init__(self) -> None:
         self.connection = connect(":memory:")
@@ -39,6 +43,7 @@ class DB:
         self.fillers = Fillers(self.cursor)
         self.proteinGrouping = ProteinGrouping(self.cursor)
         self.fdr = FDR(self.cursor)
+        self.summaries = Summaries(self.cursor)
 
     def getDB(self) -> List[Tuple[Any]]:
         return self.execute(
