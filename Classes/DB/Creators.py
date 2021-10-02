@@ -1,8 +1,14 @@
 from sqlite3.dbapi2 import Cursor
+from typing import Optional
 
 
 def IsReversed(accession: str) -> bool:
     return accession.startswith("RRRRR")
+
+
+def GroupNumber(table_number: str) -> int:
+    splitted = table_number.split(".")
+    return int(splitted[0])
 
 
 class Creators:
@@ -18,6 +24,7 @@ class Creators:
 
     def createAllFunctions(self) -> None:
         self.cursor.connection.create_function("IS_REVERSED", 1, IsReversed)
+        self.cursor.connection.create_function("GET_GROUP_NUMBER", 1, GroupNumber)
 
     def createAllTables(self):
         self.createSequenceTable()
