@@ -45,7 +45,7 @@ def CountAccessionLackInGroup(
 def CountGroupsWithAccession(
     groups: Dict[str, List[str]],
     accession: str,
-    maxGroupAbsence: int,
+    maxGroupLack: int,
     accessionsPerTable: Dict[str, Dict[str, Accession]],
 ) -> int:
     """Подсчёт количества групп, в которых данный accession отсутствует не
@@ -68,10 +68,8 @@ def CountGroupsWithAccession(
     groupsWithAccessionCount = len(groups)
     for tableNames in groups.values():
         if (
-            CountAccessionLackInGroup(
-                accession, tableNames, accessionsPerTable
-            )
-            > maxGroupAbsence
+            CountAccessionLackInGroup(accession, tableNames, accessionsPerTable)
+            > maxGroupLack
         ):
             groupsWithAccessionCount -= 1
     return groupsWithAccessionCount
@@ -226,9 +224,7 @@ def RemoveAccessionsListFromTable(
         i += 1
 
 
-def ApplyBlackList(
-    rawPeptideTables: RawPeptideTables, blackList: List[str]
-) -> None:
+def ApplyBlackList(rawPeptideTables: RawPeptideTables, blackList: List[str]) -> None:
     """Удаляет из всех таблиц все id, находящиеся в чёрном списке
 
     Args:
@@ -400,9 +396,7 @@ def GetFileLines(filename: str) -> Union[List[str], None]:
     """
 
     if not (
-        filename.endswith("\\")
-        or filename.endswith("/")
-        or len(filename.strip()) == 0
+        filename.endswith("\\") or filename.endswith("/") or len(filename.strip()) == 0
     ):
         with open(filename) as tfile:
             return tfile.read().split("\n")
@@ -464,45 +458,37 @@ def GetInput() -> Input:
     inputParams = Input()
     inputParams.rootPath = "."
     inputParams.inputPath = "./Input"
-    inputParams.seqDB = SequenceDatabase.fromFile(
-        FindFastaFile(inputParams.rootPath)
-    )
-    if len(argv) == 8:
-        blackListLines = GetFileLines(argv[1])
+    inputParams.seqDB = SequenceDatabase.fromFile(FindFastaFile(inputParams.rootPath))
+    if len(argv) == 9:
         inputParams.fdr = argv[1]
+        blackListLines = GetFileLines(argv[2])
         inputParams.blackList = (
             (argv[2], blackListLines) if blackListLines is not None else None
         )
-        inputParams.proteinConfidence = argv[4]
-        inputParams.proteinGroupingConfidence = argv[5]
-        inputParams.confPeptide = argv[6]
-        inputParams.minGroupsWithAccession = int(argv[7])
-        inputParams.maxGroupAbsence = int(argv[8])
+        inputParams.proteinConfidence = argv[3]
+        inputParams.proteinGroupingConfidence = argv[4]
+        inputParams.confPeptide = argv[5]
+        inputParams.minGroupsWithAccession = int(argv[6])
+        inputParams.maxGroupLack = int(argv[7])
+        inputParams.shouldExtractSequences = argv[8] == "Y"
     else:
         print('"ProteinPilot summary analyzer"')
         print("#Protein filter")
-        inputParams.fdr = input(
-            "Global FDR critical value (<% k or default): "
-        )
+        inputParams.fdr = input("Global FDR critical value (<% k or default): ")
         blackListFile = input("ID exclusion list: ")
         blackListLines = GetFileLines(blackListFile)
         inputParams.blackList = (
-            (blackListFile, blackListLines)
-            if blackListLines is not None
-            else None
+            (blackListFile, blackListLines) if blackListLines is not None else None
         )
-        inputParams.proteinConfidence = input(
-            "Peptide confidence (value or default): "
-        )
-        inputParams.proteinGroupingConfidence = input(
-            "Protein grouping (conf): "
-        )
+        inputParams.proteinConfidence = input("Peptide confidence (value or default): ")
+        inputParams.proteinGroupingConfidence = input("Protein grouping (conf): ")
         print("#Peptide filter")
         inputParams.confPeptide = input("Peptide confidence (value): ")
         print("#Output filter")
         inputParams.minGroupsWithAccession = int(input("Min groups with ID: "))
-        inputParams.maxGroupAbsence = int(
-            input("Max missing values per group: ")
+        inputParams.maxGroupLack = int(input("Max missing values per group: "))
+        inputParams.shouldExtractSequences = (
+            input("ID Extract sequences? (Y/N): ") == "Y"
         )
     return inputParams
 

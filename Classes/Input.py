@@ -18,6 +18,7 @@ class Input:
         blackList: чёрный список Accession
         minGroupsWithAccession: минимум групп с Accession
         maxGroupAbsence: максимальное количество таблиц в группе без Accession
+        shouldExtractSequences: нужно ли извлекать последовательности
     """
 
     rootPath: str
@@ -31,7 +32,8 @@ class Input:
     isProteinConfidence: bool
     blackList: Optional[Tuple[str, List[str]]]
     minGroupsWithAccession: int
-    maxGroupAbsence: int
+    maxGroupLack: int
+    shouldExtractSequences: bool
 
     @property
     def proteinConfidence(self):
