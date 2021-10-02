@@ -14,6 +14,15 @@ class Summaries:
         self.cursor = cursor
 
     def fillPeptideWithSum(self) -> list:
+        """Конвертирует peptide в peptide_with_sum и подсчитывает
+        нормализованные значения для каждого accession.
+
+        Получает суммы значений score, peptide intensity, сумму длинн
+        последовательностей, а также нормализованные значения peptide
+        intensity и sc для каждого файла для каждого accession.
+        В том числе заполняет столбцы sc_norm_to_file_norm_ratio и
+        peptide_intensity_norm_to_file_norm_ratio."""
+
         return self.cursor.execute(
             """--sql
             WITH norm_sums_per_table AS (
