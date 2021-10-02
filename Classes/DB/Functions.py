@@ -3,10 +3,10 @@ from sqlite3.dbapi2 import Cursor
 
 
 class Functions:
-    """Отвечает за разные функции, которые нельзя объединить в одну общую группу
+    """Отвечает за разные функции, которые нельзя объединить в одну общую группу.
 
     Attributes:
-        cursor: экземляр класса Cursor для связи с базой данных
+        cursor: экземляр класса Cursor для связи с базой данных.
     """
 
     cursor: Cursor
@@ -15,10 +15,13 @@ class Functions:
         self.cursor = cursor
 
     def testFastaDatabase(self) -> None:
-        """Проверка, все ли Accession из peptide_accession присутствуют в .fasta БД.
+        """Проверка, все ли accession из peptide_accession присутствуют в .fasta БД.
 
-        В случае, если какие-то Accession не найдены, вызывает IndexError, выводя все
-        ненайденные Accession"""
+        В случае, если какие-то accession не найдены, вызывает IndexError, выводя все
+        отсутствующие accession.
+
+        Raises:
+            IndexError: Ошибка при поиске некоторых accession."""
 
         absenceAccessions = self.cursor.execute(
             r"""SELECT DISTINCT accession FROM peptide_accession
@@ -34,7 +37,7 @@ class Functions:
             )
 
     def applyExclusion(self) -> None:
-        """Применение ID exclusion фильтра"""
+        """Применение ID exclusion фильтра."""
 
         if (
             self.cursor.execute("SELECT COUNT(*) FROM exclusion LIMIT(1)").fetchall()[
@@ -55,6 +58,11 @@ class Functions:
             )
 
     def applyPeptideConfidenceValue(self, confidence: Comparable) -> None:
+        """Применение #Protein filter -> Peptide Confidence (value).
+
+        Args:
+            confidence: параметр confidence для сравнения."""
+
         if confidence.op is not None:
             self.cursor.execute(
                 f"""DELETE FROM peptide_accession WHERE id IN (
@@ -76,6 +84,8 @@ class Functions:
             self.removeLeftoversFromPeptideRow()
 
     def applyPeptideConfidenceDefault(self) -> None:
+        """Применение #Protein filter -> Peptide Confidence (default)."""
+
         self.cursor.execute(
             """DELETE FROM peptide_accession AS paout WHERE id IN (
                 SELECT DISTINCT id
@@ -88,12 +98,20 @@ class Functions:
         self.removeLeftoversFromPeptideRow()
 
     def removeLeftoversFromPeptideRow(self) -> None:
+        """Удаление всех строк из peptide_row, для которых не существует строк в
+        peptide_accession."""
+
         self.cursor.execute(
             """DELETE FROM peptide_row
             WHERE id NOT IN (SELECT DISTINCT row_id FROM peptide_accession);"""
         )
 
     def applyPeptideConfidenceValue2(self, confidence: Comparable) -> None:
+        """Применение #Peptide filter -> Peptide Confidence (value)
+
+        Args:
+            confidence: параметр confidence для сравнения."""
+
         if confidence.op is not None:
             self.cursor.execute(
                 f"""DELETE FROM peptide
