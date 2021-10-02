@@ -1,3 +1,4 @@
+from Classes.DB.OutputGrouping import OutputGrouping
 from Classes.DB.Summaries import Summaries
 from sqlite3.dbapi2 import Connection, Cursor, connect
 from sys import stdout
@@ -44,14 +45,16 @@ class DB:
         self.proteinGrouping = ProteinGrouping(self.cursor)
         self.fdr = FDR(self.cursor)
         self.summaries = Summaries(self.cursor)
+        self.outputGrouping = OutputGrouping(self.cursor)
 
     def getDB(self) -> List[Tuple[Any]]:
         return self.execute(
-            """SELECT row_id, table_number, accession, confidence
+            """--sql
+            SELECT row_id, table_number, accession, confidence
             FROM
                 (SELECT id, table_number, confidence
                  FROM peptide_row) AS peptide_row
-                JOIN peptide_accession ON row_id = peptide_row.id"""
+                JOIN peptide_accession ON row_id = peptide_row.id;"""
         ).fetchall()
 
     def execute(self, sql: str, parameters: Iterable[Any] = []) -> Cursor:
