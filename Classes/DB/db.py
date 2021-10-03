@@ -9,6 +9,8 @@ from Classes.DB.FDR import FDR
 from Classes.DB.Fillers import Fillers
 from Classes.DB.Functions import Functions
 from Classes.DB.ProteinGrouping import ProteinGrouping
+from Classes.DB.Output import Output
+from Classes.Input import Input
 
 
 class DB:
@@ -19,6 +21,7 @@ class DB:
     Attributes:
         connection: соединение с БД
         cursor: connection.cuesor()
+        inputParams: входные параметры скрипта
         initializers: класс отвечающий за создание таблиц
         proteinGrouping: класс, отвечающий за работу protein grouping фильтра
         fdr: класс с FDR фильтрами
@@ -27,25 +30,33 @@ class DB:
 
     connection: Connection
     cursor: Cursor
+    inputParams: Input
     initializers: Creators
     functions: Functions
     fillers: Fillers
     paramFilters: ProteinGrouping
     fdr: FDR
     summaries: Summaries
+    output: Output
+    outputGrouping: OutputGrouping
 
-    def __init__(self) -> None:
+    def __init__(self, inputParams: Input) -> None:
+        self.inputParams = inputParams
+
         self.connection = connect(":memory:")
         self.cursor = self.connection.cursor()
+
         self.initializers = Creators(self.cursor)
         self.initializers.createAllFunctions()
         self.initializers.createAllTables()
+
         self.functions = Functions(self.cursor)
         self.fillers = Fillers(self.cursor)
         self.proteinGrouping = ProteinGrouping(self.cursor)
         self.fdr = FDR(self.cursor)
         self.summaries = Summaries(self.cursor)
         self.outputGrouping = OutputGrouping(self.cursor)
+        self.output = Output(self.cursor, inputParams)
 
     def getDB(self) -> List[Tuple[Any]]:
         return self.execute(
