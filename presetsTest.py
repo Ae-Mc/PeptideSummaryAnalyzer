@@ -6,7 +6,7 @@ from typing import List
 from Classes.Input import Input
 from Classes.SequenceDatabase import SequenceDatabase
 from Classes.Functions import GetFileLines, FindFastaFile
-from PeptideSummaryAnalyzer import main as proteinMain
+from sql import main as proteinMain
 
 
 presetsFolder = "Presets"
