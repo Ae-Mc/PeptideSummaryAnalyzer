@@ -17,7 +17,7 @@ class ProteinGrouping:
     def createFiltredAccessionTable(self, confidence: Comparable) -> None:
         """Создаёт промежуточную таблицу с применённым фильтром по confidence.
 
-        Если такая фильтр confidence не задан (confidence.op is None), то всё равно
+        Если фильтр confidence не задан (confidence.op is None), то всё равно
         создаёт таблицу, но без применения фильтра.
 
         TODO: Clarification required"""
