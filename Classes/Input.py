@@ -35,12 +35,14 @@ class Input:
     maxGroupLack: int
     shouldExtractSequences: bool
 
+    def __init__(self) -> None:
+        self.shouldExtractSequences = True
+
     @property
-    def proteinConfidence(self):
+    def proteinConfidence(self) -> Comparable:
         return self.__proteinConfidence
 
-    @proteinConfidence.setter
-    def proteinConfidence(self, val):
+    def setProteinConfidence(self, val: str):
         self.isProteinConfidence = True
         if val.strip() == "default":
             self.__proteinConfidence = Comparable()
@@ -50,17 +52,15 @@ class Input:
             self.isProteinConfidence = False
 
     @property
-    def proteinGroupingConfidence(self):
+    def proteinGroupingConfidence(self) -> Comparable:
         return self.__proteinGroupingConfidence
 
-    @proteinGroupingConfidence.setter
-    def proteinGroupingConfidence(self, val):
+    def setProteinGroupingConfidence(self, val: str):
         self.__proteinGroupingConfidence = Comparable(val)
 
     @property
-    def confPeptide(self):
+    def confPeptide(self) -> Comparable:
         return self.__confPeptide
 
-    @confPeptide.setter
-    def confPeptide(self, val):
+    def setConfPeptide(self, val: str):
         self.__confPeptide = Comparable(val)

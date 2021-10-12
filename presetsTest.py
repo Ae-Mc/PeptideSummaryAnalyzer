@@ -64,8 +64,7 @@ class Preset:
                 self.TestPresetFile(presetFileLines)
             except IOError as e:
                 print(
-                    f"Error reading preset {path.split(self.folder)[1]} "
-                    f"{e.args[0]}"
+                    f"Error reading preset {path.split(self.folder)[1]} " f"{e.args[0]}"
                 )
                 self.errorCode = 1
                 return
@@ -75,19 +74,19 @@ class Preset:
                 if len(line.split(":")) > 1
             ]
 
+        self.settings.fdr = presetFileValues[0]
         self.settings.blackList = None
         blackList = GetFileLines(path.join(self.folder, presetFileValues[1]))
         if len(presetFileValues[1].strip()):
             self.settings.blackList = (
                 None if blackList is None else (presetFileValues[1], blackList)
             )
-        self.settings.seqDB = SequenceDatabase.fromFile(
-            FindFastaFile(self.folder)
-        )
-        self.settings.proteinConfidence = presetFileValues[2]
-        self.settings.confPeptide = presetFileValues[3]
-        self.settings.minGroupsWithAccession = int(presetFileValues[4])
-        self.settings.maxGroupAbsence = int(presetFileValues[5])
+        self.settings.seqDB = SequenceDatabase.fromFile(FindFastaFile(self.folder))
+        self.settings.setProteinGroupingConfidence(presetFileValues[2])
+        self.settings.setProteinConfidence(presetFileValues[2])
+        self.settings.setConfPeptide(presetFileValues[4])
+        self.settings.minGroupsWithAccession = int(presetFileValues[5])
+        self.settings.maxGroupLack = int(presetFileValues[6])
 
     def TestPresetFile(self, presetFileLines: List[str]) -> None:
         """Проверка того, правильно ли написан файл с настроками пресета"""
@@ -190,13 +189,17 @@ def main():
     else:
         presetsFolders = GetPresetsFolders()
         for folder in presetsFolders:
-            preset = Preset(folder)
-            preset.ReadSettings()
-            preset.ClearOutputFolder()
-            preset.Run()
-            if preset.errorCode:
-                errorCode = preset.errorCode
-            print()
+            try:
+                preset = Preset(folder)
+                preset.ReadSettings()
+                preset.ClearOutputFolder()
+                preset.Run()
+                if preset.errorCode:
+                    errorCode = preset.errorCode
+                print()
+            except Exception as e:
+                print(f"Unexpected error catched in preset {preset.folder}")
+                raise (e)
     exit(errorCode)
 
 
