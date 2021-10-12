@@ -58,15 +58,18 @@ class DB:
         self.outputGrouping = OutputGrouping(self.cursor)
         self.output = Output(self.cursor, inputParams)
 
-    def getDB(self) -> List[Tuple[Any]]:
-        return self.execute(
+    def __enter__(self):
+        return self
+
+    def getDB(self) -> List[tuple]:
+        return self.prettyFetchAll(
             """--sql
             SELECT row_id, table_number, accession, confidence
             FROM
                 (SELECT id, table_number, confidence
                  FROM peptide_row) AS peptide_row
                 JOIN peptide_accession ON row_id = peptide_row.id;"""
-        ).fetchall()
+        )
 
     def execute(self, sql: str, parameters: Iterable[Any] = []) -> Cursor:
         return self.cursor.execute(sql, parameters)
@@ -79,7 +82,8 @@ class DB:
 
     def prettyPrintRepresentatives(self, file: TextIO = stdout) -> None:
         rows = self.execute(
-            """SELECT repr.*, acc_g.accession, acc_g.count_in_table
+            """--sql
+            SELECT repr.*, acc_g.accession, acc_g.count_in_table
             FROM representative repr
                 INNER JOIN accession_group acc_g ON repr.id = acc_g.representative_id
             WHERE (
@@ -93,14 +97,15 @@ class DB:
             map(
                 lambda x: x[0],
                 self.execute(
-                    """SELECT DISTINCT table_number
-            FROM representative repr
-            WHERE (
-                SELECT COUNT(*)
-                FROM accession_group acc_g
-                WHERE acc_g.representative_id = repr.id
-            ) > 1
-            ORDER BY CAST(table_number AS DECIMAL);"""
+                    """--sql
+                    SELECT DISTINCT table_number
+                    FROM representative repr
+                    WHERE (
+                        SELECT COUNT(*)
+                        FROM accession_group acc_g
+                        WHERE acc_g.representative_id = repr.id
+                    ) > 1
+                    ORDER BY CAST(table_number AS DECIMAL);"""
                 ).fetchall(),
             )
         )
@@ -127,3 +132,6 @@ class DB:
 
     def close(self) -> None:
         self.connection.close()
+
+    def __exit__(self, *exc_info):
+        self.close()
