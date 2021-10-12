@@ -24,7 +24,8 @@ class Functions:
             IndexError: Ошибка при поиске некоторых accession."""
 
         absenceAccessions = self.cursor.execute(
-            r"""SELECT DISTINCT accession FROM peptide_accession
+            """--sql
+            SELECT DISTINCT accession FROM peptide_accession
             WHERE (
                 NOT IS_REVERSED(accession)
                 AND accession NOT IN (SELECT accession FROM sequence)
@@ -46,11 +47,13 @@ class Functions:
             > 0
         ):
             self.cursor.execute(
-                """DELETE FROM peptide_accession
+                """--sql
+                DELETE FROM peptide_accession
                 WHERE accession IN (SELECT accession FROM exclusion);"""
             )
             self.cursor.execute(
-                """DELETE FROM peptide_row
+                """--sql
+                DELETE FROM peptide_row
                 WHERE id IN (SELECT peptide_row.id AS id
                     FROM peptide_row LEFT JOIN peptide_accession
                         ON row_id = peptide_row.id
@@ -65,7 +68,8 @@ class Functions:
 
         if confidence.op is not None:
             self.cursor.execute(
-                f"""DELETE FROM peptide_accession WHERE id IN (
+                f"""--sql
+                DELETE FROM peptide_accession WHERE id IN (
                     SELECT j2.id
                     FROM peptide_joint j2
                     WHERE NOT EXISTS (
@@ -87,7 +91,8 @@ class Functions:
         """Применение #Protein filter -> Peptide Confidence (default)."""
 
         self.cursor.execute(
-            """DELETE FROM peptide_accession AS paout WHERE id IN (
+            """--sql
+                DELETE FROM peptide_accession AS paout WHERE id IN (
                 SELECT DISTINCT id
                 FROM peptide_joint
                 WHERE confidence < 99
@@ -102,7 +107,8 @@ class Functions:
         peptide_accession."""
 
         self.cursor.execute(
-            """DELETE FROM peptide_row
+            """--sql
+            DELETE FROM peptide_row
             WHERE id NOT IN (SELECT DISTINCT row_id FROM peptide_accession);"""
         )
 
@@ -114,6 +120,7 @@ class Functions:
 
         if confidence.op is not None:
             self.cursor.execute(
-                f"""DELETE FROM peptide
+                f"""--sql
+                DELETE FROM peptide
                 WHERE NOT (confidence {confidence.op} {confidence.val});"""
             )
