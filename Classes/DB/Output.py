@@ -1,7 +1,6 @@
 from os import makedirs, path
 from sqlite3 import Cursor
 from typing import Optional, Tuple
-import textwrap
 
 from Classes.Input import Input
 
@@ -24,15 +23,46 @@ class Output:
 
         columnsToFiles: Tuple[Tuple[str, str], ...] = (
             ("count", "Pep_counts.txt"),
-            ("SeqlenSumm", "Pep_seq_length_summ.txt"),
-            ("ScNormToFileNormRatio", "Sc_norm.txt"),
-            ("ScSumm", "Sc_summ.txt"),
-            ("PSignalNormToFileNormRatio", "Pep_intensity_norm.txt"),
-            ("PSignalSumm", "Pep_intensity_summ.txt"),
+            ("seq_length_sum", "Pep_seq_length_summ.txt"),
+            ("sc_norm_to_file_norm_ratio", "Sc_norm.txt"),
+            ("sc_sum", "Sc_summ.txt"),
+            ("peptide_intensity_norm_to_file_norm_ratio", "Pep_intensity_norm.txt"),
+            ("peptide_intensity_sum", "Pep_intensity_summ.txt"),
         )
 
-        self.GenerateSequencesFiles(("sequences.fasta", "sequences.txt"))
-        # self.GenerateSettingsFile("settings.txt")
+        for column, filename in columnsToFiles:
+            self.GenerateTableFileByColumn(filename, column)
+
+        if self.inputParams.shouldExtractSequences:
+            self.GenerateSequencesFiles(("Sequences.fasta", "Sequences.txt"))
+        self.GenerateDescriptionFile("Description.txt")
+        self.GenerateSettingsFile("Settings.txt")
+
+    def GenerateTableFileByColumn(self, filename: str, column: str) -> None:
+        with open(self.GetJointOutputFilename(filename), "w") as outFile:
+            tableNumbers = list(
+                map(
+                    lambda x: x[0],
+                    self.cursor.execute(
+                        """--sql
+                        SELECT DISTINCT table_number FROM peptide_with_sum
+                        ORDER BY CAST(table_number AS FLOAT);"""
+                    ).fetchall(),
+                )
+            )
+            outFile.write("\t".join(["Accession", *tableNumbers]))
+
+            previousAccession: Optional[str] = None
+            accession: str
+            for (accession, value) in self.cursor.execute(
+                f"""--sql
+                SELECT accession, {column} FROM peptide_with_sum
+                ORDER BY accession, CAST(table_number AS FLOAT);"""
+            ).fetchall():
+                if accession != previousAccession:
+                    outFile.write(f"\n{accession}")
+                    previousAccession = accession
+                outFile.write(f"\t{value}")
 
     def GenerateSequencesFiles(self, filenames: Tuple[str, str]) -> None:
         """Генерирует списки последовательностей по найденным Accession
@@ -73,10 +103,30 @@ class Output:
                             SELECT DISTINCT
                                 sequence.accession,
                                 sequence.sequence,
-                                CASE WHEN description IS NULL
-                                    THEN ""
-                                    ELSE description
-                                    END as description
+                                IFNULL(description, "")
+                            FROM sequence JOIN peptide_with_sum USING(accession)
+                            ORDER BY accession;"""
+                        ).fetchall()
+                    ]
+                )
+            )
+
+    def GenerateDescriptionFile(self, filename: str) -> None:
+        """Создаёт файл с Accession и Description из .fasta БД
+
+        Args:
+            filename (str): имя выходного файла.
+        """
+
+        with open(self.GetJointOutputFilename(filename), "w") as outFile:
+            outFile.write("Accession\tDescription\n")
+            outFile.write(
+                "\n".join(
+                    [
+                        "\t".join(row)
+                        for row in self.cursor.execute(
+                            """--sql
+                            SELECT DISTINCT sequence.accession, IFNULL(description, "")
                             FROM sequence JOIN peptide_with_sum USING(accession)
                             ORDER BY accession;"""
                         ).fetchall()
@@ -91,27 +141,24 @@ class Output:
             filename: имя выходного файла."""
 
         with open(self.GetJointOutputFilename(filename), "w") as outFile:
-            outFile.write(
-                textwrap.dedent(
-                    f""""ProteinPilot summary analyzer"
-                    #Protein filter
-                    Global FDR critical value (<% k or default): {self.inputParams.fdr}
-                    ID exclusion list: {(self.inputParams.blackList or [""])[0]}
-                    Peptide confidence (value or default): {
-                        self.inputParams.isProteinConfidence or ""
-                    }
-                    Protein grouping (conf): {
-                        self.inputParams.proteinGroupingConfidence
-                    }
-                    #Peptide filter
-                    Peptide confidence (value): {self.inputParams.confPeptide}
-                    #Output filter
-                    Min groups with ID: {self.inputParams.minGroupsWithAccession}
-                    Max missing values per group: {self.inputParams.maxGroupLack}
-                    ID Extract sequences? (Y/N): {
-                        "Y" if self.inputParams.shouldExtractSequences else "N"}"""
-                )
-            )
+            text = f""""ProteinPilot summary analyzer"
+                #Protein filter
+                Global FDR critical value (<% k or default): {self.inputParams.fdr}
+                ID exclusion list: {(self.inputParams.blackList or [""])[0]}
+                Peptide confidence (value or default): {
+                    self.inputParams.isProteinConfidence or ""
+                }
+                Protein grouping (conf): {
+                    self.inputParams.proteinGroupingConfidence
+                }
+                #Peptide filter
+                Peptide confidence (value): {self.inputParams.confPeptide}
+                #Output filter
+                Min groups with ID: {self.inputParams.minGroupsWithAccession}
+                Max missing values per group: {self.inputParams.maxGroupLack}
+                ID Extract sequences? (Y/N): {
+                    "Y" if self.inputParams.shouldExtractSequences else "N"}"""
+            outFile.write("\n".join([m.strip() for m in text.split("\n")]))
 
     def GetJointOutputFilename(self, filename: str):
         return path.join(self.inputParams.outputPath, filename)
