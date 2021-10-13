@@ -1,3 +1,0 @@
-Accession	Description
-A	test A 000
-

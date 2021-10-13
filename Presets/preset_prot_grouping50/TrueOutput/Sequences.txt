@@ -1,0 +1,6 @@
+Accession	Sequences
+E	CCCCCCCCCC-10
+J	QQQQQQQQQQ-10
+M	KKKKKKKKKK-10
+
+

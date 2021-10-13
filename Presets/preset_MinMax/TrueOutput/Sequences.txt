@@ -1,0 +1,4 @@
+Accession	Sequence
+A	AAAAAAAAAA-10
+
+

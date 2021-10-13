@@ -1,4 +1,0 @@
-Accession	Description	Sequence length	0.1	0.2	11.11	11.12
-W	test W 000	10	1	0.4	0.333333	1
-Y	test Y 000	10		0.4	0.333333	
-Z	test Z 000	10		0.2	0.333333	

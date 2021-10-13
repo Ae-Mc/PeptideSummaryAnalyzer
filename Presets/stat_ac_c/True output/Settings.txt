@@ -1,0 +1,17 @@
+"ProteinPilot summary analyzer"
+#Protein filter
+Global FDR critical value (<% k or default):
+ID exclusion list:
+Peptide confidence (value or default):
+Protein grouping (conf):
+#Peptide filter
+Peptide confidence (value):
+#Output filter
+Min groups with ID:
+Max missing values per group:
+Extract sequences? (Y/N)N
+Run statistical analasys (Y/N):Y
+Replace missing values with (integer):5
+Type of test (x2/ac):ac
+Test of symmetry or sampling size correction (s/c):c
+Benjamini-Hochberg FDR treshold (e.g. 0.05):0.05

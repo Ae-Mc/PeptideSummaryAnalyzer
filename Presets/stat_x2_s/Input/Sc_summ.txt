@@ -1,0 +1,6 @@
+Accession	Description	Sequence length	0.0	0.1	1.0	1.1	2.0	2.1
+A	test A 000	10	10	9	10	11	10	9
+B	test B 000	20	0	0	0	6	8	10
+C	test C 000	15	0	6	10	15	15	20
+D	test D 000	20	0	20	0	6	0	0
+E	test E 000	10	0	0	0	0	10	10

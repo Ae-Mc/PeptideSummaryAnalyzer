@@ -1,6 +1,0 @@
-ID exclusion list  file name: IDexcl.txt
-Protein group filter (Y or N): Y
-Confidence ID:
-Confidence peptide:
-Min groups with ID: 2
-Max missing values per group: 0

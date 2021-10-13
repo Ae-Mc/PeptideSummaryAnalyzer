@@ -1,4 +1,0 @@
-N	Unused	Total	%Cov	%Cov(50)	%Cov(95)	Accession	Name	Species	Peptides(95%)
-1	20	0	0	0	0	W	0	0	2
-7	2	0	0	0	0	Z	0	0	2
-8	1	0	0	0	0	Y	0	0	1

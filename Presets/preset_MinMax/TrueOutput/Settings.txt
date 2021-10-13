@@ -9,4 +9,3 @@ Peptide confidence (value):
 #Output filter
 Min groups with ID:2
 Max missing values per group:0
-Extract sequences? (Y/N)N

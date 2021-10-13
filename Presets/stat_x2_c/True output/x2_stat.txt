@@ -1,0 +1,6 @@
+Accession	0	1	p-value	B-H	trend	log2FC	lg p	dist	1	2	p-value	B-H	trend	log2FC	lg p	dist	0	2	p-value	B-H	trend	log2FC	lg p	dist
+A	19	21	8.65E-01	 	stable	0.14	6.31E-02	0.054	21	19	9.07E-01	 	stable	-0.14	4.26E-02	0.024	19	19	8.82E-01	 	stable	0.00	5.47E-02	0.032
+B	5	6	9.81E-01	 	stable	0.26	8.27E-03	0.002	6	18	1.06E-01	 	stable	1.58	9.75E-01	0.337	5	18	5.51E-02	 	stable	1.85	1.26E+00	0.439
+C	6	25	4.01E-04	yes	up	2.06	3.40E+00	2.245	25	35	2.69E-01	 	stable	0.49	5.70E-01	0.492	6	35	1.51E-04	yes	up	2.54	3.82E+00	2.373
+D	20	6	6.94E-03	yes	down	-1.74	2.16E+00	1.197	6	5	9.87E-01	 	stable	-0.26	5.68E-03	0.001	20	5	2.97E-02	yes	down	-2.00	1.53E+00	0.578
+E									5	20	4.22E-02	 	stable	2.00	1.37E+00	0.494	5	20	2.97E-02	yes	up	2.00	1.53E+00	0.578
