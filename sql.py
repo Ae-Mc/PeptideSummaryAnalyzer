@@ -16,7 +16,7 @@ def main(inputParams: Input = None):
         db.fillers.fillRawPeptide(peptideTables)
         db.functions.testFastaDatabase()
 
-        if inputParams.fdr or True:
+        if inputParams.getFDRStr() or True:
             db.fdr.default()
         if inputParams.blackList:
             db.fillers.fillExclusion(inputParams.blackList[1])

@@ -18,13 +18,12 @@ class Input:
         blackList: чёрный список Accession
         minGroupsWithAccession: минимум групп с Accession
         maxGroupAbsence: максимальное количество таблиц в группе без Accession
-        shouldExtractSequences: нужно ли извлекать последовательности
     """
 
     rootPath: str
     inputPath: str
     outputPath: str = "Output"
-    fdr: str
+    __fdr: str
     seqDB: SequenceDatabase
     __proteinConfidence: Comparable
     __proteinGroupingConfidence: Comparable
@@ -33,10 +32,12 @@ class Input:
     blackList: Optional[Tuple[str, List[str]]]
     minGroupsWithAccession: int
     maxGroupLack: int
-    shouldExtractSequences: bool
 
-    def __init__(self) -> None:
-        self.shouldExtractSequences = True
+    def getFDRStr(self) -> str:
+        return self.__fdr
+
+    def setFDR(self, value: str):
+        self.__fdr = value
 
     @property
     def proteinConfidence(self) -> Comparable:
