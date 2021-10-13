@@ -44,7 +44,8 @@ class Creators:
                 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 accession TEXT NOT NULL UNIQUE,
                 description TEXT,
-                sequence TEXT NOT NULL
+                sequence TEXT NOT NULL,
+                raw_sequence TEXT NOT NULL
             );"""
         )
 

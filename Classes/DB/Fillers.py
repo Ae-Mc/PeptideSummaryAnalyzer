@@ -23,11 +23,11 @@ class Fillers:
         for sequence in seqDB.values():
             self.cursor.execute(
                 r"""INSERT INTO sequence (
-              accession, description, sequence
+              accession, description, sequence, raw_sequence
           ) VALUES (
-                  (?), (?), (?)
+                  (?), (?), (?), (?)
           );""",
-                [sequence.accession, sequence.desc, sequence.seq],
+                [sequence.accession, sequence.desc, sequence.seq, sequence.rawSeq],
             )
 
     def fillRawPeptide(self, peptideTables: RawPeptideTables):
