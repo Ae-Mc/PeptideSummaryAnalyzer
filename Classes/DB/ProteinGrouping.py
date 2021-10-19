@@ -18,30 +18,10 @@ class ProteinGrouping:
         """Создаёт промежуточную таблицу с применённым фильтром по confidence.
 
         Если фильтр confidence не задан (confidence.op is None), то всё равно
-        создаёт таблицу, но без применения фильтра.
-
-        TODO: Clarification required"""
+        создаёт таблицу, но без применения фильтра."""
 
         if confidence.op is not None:
             self.cursor.execute(
-                # Clarification required
-                #
-                # f"""--sql
-                # CREATE TABLE filtred_peptide_accession AS SELECT *
-                # FROM peptide_accession t3
-                #      LEFT JOIN peptide_row t4
-                #      ON t3.row_id = t4.id
-                # WHERE EXISTS (
-                #     SELECT table_number, accession
-                #     FROM peptide_accession t1
-                #          LEFT JOIN peptide_row t2
-                #          ON t1.row_id = t2.id
-                #     WHERE (
-                #         confidence {confidence.op} {confidence.val}
-                #         AND t2.table_number = t4.table_number
-                #         AND t3.accession = t1.accession
-                #     )
-                # );"""
                 f"""--sql
                 CREATE TABLE filtred_peptide_accession AS SELECT *
                 FROM peptide_joint
