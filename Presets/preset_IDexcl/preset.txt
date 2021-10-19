@@ -7,5 +7,5 @@ Protein grouping (conf):
 #Peptide filter
 Peptide confidence (value):
 #Output filter
-Min groups with ID:
-Max missing values per group:
+Min groups with ID: 0
+Max missing values per group: 999
