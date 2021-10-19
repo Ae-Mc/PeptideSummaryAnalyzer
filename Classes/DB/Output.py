@@ -56,6 +56,7 @@ class Output:
         self.GenerateSequencesFiles(("Sequences.fasta", "Sequences.txt"))
         self.GenerateSettingsFile("Settings.txt")
         self.GenerateProteinGroupsFile("Protein groups.txt")
+        self.GenerateProteinsInGroupsFile("Proteins in groups.txt")
 
     def _fillTableNumbers(self) -> None:
         """Заполняет аттрибут tableNumbers"""
@@ -105,7 +106,6 @@ class Output:
                 )
             )
 
-            previousAccession: Optional[str] = None
             accession: str
             tableNumber: str
             results: Dict[str, Tuple[str, int, List[Any]]] = {}
@@ -137,7 +137,7 @@ class Output:
 
             for accession, columns in results.items():
                 outFile.write(f"\n{accession}\t")
-                    if includeAdditionalColumns:
+                if includeAdditionalColumns:
                     outFile.write(f"{columns[0]}\t{columns[1]}\t")
                 outFile.write("\t".join(columns[2]))
 
@@ -175,6 +175,23 @@ class Output:
                     lambda p: p[0] != representative, accessions.items()
                 ):
                     outFile.write("\t".join(["", accession, *counts]))
+
+    def GenerateProteinsInGroupsFile(self, filename: str) -> None:
+        rows = self.cursor.execute(
+            """--sql
+            SELECT representative, COUNT(*) FROM (
+                SELECT DISTINCT repr.representative, acc_g.accession
+                FROM representative repr JOIN accession_group acc_g
+                    ON repr.id = acc_g.representative_id
+            )
+            GROUP BY representative;"""
+        ).fetchall()
+        with open(self.GetJointOutputFilename(filename), "w") as outFile:
+            outFile.write("Accession\tID in group")
+            representative: str
+            accessionCount: int
+            for representative, accessionCount in rows:
+                outFile.write(f"\n{representative}\t{accessionCount}")
 
     def GenerateSequencesFiles(self, filenames: Tuple[str, str]) -> None:
         """Генерирует списки последовательностей по найденным Accession
