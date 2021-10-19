@@ -1,15 +1,22 @@
+from pprint import PrettyPrinter
 from os import makedirs, path
 from sqlite3 import Cursor
-from typing import List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from Classes.Input import Input
 
 
 class Output:
-    """Отвечает за вывод полученной информации из БД в файлы."""
+    """Отвечает за вывод полученной информации из БД в файлы.
+
+    Attributes:
+        cursor (Cursor): экземляр класса Cursor, через который происходит связь с БД
+        inputParams (Input): входные параметры скрипта
+        tableNumbers (List[str]): номера таблиц, отсортированные по возрастанию"""
 
     cursor: Cursor
     inputParams: Input
+    tableNumbers: List[str]
 
     def __init__(self, cursor: Cursor, inputParams: Input) -> None:
         self.cursor = cursor
@@ -20,6 +27,8 @@ class Output:
 
         if not path.exists(self.inputParams.outputPath):
             makedirs(self.inputParams.outputPath)
+
+        self._fillTableNumbers()
 
         # поле типа bool обозначает нужно ли добавлять столбцы Description и
         # Sequence Length
@@ -47,6 +56,20 @@ class Output:
         self.GenerateSequencesFiles(("Sequences.fasta", "Sequences.txt"))
         self.GenerateSettingsFile("Settings.txt")
 
+    def _fillTableNumbers(self) -> None:
+        """Заполняет аттрибут tableNumbers"""
+
+        self.tableNumbers = list(
+            map(
+                lambda x: x[0],
+                self.cursor.execute(
+                    """--sql
+                    SELECT DISTINCT table_number FROM peptide_with_sum
+                    ORDER BY CAST(table_number AS FLOAT);"""
+                ).fetchall(),
+            )
+        )
+
     def GenerateTableFileByFloatColumn(
         self, filename: str, column: str, includeAdditionalColumns: bool
     ) -> None:
@@ -67,16 +90,6 @@ class Output:
         self, filename: str, includeAdditionalColumns: bool, columnSql: str
     ) -> None:
         with open(self.GetJointOutputFilename(filename), "w") as outFile:
-            tableNumbers = list(
-                map(
-                    lambda x: x[0],
-                    self.cursor.execute(
-                        """--sql
-                        SELECT DISTINCT table_number FROM peptide_with_sum
-                        ORDER BY CAST(table_number AS FLOAT);"""
-                    ).fetchall(),
-                )
-            )
             outFile.write(
                 "\t".join(
                     [
@@ -86,29 +99,46 @@ class Output:
                             if includeAdditionalColumns
                             else []
                         ),
-                        *tableNumbers,
+                        *self.tableNumbers,
                     ]
                 )
             )
 
             previousAccession: Optional[str] = None
             accession: str
-            for accession, description, sequenceLength, value in self.cursor.execute(
+            tableNumber: str
+            results: Dict[str, Tuple[str, int, List[Any]]] = {}
+            for (
+                accession,
+                tableNumber,
+                description,
+                sequenceLength,
+                value,
+            ) in self.cursor.execute(
                 f"""--sql
                 SELECT
                     accession,
+                    table_number,
                     description,
                     LENGTH(sequence.sequence),
                     {columnSql}
                 FROM peptide_with_sum JOIN sequence USING(accession)
                 ORDER BY accession, CAST(table_number AS FLOAT);"""
             ).fetchall():
-                if accession != previousAccession:
-                    outFile.write(f"\n{accession}")
+                if accession not in results:
+                    results[accession] = (
+                        description,
+                        sequenceLength,
+                        ["0" for _ in self.tableNumbers],
+                    )
+
+                results[accession][2][self.tableNumbers.index(tableNumber)] = str(value)
+
+            for accession, columns in results.items():
+                outFile.write(f"\n{accession}\t")
                     if includeAdditionalColumns:
-                        outFile.write(f"\t{description}\t{sequenceLength}")
-                    previousAccession = accession
-                outFile.write(f"\t{value}")
+                    outFile.write(f"{columns[0]}\t{columns[1]}\t")
+                outFile.write("\t".join(columns[2]))
 
     def GenerateSequencesFiles(self, filenames: Tuple[str, str]) -> None:
         """Генерирует списки последовательностей по найденным Accession
