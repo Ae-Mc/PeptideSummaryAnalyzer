@@ -1,6 +1,6 @@
 from os import makedirs, path
 from sqlite3 import Cursor
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 from Classes.Input import Input
 
@@ -21,24 +21,51 @@ class Output:
         if not path.exists(self.inputParams.outputPath):
             makedirs(self.inputParams.outputPath)
 
-        columnsToFiles: Tuple[Tuple[str, str], ...] = (
+        # поле типа bool обозначает нужно ли добавлять столбцы Description и
+        # Sequence Length
+        floatColumnsToFiles: Tuple[Tuple[str, str, bool], ...] = (
+            ("sc_norm_to_file_norm_ratio", "Sc_norm.txt", True),
+            ("sc_sum", "Sc_summ.txt", True),
+            (
+                "peptide_intensity_norm_to_file_norm_ratio",
+                "Pep_intensity_norm.txt",
+                True,
+            ),
+            ("peptide_intensity_sum", "Pep_intensity_summ.txt", True),
+        )
+        for column, filename, additionalColumns in floatColumnsToFiles:
+            self.GenerateTableFileByFloatColumn(filename, column, additionalColumns)
+
+        columnsToFiles = (
             ("count", "Pep_counts.txt"),
             ("seq_length_sum", "Pep_seq_length_summ.txt"),
-            ("sc_norm_to_file_norm_ratio", "Sc_norm.txt"),
-            ("sc_sum", "Sc_summ.txt"),
-            ("peptide_intensity_norm_to_file_norm_ratio", "Pep_intensity_norm.txt"),
-            ("peptide_intensity_sum", "Pep_intensity_summ.txt"),
         )
 
         for column, filename in columnsToFiles:
-            self.GenerateTableFileByColumn(filename, column)
+            self.GenerateTableFileByColumn(filename, column, False)
 
-        if self.inputParams.shouldExtractSequences:
-            self.GenerateSequencesFiles(("Sequences.fasta", "Sequences.txt"))
-        self.GenerateDescriptionFile("Description.txt")
+        self.GenerateSequencesFiles(("Sequences.fasta", "Sequences.txt"))
         self.GenerateSettingsFile("Settings.txt")
 
-    def GenerateTableFileByColumn(self, filename: str, column: str) -> None:
+    def GenerateTableFileByFloatColumn(
+        self, filename: str, column: str, includeAdditionalColumns: bool
+    ) -> None:
+        self._GenerateTableFileByColumn(
+            filename,
+            includeAdditionalColumns,
+            f"RTRIM(RTRIM(ROUND(peptide_with_sum.{column}, 9), '0'), '.')",
+        )
+
+    def GenerateTableFileByColumn(
+        self, filename: str, column: str, includeAdditionalColumns: bool
+    ) -> None:
+        self._GenerateTableFileByColumn(
+            filename, includeAdditionalColumns, f"peptide_with_sum.{column}"
+        )
+
+    def _GenerateTableFileByColumn(
+        self, filename: str, includeAdditionalColumns: bool, columnSql: str
+    ) -> None:
         with open(self.GetJointOutputFilename(filename), "w") as outFile:
             tableNumbers = list(
                 map(
@@ -50,17 +77,36 @@ class Output:
                     ).fetchall(),
                 )
             )
-            outFile.write("\t".join(["Accession", *tableNumbers]))
+            outFile.write(
+                "\t".join(
+                    [
+                        "Accession",
+                        *(
+                            ["Description", "Sequence length"]
+                            if includeAdditionalColumns
+                            else []
+                        ),
+                        *tableNumbers,
+                    ]
+                )
+            )
 
             previousAccession: Optional[str] = None
             accession: str
-            for (accession, value) in self.cursor.execute(
+            for accession, description, sequenceLength, value in self.cursor.execute(
                 f"""--sql
-                SELECT accession, {column} FROM peptide_with_sum
+                SELECT
+                    accession,
+                    description,
+                    LENGTH(sequence.sequence),
+                    {columnSql}
+                FROM peptide_with_sum JOIN sequence USING(accession)
                 ORDER BY accession, CAST(table_number AS FLOAT);"""
             ).fetchall():
                 if accession != previousAccession:
                     outFile.write(f"\n{accession}")
+                    if includeAdditionalColumns:
+                        outFile.write(f"\t{description}\t{sequenceLength}")
                     previousAccession = accession
                 outFile.write(f"\t{value}")
 
@@ -75,64 +121,30 @@ class Output:
         fastaFilename = filenames[0]
         txtFilename = filenames[1]
         with open(self.GetJointOutputFilename(fastaFilename), "w") as outFile:
-            row: Tuple[str, str, Optional[str]]
-            for row in self.cursor.execute(
+            accession: str
+            rawSequence: str
+            description: Optional[str]
+            for accession, rawSequence, description in self.cursor.execute(
                 """--sql
-                SELECT DISTINCT sequence.accession, sequence.sequence, description
+                SELECT DISTINCT sequence.accession, sequence.raw_sequence, description
                 FROM sequence JOIN peptide_with_sum USING(accession)
                 ORDER BY accession;"""
             ).fetchall():
-                outFile.write(">" + row[0])
-                if row[2] is not None:
-                    outFile.write(" " + row[2])
-                outFile.write("\n")
-                # Разбиваем строку на строки по 60 символов, как в оригинальном .fasta
-                # файле.
-                for i in range(0, len(row[1]), 60):
-                    outFile.write(row[1][i : min(i + 60, len(row[1]))])
-                    outFile.write("\n")
+                outFile.write(">" + accession)
+                if description is not None:
+                    outFile.write(" " + description)
+                outFile.write(f"\n{rawSequence}\n")
 
         with open(self.GetJointOutputFilename(txtFilename), "w") as outFile:
-            outFile.write("ID\tSequence\n")
-            outFile.write(
-                "\n".join(
-                    [
-                        "\t".join(row)
-                        for row in self.cursor.execute(
-                            """--sql
-                            SELECT DISTINCT
-                                sequence.accession,
-                                sequence.sequence,
-                                IFNULL(description, "")
-                            FROM sequence JOIN peptide_with_sum USING(accession)
-                            ORDER BY accession;"""
-                        ).fetchall()
-                    ]
-                )
-            )
-
-    def GenerateDescriptionFile(self, filename: str) -> None:
-        """Создаёт файл с Accession и Description из .fasta БД
-
-        Args:
-            filename (str): имя выходного файла.
-        """
-
-        with open(self.GetJointOutputFilename(filename), "w") as outFile:
-            outFile.write("Accession\tDescription\n")
-            outFile.write(
-                "\n".join(
-                    [
-                        "\t".join(row)
-                        for row in self.cursor.execute(
-                            """--sql
-                            SELECT DISTINCT sequence.accession, IFNULL(description, "")
-                            FROM sequence JOIN peptide_with_sum USING(accession)
-                            ORDER BY accession;"""
-                        ).fetchall()
-                    ]
-                )
-            )
+            outFile.write("Accession\tSequence\n")
+            sql = """--sql
+                SELECT DISTINCT
+                    sequence.accession,
+                    sequence.raw_sequence
+                FROM sequence JOIN peptide_with_sum USING(accession)
+                ORDER BY accession;"""
+            rows = ["\t".join(row) for row in self.cursor.execute(sql).fetchall()]
+            outFile.write("\n".join(rows))
 
     def GenerateSettingsFile(self, filename: str) -> None:
         """Создаёт файл с информацией о параметрах запуска скрипта.
@@ -143,7 +155,9 @@ class Output:
         with open(self.GetJointOutputFilename(filename), "w") as outFile:
             text = f""""ProteinPilot summary analyzer"
                 #Protein filter
-                Global FDR critical value (<% k or default): {self.inputParams.fdr}
+                Global FDR critical value (<% k or default): {
+                    self.inputParams.getFDRStr()
+                }
                 ID exclusion list: {(self.inputParams.blackList or [""])[0]}
                 Peptide confidence (value or default): {
                     self.inputParams.isProteinConfidence or ""
@@ -155,9 +169,7 @@ class Output:
                 Peptide confidence (value): {self.inputParams.confPeptide}
                 #Output filter
                 Min groups with ID: {self.inputParams.minGroupsWithAccession}
-                Max missing values per group: {self.inputParams.maxGroupLack}
-                ID Extract sequences? (Y/N): {
-                    "Y" if self.inputParams.shouldExtractSequences else "N"}"""
+                Max missing values per group: {self.inputParams.maxGroupLack}"""
             outFile.write("\n".join([m.strip() for m in text.split("\n")]))
 
     def GetJointOutputFilename(self, filename: str):
