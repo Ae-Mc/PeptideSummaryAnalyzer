@@ -55,6 +55,7 @@ class Output:
 
         self.GenerateSequencesFiles(("Sequences.fasta", "Sequences.txt"))
         self.GenerateSettingsFile("Settings.txt")
+        self.GenerateProteinGroupsFile("Protein groups.txt")
 
     def _fillTableNumbers(self) -> None:
         """Заполняет аттрибут tableNumbers"""
@@ -139,6 +140,41 @@ class Output:
                     if includeAdditionalColumns:
                     outFile.write(f"{columns[0]}\t{columns[1]}\t")
                 outFile.write("\t".join(columns[2]))
+
+    def GenerateProteinGroupsFile(self, filename: str) -> None:
+        rows = self.cursor.execute(
+            """--sql
+            SELECT repr.*, acc_g.accession, acc_g.count_in_table
+            FROM representative repr
+                INNER JOIN accession_group acc_g ON repr.id = acc_g.representative_id
+            WHERE (
+                SELECT COUNT(*)
+                FROM accession_group acc_g
+                WHERE acc_g.representative_id = repr.id
+            ) > 1;
+            """
+        ).fetchall()
+        with open(self.GetJointOutputFilename(filename), "w") as outFile:
+            outFile.write("Representative\tAccession\t" + "\t".join(self.tableNumbers))
+            groups: Dict[str, Dict[str, List[str]]] = {}
+            for row in rows:
+                if row[3] not in groups:
+                    groups[row[3]] = {}
+                if row[4] not in groups[row[3]]:
+                    groups[row[3]][row[4]] = ["0" for _ in self.tableNumbers]
+                groups[row[3]][row[4]][self.tableNumbers.index(row[2])] = str(row[5])
+
+            for representative, accessions in groups.items():
+                outFile.write(
+                    "\n{}\t\t{}\n".format(
+                        representative, "\t".join(accessions[representative])
+                    )
+                )
+
+                for accession, counts in filter(
+                    lambda p: p[0] != representative, accessions.items()
+                ):
+                    outFile.write("\t".join(["", accession, *counts]))
 
     def GenerateSequencesFiles(self, filenames: Tuple[str, str]) -> None:
         """Генерирует списки последовательностей по найденным Accession
