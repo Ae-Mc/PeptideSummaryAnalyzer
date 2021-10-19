@@ -50,6 +50,6 @@ class Comparable:
 
     def __repr__(self):
         if not (self.op is None or self.val is None):
-            return f"{self.op} {self.val}"
+            return f"{self.op}{self.val}"
         else:
             return ""
