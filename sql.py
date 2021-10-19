@@ -24,7 +24,7 @@ def main(inputParams: Input = None):
         if inputParams.blackList:
             db.functions.applyExclusion()
         if inputParams.isProteinConfidence:
-            if inputParams.proteinConfidence.op is None:
+            if inputParams.proteinConfidence is None:
                 db.functions.applyPeptideConfidenceDefault()
             else:
                 db.functions.applyPeptideConfidenceValue(inputParams.proteinConfidence)

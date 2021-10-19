@@ -37,11 +37,18 @@ class Input:
         return self.__fdr
 
     def setFDR(self, value: str):
-        self.__fdr = value
+        value = value.strip()
+        if any([value == "default", value == ""]):
+            self.__fdr = "default"
+        else:
+            raise NotImplementedError(f"FDR param {value} support not implemented yet")
 
     @property
-    def proteinConfidence(self) -> Comparable:
-        return self.__proteinConfidence
+    def proteinConfidence(self) -> Optional[Comparable]:
+        if self.isProteinConfidence:
+            return self.__proteinConfidence
+        else:
+            return None
 
     def setProteinConfidence(self, val: str):
         self.isProteinConfidence = True

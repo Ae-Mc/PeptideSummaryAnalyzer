@@ -160,7 +160,7 @@ class Output:
                 }
                 ID exclusion list: {(self.inputParams.blackList or [""])[0]}
                 Peptide confidence (value or default): {
-                    self.inputParams.isProteinConfidence or ""
+                    self.inputParams.proteinConfidence or ""
                 }
                 Protein grouping (conf): {
                     self.inputParams.proteinGroupingConfidence
