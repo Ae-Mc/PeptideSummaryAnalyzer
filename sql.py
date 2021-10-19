@@ -1,4 +1,3 @@
-from pprint import PrettyPrinter
 from Classes.DB.db import DB
 from Classes.Functions import GetInput
 from Classes.Input import Input
