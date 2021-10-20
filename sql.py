@@ -40,9 +40,13 @@ def main(inputParams: Input = None):
 
         db.functions.applyPeptideConfidenceValue2(inputParams.confPeptide)
 
-        db.outputGrouping.applyGroupFilter(
-            inputParams.maxGroupLack, inputParams.minGroupsWithAccession
-        )
+        if (
+            inputParams.maxGroupLack is not None
+            and inputParams.minGroupsWithAccession is not None
+        ):
+            db.outputGrouping.applyGroupFilter(
+                inputParams.maxGroupLack, inputParams.minGroupsWithAccession
+            )
 
         db.output.GenerateOutputFiles()
 

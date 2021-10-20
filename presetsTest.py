@@ -85,8 +85,10 @@ class Preset:
         self.settings.setProteinConfidence(presetFileValues[2])
         self.settings.setProteinGroupingConfidence(presetFileValues[3])
         self.settings.setConfPeptide(presetFileValues[4])
-        self.settings.minGroupsWithAccession = int(presetFileValues[5])
-        self.settings.maxGroupLack = int(presetFileValues[6])
+        if presetFileValues[5] is not None and len(presetFileValues[5].strip()) > 0:
+            self.settings.minGroupsWithAccession = int(presetFileValues[5])
+        if presetFileValues[6] is not None and len(presetFileValues[6].strip()) > 0:
+            self.settings.maxGroupLack = int(presetFileValues[6])
 
     def TestPresetFile(self, presetFileLines: List[str]) -> None:
         """Проверка того, правильно ли написан файл с настроками пресета"""

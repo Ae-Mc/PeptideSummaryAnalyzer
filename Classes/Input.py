@@ -30,8 +30,12 @@ class Input:
     __confPeptide: Comparable
     isProteinConfidence: bool
     blackList: Optional[Tuple[str, List[str]]]
-    minGroupsWithAccession: int
-    maxGroupLack: int
+    minGroupsWithAccession: Optional[int]
+    maxGroupLack: Optional[int]
+
+    def __init__(self) -> None:
+        self.minGroupsWithAccession = None
+        self.maxGroupLack = None
 
     def getFDRStr(self) -> str:
         return self.__fdr
