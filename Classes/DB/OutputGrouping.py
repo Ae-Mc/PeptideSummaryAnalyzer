@@ -64,9 +64,7 @@ class OutputGrouping:
                 SELECT accession
                 FROM accession_lack
                 GROUP BY accession
-                HAVING (
-                    COUNT(CASE WHEN lack <= {maxGroupLack} THEN 1 END)
-                    < {minGroupsWithAccession}
-                )
-            );"""
+                HAVING COUNT(CASE WHEN lack <= (?) THEN 1 END) < (?)
+            );""",
+            [maxGroupLack, minGroupsWithAccession],
         )

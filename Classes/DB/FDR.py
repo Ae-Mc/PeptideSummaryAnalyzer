@@ -21,7 +21,8 @@ class FDR:
             ORDER BY peptide_row.id;"""
         ).fetchall():
             self.cursor.execute(
-                f"""--sql
+                """--sql
                 DELETE FROM peptide_row
-                WHERE id >= {rowID} AND table_number = {tableNum};"""
+                WHERE id >= (?) AND table_number = (?);""",
+                [rowID, tableNum],
             )

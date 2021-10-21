@@ -15,13 +15,12 @@ def main(inputParams: Input = None):
         db.fillers.fillRawPeptide(peptideTables)
         db.functions.testFastaDatabase()
 
-        if inputParams.getFDRStr() or True:
+        if inputParams.getFDRStr() == "default":
             db.fdr.default()
         if inputParams.blackList:
             db.fillers.fillExclusion(inputParams.blackList[1])
-
-        if inputParams.blackList:
             db.functions.applyExclusion()
+
         if inputParams.isProteinConfidence:
             if inputParams.proteinConfidence is None:
                 db.functions.applyPeptideConfidenceDefault()

@@ -62,5 +62,5 @@ class Fillers:
     def fillExclusion(self, exclusiuonList: List[str]):
         for accession in exclusiuonList:
             self.cursor.execute(
-                rf"""INSERT INTO exclusion (accession) VALUES ("{accession}")"""
+                """INSERT INTO exclusion (accession) VALUES (?)""", [accession]
             )

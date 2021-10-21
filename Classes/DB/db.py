@@ -44,6 +44,7 @@ class DB:
         self.inputParams = inputParams
 
         self.connection = connect(":memory:")
+        self.connection.execute("PRAGMA foreign_keys = 1;")
         self.cursor = self.connection.cursor()
 
         self.initializers = Creators(self.cursor)
