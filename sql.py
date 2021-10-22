@@ -1,53 +1,66 @@
-from Classes.DB.db import DB
+"""Главный модуль. Отвечает за работу программы."""
+
+from Classes.db import DB
 from Classes.Functions import GetInput
 from Classes.Input import Input
 from Classes.PeptideColumns import PeptideColumns
 from Classes.RawPeptideTables import RawPeptideTables
 
 
-def main(inputParams: Input = None):
-    if inputParams is None:
-        inputParams = GetInput()
-    peptideTables = RawPeptideTables(PeptideColumns(), inputParams.inputPath)
-    with DB(inputParams=inputParams) as db:
+def main(input_params: Input = None):
+    """Main function (program entrypoint). Could be imported from testing
+    module.
+
+    Args:
+        inputParams (Input, optional): Входные параметры. Если не заданы, то
+            будут запрошены через GetInput.
+    """
+    if input_params is None:
+        input_params = GetInput()
+    peptide_tables = RawPeptideTables(PeptideColumns(), input_params.inputPath)
+    with DB(input_params=input_params) as database:
         # Заполняем таблицы
-        db.fillers.fillSequence(inputParams.seqDB)
-        db.fillers.fillRawPeptide(peptideTables)
-        db.functions.testFastaDatabase()
+        database.fillers.fill_sequence(input_params.seqDB)
+        database.fillers.fill_raw_peptide(peptide_tables)
+        database.functions.test_fasta_database()
 
-        if inputParams.getFDRStr() == "default":
-            db.fdr.default()
-        if inputParams.blackList:
-            db.fillers.fillExclusion(inputParams.blackList[1])
-            db.functions.applyExclusion()
+        if input_params.getFDRStr() == "default":
+            database.fdr.default()
+        if input_params.blackList:
+            database.fillers.fill_exclusion(input_params.blackList[1])
+            database.functions.apply_exclusion()
 
-        if inputParams.isProteinConfidence:
-            if inputParams.proteinConfidence is None:
-                db.functions.applyPeptideConfidenceDefault()
+        if input_params.isProteinConfidence:
+            if input_params.proteinConfidence is None:
+                database.functions.apply_peptide_confidence_default()
             else:
-                db.functions.applyPeptideConfidenceValue(inputParams.proteinConfidence)
+                database.functions.apply_peptide_confidence_value(
+                    input_params.proteinConfidence
+                )
 
-        db.proteinGrouping.createFiltredAccessionTable(
-            inputParams.proteinGroupingConfidence
+        database.protein_grouping.create_filtred_accession_table(
+            input_params.proteinGroupingConfidence
         )
-        db.proteinGrouping.createCountTable()
-        db.proteinGrouping.createGeneralCountTable()
-        db.proteinGrouping.applyProteinGrouping()
-        db.proteinGrouping.fillPeptideTable()
+        database.protein_grouping.fill_count_table()
+        database.protein_grouping.create_general_count_table()
+        database.protein_grouping.apply_protein_grouping()
+        database.protein_grouping.fill_peptide_table()
 
-        db.summaries.fillPeptideWithSum()
+        database.summaries.fill_peptide_with_sum()
 
-        db.functions.applyPeptideConfidenceValue2(inputParams.confPeptide)
+        database.functions.apply_peptide_confidence_value2(
+            input_params.confPeptide
+        )
 
         if (
-            inputParams.maxGroupLack is not None
-            and inputParams.minGroupsWithAccession is not None
+            input_params.maxGroupLack is not None
+            and input_params.minGroupsWithAccession is not None
         ):
-            db.outputGrouping.applyGroupFilter(
-                inputParams.maxGroupLack, inputParams.minGroupsWithAccession
+            database.output_grouping.apply_group_filter(
+                input_params.maxGroupLack, input_params.minGroupsWithAccession
             )
 
-        db.output.GenerateOutputFiles()
+        database.output.generate_output_files()
 
 
 if __name__ == "__main__":
