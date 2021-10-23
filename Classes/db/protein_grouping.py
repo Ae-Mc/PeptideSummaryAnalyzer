@@ -1,5 +1,6 @@
 """Отвечает за работу Protein Grouping фильтра"""
 from sqlite3 import Cursor
+from typing import Optional, Tuple
 
 from Classes.comparable import Comparable
 
@@ -81,13 +82,13 @@ class ProteinGrouping:
                         accession,
                         count,
                         MAX(count)
-                            OVER(PARTITION BY table_number, representative_id)
-                            AS max_count_in_table_in_group,
+                            OVER(PARTITION BY representative_id)
+                            AS max_count_in_group,
                         representative_id
                     FROM accession_group
                         JOIN accession_count_per_table USING(accession)
                 )
-                WHERE count = max_count_in_table_in_group
+                WHERE count = max_count_in_group
             ),
             second_criteria_representative AS (
                 SELECT representative_id, accession
@@ -126,7 +127,7 @@ class ProteinGrouping:
                         accession,
                         MAX(accession) OVER(PARTITION BY representative_id)
                             AS max_accession_in_group
-                    FROM second_criteria_representative
+                    FROM third_criteria_representative
                 )
                 WHERE accession = max_accession_in_group
             )
@@ -147,37 +148,47 @@ class ProteinGrouping:
         accession: str
         for [accession] in self.cursor.execute(
             """--sql
-            SELECT DISTINCT accession FROM peptide_accession
+            SELECT DISTINCT accession FROM filtered_peptide_accession
             ORDER BY accession;
             """
         ).fetchall():
-            if (
-                self.cursor.execute(
-                    """--sql
-                    SELECT COUNT(*) FROM accession_group WHERE accession=(?);
-                    """,
-                    [accession],
-                ).fetchone()[0]
-                == 0
-            ):
+            query_result: Optional[Tuple[int]] = self.cursor.execute(
+                """--sql
+                SELECT representative_id FROM accession_group
+                WHERE accession IN (
+                    SELECT DISTINCT accession
+                    FROM filtered_peptide_accession
+                    WHERE id IN (
+                        SELECT DISTINCT id
+                        FROM filtered_peptide_accession
+                        WHERE accession = (?)
+                    )
+                );
+                """,
+                [accession],
+            ).fetchone()
+            if query_result is None:
                 self.cursor.execute(
                     """INSERT INTO representative DEFAULT VALUES;"""
                 )
                 representative_id: int = self.cursor.execute(
                     "SELECT last_insert_rowid();"
                 ).fetchone()[0]
-                self.cursor.execute(
-                    """--sql
-                    INSERT INTO accession_group (representative_id, accession)
-                        SELECT DISTINCT (?), accession FROM peptide_accession
-                        WHERE row_id IN (
-                            SELECT row_id FROM peptide_accession
-                            WHERE accession = (?)
-                        )
-                        ORDER BY accession
-                    ;""",
-                    [representative_id, accession],
-                )
+            else:
+                representative_id = query_result[0]
+            self.cursor.execute(
+                """--sql
+                INSERT INTO accession_group (representative_id, accession)
+                    SELECT DISTINCT (?), accession
+                    FROM filtered_peptide_accession
+                    WHERE id IN (
+                        SELECT id FROM filtered_peptide_accession
+                        WHERE accession = (?)
+                    )
+                    ORDER BY accession
+                ;""",
+                [representative_id, accession],
+            )
 
     def fill_peptide_table(self) -> None:
         """Заполняет таблицу peptide на основе данных из таблиц representative и
@@ -185,24 +196,26 @@ class ProteinGrouping:
 
         self.cursor.execute(
             """--sql
-        INSERT INTO peptide (
-            table_number,
-            accession,
-            confidence,
-            score,
-            peptide_intensity,
-            sequence
-        )
-        SELECT
-            table_number,
-            representative,
-            confidence,
-            score,
-            peptide_intensity,
-            sequence
-        FROM peptide_row JOIN (
-            SELECT DISTINCT row_id, representative
-            FROM peptide_accession JOIN accession_group USING(accession)
-                JOIN representative ON representative.id = representative_id
-        ) ON id = row_id;"""
+            INSERT INTO peptide (
+                table_number,
+                accession,
+                confidence,
+                score,
+                peptide_intensity,
+                sequence
+            )
+            SELECT
+                table_number,
+                representative,
+                confidence,
+                score,
+                peptide_intensity,
+                sequence
+            FROM peptide_row JOIN (
+                SELECT DISTINCT row_id, representative
+                FROM peptide_accession
+                    JOIN accession_group USING(accession)
+                    JOIN representative
+                        ON representative.id = representative_id
+            ) ON id = row_id;"""
         ).fetchall()
