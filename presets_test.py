@@ -4,9 +4,9 @@ from traceback import print_exc
 from os import listdir, path, remove
 from sys import argv, exit as sys_exit
 from typing import List
-from Classes.input import Input
-from Classes.SequenceDatabase import SequenceDatabase
-from Classes.Functions import GetFileLines, FindFastaFile
+from classes import Input
+from classes import SequenceDatabase
+from classes.functions import get_file_lines, find_fasta_file
 from sql import main as protein_main
 
 PRESETS_FOLDER = "Presets"
@@ -79,7 +79,7 @@ class Preset:
 
         self.settings.set_fdr(preset_file_values[0])
         self.settings.exclusion_list = None
-        black_list = GetFileLines(
+        black_list = get_file_lines(
             path.join(self.folder, preset_file_values[1])
         )
         if len(preset_file_values[1].strip()):
@@ -88,8 +88,8 @@ class Preset:
                 if black_list is None
                 else (preset_file_values[1], black_list)
             )
-        self.settings.seq_db = SequenceDatabase.fromFile(
-            FindFastaFile(self.folder)
+        self.settings.seq_db = SequenceDatabase.from_file(
+            find_fasta_file(self.folder)
         )
         self.settings.set_protein_confidence(preset_file_values[2])
         self.settings.set_protein_grouping_confidence(preset_file_values[3])
@@ -207,7 +207,14 @@ def main():
     """Main function (Program entrypoint)."""
 
     error_code = 0
-    presets = ["FDRdefault", "IDexcl", "MinMax", "pepfilter"]
+    presets = [
+        "FDRdefault",
+        "IDexcl",
+        "MinMax",
+        "pepfilter",
+        "prot_grouping",
+        "protfilter",
+    ]
     if len(argv) == 2:
         folder = argv[1]
         preset = Preset(folder)

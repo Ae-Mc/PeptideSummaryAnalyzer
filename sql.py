@@ -1,9 +1,10 @@
 """Главный модуль. Отвечает за работу программы."""
 
-from Classes.db import DB
-from Classes.input import Input, ProteinConfidenceType
-from Classes.PeptideColumns import PeptideColumns
-from Classes.RawPeptideTables import RawPeptideTables
+from classes.db import DB
+from classes import get_input
+from classes import Input, ProteinConfidenceType
+from classes import PeptideColumns
+from classes import RawPeptideTables
 
 
 def main(input_params: Input = None):
@@ -15,7 +16,7 @@ def main(input_params: Input = None):
             будут запрошены через GetInput.
     """
     if input_params is None:
-        input_params = GetInput()
+        input_params = get_input()
     peptide_tables = RawPeptideTables(PeptideColumns(), input_params.inputPath)
     with DB(input_params=input_params) as database:
         # Заполняем таблицы
