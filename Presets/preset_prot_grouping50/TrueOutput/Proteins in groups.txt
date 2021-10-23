@@ -1,2 +1,4 @@
 Accession	ID in group
-A	1
+E	6
+J	3
+M	4

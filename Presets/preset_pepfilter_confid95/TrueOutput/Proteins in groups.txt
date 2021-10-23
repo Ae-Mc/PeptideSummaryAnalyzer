@@ -1,5 +1,4 @@
-Accession	prot in group
+Accession	ID in group
 E	6
 J	3
 M	4
-
