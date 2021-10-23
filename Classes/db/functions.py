@@ -2,7 +2,7 @@
 группу."""
 from sqlite3.dbapi2 import Cursor
 
-from Classes.Comparable import Comparable
+from Classes.comparable import Comparable
 
 
 class Functions:
@@ -69,26 +69,21 @@ class Functions:
         Args:
             confidence: параметр confidence для сравнения."""
 
-        if confidence.op is not None:
+        if confidence.operation is not None:
             self.cursor.execute(
                 f"""--sql
-                DELETE FROM peptide_accession WHERE id IN (
-                    SELECT j2.id
-                    FROM peptide_joint j2
-                    WHERE NOT EXISTS (
-                        SELECT table_number, accession
-                        FROM peptide_joint j1
-                        WHERE (
-                            confidence {confidence.op} {confidence.val}
-                            AND j1.table_number = j2.table_number
-                            AND j1.accession = j2.accession
-                        )
-                        GROUP BY table_number, accession
+                DELETE FROM peptide_row WHERE id NOT IN (
+                    SELECT DISTINCT pr.id
+                    FROM peptide_accession pa JOIN peptide_row pr
+                        ON pa.row_id = pr.id
+                    WHERE (table_number, accession) IN (
+                        SELECT DISTINCT table_number, accession
+                        FROM peptide_joint
+                        WHERE confidence {confidence.operation}{confidence.val}
                     )
                 );
                 """
             )
-            self.remove_leftovers_from_peptide_row()
 
     def apply_peptide_confidence_default(self) -> None:
         """Применение #Protein filter -> Peptide Confidence (default)."""
@@ -122,9 +117,10 @@ class Functions:
         Args:
             confidence: параметр confidence для сравнения."""
 
-        if confidence.op is not None:
+        if confidence.operation is not None:
             self.cursor.execute(
                 f"""--sql
                 DELETE FROM peptide
-                WHERE NOT (confidence {confidence.op} {confidence.val});"""
+                WHERE NOT (confidence {confidence.operation} {confidence.val});
+                """
             )

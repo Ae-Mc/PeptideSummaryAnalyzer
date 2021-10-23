@@ -1,5 +1,4 @@
-from typing import List, Union, Optional, Tuple
-from Classes.Comparable import Comparable
+from Classes.comparable import Comparable
 from Classes.SequenceDatabase import SequenceDatabase
 
 
