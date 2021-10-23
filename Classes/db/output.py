@@ -3,7 +3,7 @@ from os import makedirs, path
 from sqlite3 import Cursor
 from typing import Any, Dict, List, Optional, TextIO, Tuple
 
-from Classes.Input import Input
+from Classes.input import Input
 
 
 class Output:
@@ -28,8 +28,8 @@ class Output:
     def generate_output_files(self) -> None:
         """Отвечает за создание и заполнение всех выходных файлов."""
 
-        if not path.exists(self.input_params.outputPath):
-            makedirs(self.input_params.outputPath)
+        if not path.exists(self.input_params.output_path):
+            makedirs(self.input_params.output_path)
 
         self._fill_table_numbers()
 
@@ -299,24 +299,39 @@ class Output:
         Args:
             filename: имя выходного файла."""
 
+        def nullable(var: Optional[Any], default: str = ""):
+            if var is None:
+                return default
+            return var
+
+        protein_confidence = ["", "default", "value"][
+            self.input_params.protein_confidence_type.value
+        ]
+        if protein_confidence == "value":
+            protein_confidence = str(self.input_params.protein_confidence)
+
         with self.open_output_file(filename) as out_file:
             text = f""""ProteinPilot summary analyzer"
                 #Protein filter
                 Global FDR critical value (<% k or default): {
-                    self.input_params.getFDRStr()
+                    self.input_params.get_fdr_str()
                 }
-                ID exclusion list: {(self.input_params.blackList or [""])[0]}
-                Peptide confidence (value or default): {
-                    self.input_params.proteinConfidence or ""
+                ID exclusion list: {
+                    (self.input_params.exclusion_list or [""])[0]
                 }
+                Peptide confidence (value or default): {protein_confidence}
                 Protein grouping (conf): {
-                    self.input_params.proteinGroupingConfidence
+                    self.input_params.protein_grouping_confidence
                 }
                 #Peptide filter
-                Peptide confidence (value): {self.input_params.confPeptide}
+                Peptide confidence (value): {self.input_params.conf_peptide}
                 #Output filter
-                Min groups with ID: {self.input_params.minGroupsWithAccession}
-                Max missing values per group: {self.input_params.maxGroupLack}
+                Min groups with ID: {
+                    nullable(self.input_params.min_groups_with_accession)
+                }
+                Max missing values per group: {
+                    nullable(self.input_params.max_group_lack)
+                }
                 """
             out_file.write("\n".join([m.strip() for m in text.split("\n")]))
 
@@ -329,7 +344,7 @@ class Output:
         Returns:
             str: путь к файлу с учётом input_params.output_path.
         """
-        return path.join(self.input_params.outputPath, filename)
+        return path.join(self.input_params.output_path, filename)
 
     def open_output_file(self, filename: str) -> TextIO:
         """Открывает выходной файл на запись.

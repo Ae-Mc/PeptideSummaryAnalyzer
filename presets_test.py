@@ -4,7 +4,7 @@ from traceback import print_exc
 from os import listdir, path, remove
 from sys import argv, exit as sys_exit
 from typing import List
-from Classes.Input import Input
+from Classes.input import Input
 from Classes.SequenceDatabase import SequenceDatabase
 from Classes.Functions import GetFileLines, FindFastaFile
 from sql import main as protein_main
@@ -51,7 +51,7 @@ class Preset:
         """Считывание настроек пресета из папки с пресетом"""
         self.settings: Input = Input()
         self.settings.inputPath = path.join(self.folder, "Input")
-        self.settings.outputPath = path.join(self.folder, "Output")
+        self.settings.output_path = path.join(self.folder, "Output")
         try:
             self.test_preset_file_existance()
         except FileNotFoundError as error:
@@ -77,33 +77,35 @@ class Preset:
                 if len(line.split(":")) > 1
             ]
 
-        self.settings.setFDR(preset_file_values[0])
-        self.settings.blackList = None
+        self.settings.set_fdr(preset_file_values[0])
+        self.settings.exclusion_list = None
         black_list = GetFileLines(
             path.join(self.folder, preset_file_values[1])
         )
         if len(preset_file_values[1].strip()):
-            self.settings.blackList = (
+            self.settings.exclusion_list = (
                 None
                 if black_list is None
                 else (preset_file_values[1], black_list)
             )
-        self.settings.seqDB = SequenceDatabase.fromFile(
+        self.settings.seq_db = SequenceDatabase.fromFile(
             FindFastaFile(self.folder)
         )
-        self.settings.setProteinConfidence(preset_file_values[2])
-        self.settings.setProteinGroupingConfidence(preset_file_values[3])
-        self.settings.setConfPeptide(preset_file_values[4])
+        self.settings.set_protein_confidence(preset_file_values[2])
+        self.settings.set_protein_grouping_confidence(preset_file_values[3])
+        self.settings.set_conf_peptide(preset_file_values[4])
         if (
             preset_file_values[5] is not None
             and len(preset_file_values[5].strip()) > 0
         ):
-            self.settings.minGroupsWithAccession = int(preset_file_values[5])
+            self.settings.min_groups_with_accession = int(
+                preset_file_values[5]
+            )
         if (
             preset_file_values[6] is not None
             and len(preset_file_values[6].strip()) > 0
         ):
-            self.settings.maxGroupLack = int(preset_file_values[6])
+            self.settings.max_group_lack = int(preset_file_values[6])
 
     @staticmethod
     def test_preset_file(preset_file_lines: List[str]) -> None:
@@ -160,7 +162,7 @@ class Preset:
         """
         paths = (
             path.join(self.preset_output_dir, filename),
-            path.join(self.settings.outputPath, filename),
+            path.join(self.settings.output_path, filename),
         )
         with open(paths[0], encoding="utf-8") as file1:
             with open(paths[1], encoding="utf-8") as file2:
@@ -169,7 +171,7 @@ class Preset:
                     file2.read().strip().split("\n"),
                 )
         if len(files_content[0]) != len(files_content[1]):
-            print(f"{paths[0]} != {paths[1]}")
+            print(f"{filename} files have different lengths")
             self.error_code = 2
         else:
             for i in range(0, len(files_content[0])):
@@ -180,9 +182,9 @@ class Preset:
 
     def clear_output_folder(self):
         """Очищает выходную папку"""
-        if path.exists(self.settings.outputPath):
-            for filename in listdir(self.settings.outputPath):
-                remove(path.join(self.settings.outputPath, filename))
+        if path.exists(self.settings.output_path):
+            for filename in listdir(self.settings.output_path):
+                remove(path.join(self.settings.output_path, filename))
 
 
 def get_presets_folders() -> List[str]:

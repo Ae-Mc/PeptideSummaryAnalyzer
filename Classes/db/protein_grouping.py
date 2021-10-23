@@ -1,7 +1,7 @@
 """Отвечает за работу Protein Grouping фильтра"""
 from sqlite3 import Cursor
 
-from Classes.Comparable import Comparable
+from Classes.comparable import Comparable
 
 
 class ProteinGrouping:
@@ -22,17 +22,17 @@ class ProteinGrouping:
         Если фильтр confidence не задан (confidence.op is None), то всё равно
         создаёт таблицу, но без применения фильтра."""
 
-        if confidence.op is not None:
+        if confidence.operation is not None:
             self.cursor.execute(
                 f"""--sql
-                CREATE TABLE filtred_peptide_accession AS SELECT *
+                CREATE TABLE filtered_peptide_accession AS SELECT *
                 FROM peptide_joint
-                WHERE confidence {confidence.op} {confidence.val};"""
+                WHERE confidence {confidence.operation} {confidence.val};"""
             )
         else:
             self.cursor.execute(
                 """--sql
-                CREATE TABLE filtred_peptide_accession AS
+                CREATE TABLE filtered_peptide_accession AS
                     SELECT * FROM peptide_joint;"""
             )
 
@@ -46,7 +46,7 @@ class ProteinGrouping:
                 table_number, accession, count
             )
             SELECT table_number, accession, COUNT(*) AS count_per_table
-            FROM filtred_peptide_accession
+            FROM filtered_peptide_accession
             GROUP BY table_number, accession
             ORDER BY table_number, accession;
             """
@@ -62,7 +62,7 @@ class ProteinGrouping:
             SELECT accession, COUNT(*) AS general_count
             FROM (
                 SELECT DISTINCT table_number, accession
-                FROM filtred_peptide_accession
+                FROM filtered_peptide_accession
             )
             GROUP BY accession
             ORDER BY accession;"""

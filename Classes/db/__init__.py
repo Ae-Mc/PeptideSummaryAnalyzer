@@ -11,7 +11,7 @@ from Classes.db.output import Output
 from Classes.db.output_grouping import OutputGrouping
 from Classes.db.protein_grouping import ProteinGrouping
 from Classes.db.summaries import Summaries
-from Classes.Input import Input
+from Classes.input import Input
 
 
 class DB:
