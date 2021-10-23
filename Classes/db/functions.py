@@ -89,26 +89,15 @@ class Functions:
         """Применение #Protein filter -> Peptide Confidence (default)."""
 
         self.cursor.execute(
-            """--sql
-                DELETE FROM peptide_accession AS paout WHERE id IN (
+            """
+            --sql
+            DELETE FROM peptide_row WHERE id NOT IN (
                 SELECT DISTINCT id
-                FROM peptide_joint
-                WHERE confidence < 99
+                FROM peptide_joint WHERE confidence >= 95
                 GROUP BY table_number, accession
-                HAVING COUNT(*) < 2 OR MAX(confidence) < 95
-            );"""
-        )
-        self.remove_leftovers_from_peptide_row()
-
-    def remove_leftovers_from_peptide_row(self) -> None:
-        """Удаление всех строк из peptide_row, для которых не существует строк
-        в peptide_accession.
-        """
-
-        self.cursor.execute(
-            """--sql
-            DELETE FROM peptide_row
-            WHERE id NOT IN (SELECT DISTINCT row_id FROM peptide_accession);"""
+                HAVING COUNT(*) >= 2 OR MAX(confidence) >= 99
+            );
+            """
         )
 
     def apply_peptide_confidence_value2(self, confidence: Comparable) -> None:
