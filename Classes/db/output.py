@@ -176,19 +176,26 @@ class Output:
         Args:
             filename (str): имя выходного файла.
         """
+
         rows = self.cursor.execute(
             """--sql
-            SELECT repr.representative, accession, table_number, count
+            SELECT representative, accession, table_number, count
             FROM representative repr
                 JOIN accession_group acc_g ON repr.id = acc_g.representative_id
                 JOIN accession_count_per_table USING (accession)
-            WHERE (
-                SELECT COUNT(*)
-                FROM accession_group acc_g
-                WHERE acc_g.representative_id = repr.id
-            ) > 1;
+            WHERE
+                (
+                    SELECT COUNT(*)
+                    FROM accession_group acc_g
+                    WHERE acc_g.representative_id = repr.id
+                ) > 1
+                AND representative IN (
+                    SELECT DISTINCT accession FROM peptide_with_sum
+                )
+            ORDER BY representative, accession, table_number;
             """
         ).fetchall()
+
         with self.open_output_file(filename) as out_file:
             out_file.write(
                 "Representative\tAccession\t" + "\t".join(self.table_numbers)
@@ -206,7 +213,7 @@ class Output:
             for representative, accessions in groups.items():
                 out_file.write(
                     # pylint: disable=consider-using-f-string
-                    "\n{}\t\t{}\n".format(
+                    "\n{}\t\t{}".format(
                         representative, "\t".join(accessions[representative])
                     )
                 )
@@ -221,7 +228,7 @@ class Output:
                     accession,
                     counts,
                 ) in accessions_without_representative.items():
-                    out_file.write("\t".join(["", accession, *counts]))
+                    out_file.write("\n" + "\t".join(["", accession, *counts]))
 
     def generate_proteins_in_groups_file(self, filename: str) -> None:
         """Создаёт файл с количеством accession, существующих в каждой группе.
