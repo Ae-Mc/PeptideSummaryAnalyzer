@@ -135,8 +135,10 @@ class ProteinGrouping:
             UPDATE representative
             SET
                 representative = (
-                    SELECT accession FROM fourth_criteria_representative
-                    WHERE representative.id = representative_id
+                    SELECT accession FROM fourth_criteria_representative fcr
+                    WHERE
+                        representative.representative_id
+                        = fcr.representative_id
                 );
             """
         )
@@ -170,16 +172,20 @@ class ProteinGrouping:
             ).fetchone()
             if query_result is None:
                 self.cursor.execute(
-                    """INSERT INTO representative DEFAULT VALUES;"""
+                    """--sql
+                    INSERT INTO representative DEFAULT VALUES;
+                    """
                 )
                 representative_id: int = self.cursor.execute(
-                    "SELECT last_insert_rowid();"
+                    """--sql
+                    SELECT last_insert_rowid();"""
                 ).fetchone()[0]
             else:
                 representative_id = query_result[0]
             self.cursor.execute(
                 """--sql
-                INSERT INTO accession_group (representative_id, accession)
+                INSERT OR IGNORE
+                INTO accession_group (representative_id, accession)
                     SELECT DISTINCT (?), accession
                     FROM filtered_peptide_accession
                     WHERE id IN (
@@ -216,7 +222,6 @@ class ProteinGrouping:
                 SELECT DISTINCT row_id, representative
                 FROM peptide_accession
                     JOIN accession_group USING(accession)
-                    JOIN representative
-                        ON representative.id = representative_id
+                    JOIN representative USING(representative_id)
             ) ON id = row_id;"""
         ).fetchall()

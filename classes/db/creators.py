@@ -154,7 +154,7 @@ class Creators:
         self.cursor.execute(
             """--sql
             CREATE TABLE representative (
-                id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                representative_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 representative TEXT NULL
             );"""
         )
@@ -165,7 +165,7 @@ class Creators:
             CREATE TABLE accession_group (
                 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 representative_id INTEGER NOT NULL,
-                accession TEXT NOT NULL
+                accession TEXT NOT NULL UNIQUE
             );"""
         )
 

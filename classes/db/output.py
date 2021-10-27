@@ -182,13 +182,13 @@ class Output:
             """--sql
             SELECT representative, accession, table_number, count
             FROM representative repr
-                JOIN accession_group acc_g ON repr.id = acc_g.representative_id
+                JOIN accession_group acc_g USING(representative_id)
                 JOIN accession_count_per_table USING (accession)
             WHERE
                 (
                     SELECT COUNT(*)
                     FROM accession_group acc_g
-                    WHERE acc_g.representative_id = repr.id
+                    WHERE acc_g.representative_id = repr.representative_id
                 ) > 1
                 AND representative IN (
                     SELECT DISTINCT accession FROM peptide_with_sum
@@ -244,9 +244,9 @@ class Output:
         rows = self.cursor.execute(
             """--sql
             SELECT representative, COUNT(*) FROM (
-                SELECT DISTINCT repr.representative, acc_g.accession
-                FROM representative repr JOIN accession_group acc_g
-                    ON repr.id = acc_g.representative_id
+                SELECT DISTINCT representative, accession
+                FROM representative JOIN accession_group
+                    USING(representative_id)
             )
             GROUP BY representative
             HAVING representative IN (
