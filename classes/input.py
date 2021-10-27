@@ -6,6 +6,13 @@ from classes.comparable import Comparable
 from classes.sequence_database import SequenceDatabase
 
 
+class FDRtype(Enum):
+    """Типы FDR фильтра"""
+
+    NONE = 0
+    DEFAULT = 1
+
+
 class ProteinConfidenceType(Enum):
     """Типы #Protein filter -> Peptide confidence (value or default)."""
 
@@ -21,7 +28,7 @@ class Input:
         root_path: путь для поиска базы данных fasta
         input_path: путь для таблиц
         output_path: путь для выходных файлов
-        fdr: параметры FDR фильтра
+        fdr_type: тип fdr фильтра
         seq_db: база данных с длинами последовательностей для Accession
         protein_confidence_type: тип фильтра Protein confidence (см. класс
             ProteinConfidenceType)
@@ -37,7 +44,7 @@ class Input:
     root_path: str
     inputPath: str
     output_path: str = "Output"
-    __fdr: str
+    fdr_type: FDRtype
     seq_db: SequenceDatabase
     protein_confidence_type: ProteinConfidenceType
     __protein_confidence: Comparable
@@ -52,8 +59,12 @@ class Input:
         self.max_group_lack = None
 
     def get_fdr_str(self) -> str:
-        """Возвращает значение fdr в виде строки."""
-        return self.__fdr
+        """Возвращает значение параметра fdr в виде строки."""
+        if self.fdr_type == FDRtype.NONE:
+            return ""
+        if self.fdr_type == FDRtype.DEFAULT:
+            return "default"
+        raise NotImplementedError("Unknown fdr_type")
 
     def set_fdr(self, value: str):
         """Устанавливает значение fdr для фильтра в зависимости от входной
@@ -67,8 +78,10 @@ class Input:
                 входной строки.
         """
         value = value.strip()
-        if any([value == "default", value == ""]):
-            self.__fdr = "default"
+        if value == "":
+            self.fdr_type = FDRtype.NONE
+        elif value == "default":
+            self.fdr_type = FDRtype.DEFAULT
         else:
             raise NotImplementedError(
                 f"FDR param {value} support not implemented yet"

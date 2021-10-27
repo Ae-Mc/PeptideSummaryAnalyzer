@@ -1,11 +1,15 @@
 """Главный модуль. Отвечает за работу программы. Описание программы см. в
 README.md."""
 
+from classes import (
+    FDRtype,
+    Input,
+    PeptideColumns,
+    ProteinConfidenceType,
+    RawPeptideTables,
+    get_input,
+)
 from classes.db import DB
-from classes import get_input
-from classes import Input, ProteinConfidenceType
-from classes import PeptideColumns
-from classes import RawPeptideTables
 
 
 def main(input_params: Input = None):
@@ -25,7 +29,9 @@ def main(input_params: Input = None):
         database.fillers.fill_raw_peptide(peptide_tables)
         database.functions.test_fasta_database()
 
-        if input_params.get_fdr_str() == "default":
+        if input_params.fdr_type == FDRtype.NONE:
+            database.fdr.none()
+        elif input_params.fdr_type == FDRtype.DEFAULT:
             database.fdr.default()
         if input_params.exclusion_list:
             database.fillers.fill_exclusion(input_params.exclusion_list[1])

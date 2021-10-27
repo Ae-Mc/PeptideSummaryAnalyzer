@@ -7,13 +7,28 @@ class FDR:
     """Отвечает за работу FDR фильтра.
 
     Attributes:
-      cursor: экземляр класса Cursor для связи с БД.
+        cursor: экземляр класса Cursor для связи с БД.
     """
 
     cursor: Cursor
 
     def __init__(self, cursor: Cursor) -> None:
         self.cursor = cursor
+
+    def none(self) -> None:
+        """Удаляет все перевёрнутые accession."""
+        self.cursor.execute(
+            """--sql
+            DELETE FROM peptide_accession WHERE IS_REVERSED(accession);
+            """
+        )
+        self.cursor.execute(
+            """--sql
+            DELETE FROM peptide_row WHERE id NOT IN (
+                SELECT DISTINCT id FROM peptide_joint
+            );
+            """
+        )
 
     def default(self) -> None:
         """Применяет default FDR фильтр."""
