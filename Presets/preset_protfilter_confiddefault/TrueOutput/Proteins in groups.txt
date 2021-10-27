@@ -2,4 +2,3 @@ Accession	ID in group
 E	6
 J	3
 K	3
-

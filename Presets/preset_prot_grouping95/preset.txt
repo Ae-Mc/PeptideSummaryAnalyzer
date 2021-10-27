@@ -1,6 +1,6 @@
 "ProteinPilot summary analyzer"
 #Protein filter
-Global FDR critical value (<% k or default): dafault
+Global FDR critical value (<% k or default): default
 ID exclusion list:
 Peptide confidence (value or default):
 Protein grouping (conf): >=95

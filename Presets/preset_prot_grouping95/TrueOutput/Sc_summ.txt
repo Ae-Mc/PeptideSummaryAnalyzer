@@ -1,5 +1,6 @@
 Accession	Description	Sequence length	0.0	1.0	2.0	3.0
-A	test A 000	10	40	40	40	50
-J	test J 000	10	20	20	20	20
-K	test K 000	20	20	10	20	20
-M	test M 000	10	0	20	20	20
+A	test A 000	10	80	80	80	80
+J	test J 000	10	40	40	40	40
+K	test K 000	20	40	20	40	40
+M	test M 000	10	20	30	50	60
+
