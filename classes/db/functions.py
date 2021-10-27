@@ -92,10 +92,14 @@ class Functions:
             """
             --sql
             DELETE FROM peptide_row WHERE id NOT IN (
-                SELECT DISTINCT id
-                FROM peptide_joint WHERE confidence >= 95
-                GROUP BY table_number, accession
-                HAVING COUNT(*) >= 2 OR MAX(confidence) >= 99
+                SELECT DISTINCT id FROM peptide_joint
+                WHERE (table_number, accession) IN (
+                    SELECT DISTINCT table_number, accession
+                    FROM peptide_joint
+                    WHERE confidence >= 95
+                    GROUP BY table_number, accession
+                    HAVING COUNT(*) >= 2 OR MAX(confidence) >= 99
+                )
             );
             """
         )

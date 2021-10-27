@@ -1,7 +1,7 @@
 Accession	Description	Sequence length	0.0	1.0	2.0	3.0
-B	test B 000	10	40	40	40	0
-E	test E 000	10	40	40	40	40
+E	test E 000	10	80	80	80	60
 J	test J 000	10	40	40	40	40
-K	test K 000	20	0	0	0	40
+K	K test K 000	20	0	0	0	40
+
 
 
