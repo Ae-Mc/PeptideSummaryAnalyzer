@@ -5,7 +5,10 @@ import os
 def archive_folder(archive: zipfile.ZipFile, folder_path: str) -> None:
     for element in os.listdir(folder_path):
         element_path = os.path.join(folder_path, element)
-        if not (element.startswith("__") or element.startswith(".")):
+        if not (
+            element.startswith("__")
+            or element.startswith(".")
+        ) or element == "__init__.py":
             if os.path.isfile(element_path):
                 archive.write(element_path)
             elif os.path.isdir(element_path):
