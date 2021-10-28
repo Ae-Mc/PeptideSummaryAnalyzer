@@ -1,0 +1,7 @@
+Accession	ID in group
+A	1
+D	1
+J	2
+L	1
+Y	1
+Z	1
