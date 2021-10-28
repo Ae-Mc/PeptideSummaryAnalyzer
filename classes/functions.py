@@ -56,19 +56,19 @@ def get_input() -> Input:
     input_params.seq_db = SequenceDatabase.from_file(
         find_fasta_file(input_params.root_path)
     )
-    if len(argv) == 9:
+    if len(argv) == 8:
         input_params.set_fdr(argv[1])
         black_list_lines = get_file_lines(argv[2])
         input_params.exclusion_list = (
-            (argv[2], black_list_lines)
-            if black_list_lines is not None
-            else None
+            None if black_list_lines is None else (argv[2], black_list_lines)
         )
         input_params.set_protein_confidence(argv[3])
         input_params.set_protein_grouping_confidence(argv[4])
         input_params.set_conf_peptide(argv[5])
-        input_params.min_groups_with_accession = int(argv[6])
-        input_params.max_group_lack = int(argv[7])
+        if argv[6] and len(argv[6].strip()) > 0:
+            input_params.min_groups_with_accession = int(argv[6])
+        if argv[7] and len(argv[7].strip()) > 0:
+            input_params.max_group_lack = int(argv[7])
     else:
         print('"ProteinPilot summary analyzer"')
         print("#Protein filter")
@@ -91,10 +91,10 @@ def get_input() -> Input:
         print("#Peptide filter")
         input_params.set_conf_peptide(input("Peptide confidence (value): "))
         print("#Output filter")
-        input_params.min_groups_with_accession = int(
-            input("Min groups with ID: ")
-        )
-        input_params.max_group_lack = int(
-            input("Max missing values per group: ")
-        )
+        temp = input("Min groups with ID: ")
+        if len(temp.strip()) > 0:
+            input_params.min_groups_with_accession = int(temp)
+        temp = input("Max missing values per group: ")
+        if len(temp.strip()) > 0:
+            input_params.max_group_lack = int(temp)
     return input_params
