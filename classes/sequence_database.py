@@ -23,38 +23,39 @@ class SequenceDatabase(dict):
 
         with open(sequence_db_filename, encoding="utf-8") as sequence_db_file:
             strings = list(
-                map(
-                    lambda x: x.strip(),
-                    sequence_db_file.read().strip().split("\n"),
+                filter(
+                    lambda x: x != "",
+                    map(lambda x: x.strip(), sequence_db_file.readlines()),
                 )
             )
             sequence_db_file.close()
             sequence_db = SequenceDatabase()
             i = 0
             while i < len(strings):
-                if len(strings[i]) > 0:
-                    if strings[i][0] == ">":
-                        accession = strings[i].split(" ")[0][1:]
-                        sequence_db[accession] = Sequence(accession=accession)
-                        if len(strings[i].split(" ")) > 1:
-                            sequence_db[accession].desc = strings[i].split(
-                                " "
-                            )[1]
-                            for word in strings[i].split(" ")[2:]:
-                                if word.startswith("OS="):
-                                    break
-                                sequence_db[accession].desc += " " + word
+                if strings[i][0] == ">":
+                    accession = strings[i].split(" ")[0][1:]
+                    sequence_db[accession] = Sequence(accession=accession)
+                    if len(strings[i].split(" ")) > 1:
+                        sequence_db[accession].desc = strings[i].split(" ")[1]
+                        for word in strings[i].split(" ")[2:]:
+                            if word.startswith("OS="):
+                                break
+                            sequence_db[accession].desc += " " + word
+                    i += 1
+                    while (i < len(strings)) and strings[i][0] != ">":
+                        sequence_db[accession].raw_seq += strings[i]
                         i += 1
-                        while (i < len(strings)) and strings[i][0] != ">":
-                            sequence_db[accession].raw_seq += strings[i]
-                            i += 1
-                        i -= 1
-                        if not sequence_db[accession].len:
-                            input(
-                                "Error! Length of sequence with id "
-                                f"{accession} = 0"
-                            )
-                            raise IndexError
+                    i -= 1
+                    if not sequence_db[accession].len:
+                        input(
+                            "Error! Length of sequence with id "
+                            f"{accession} = 0"
+                        )
+                        raise IndexError
+                else:
+                    raise ValueError(
+                        "Error reading .fasta file. Can't parse accession"
+                    )
                 i += 1
 
             return sequence_db
