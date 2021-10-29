@@ -6,7 +6,8 @@ from classes import (
     Input,
     PeptideColumns,
     ProteinConfidenceType,
-    RawPeptideTables,
+    RawTables,
+    RawPeptideTable,
     get_input,
 )
 from classes.db import DB
@@ -22,7 +23,12 @@ def main(input_params: Input = None):
     """
     if input_params is None:
         input_params = get_input()
-    peptide_tables = RawPeptideTables(PeptideColumns(), input_params.inputPath)
+    peptide_tables = RawTables(
+        input_params.inputPath,
+        r"\d+\.\d+_DistinctPeptideSummary\.txt",
+        PeptideColumns(),
+        RawPeptideTable,
+    )
     with DB(input_params=input_params) as database:
         # Заполняем таблицы
         database.fillers.fill_sequence(input_params.seq_db)

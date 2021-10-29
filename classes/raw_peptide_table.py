@@ -4,28 +4,25 @@ from decimal import Decimal
 from typing import List
 
 from .peptide_row import PeptideRow
-from .base_classes import Table
+from .base_classes import TableWithHeaders
 from .peptide_columns import PeptideColumns
 
 
-class RawPeptideTable(Table):
+class RawPeptideTable(TableWithHeaders):
     """Считывает PeptideTable в список вида List[PeptideRow]."""
 
     columns: PeptideColumns
 
     def __init__(
         self,
-        tableFilename: str = None,
-        unsafeFlag: bool = False,
+        table_filename: str,
+        unsafe_flag: bool = False,
         columns: PeptideColumns = PeptideColumns(),
     ):
-        """Initializes table settings and reads table from file"""
-        self.columns = columns
-        super().__init__(tableFilename, unsafeFlag)
+        super().__init__(table_filename, unsafe_flag, columns)
 
     def load(self, table_filename) -> List[PeptideRow]:
         super().load(table_filename)
-        self.columns.test_column_names(self.pop(0))
         for i, line in enumerate(self):
             self[i] = PeptideRow(
                 accessions=list(
@@ -44,9 +41,3 @@ class RawPeptideTable(Table):
                 sequence=line[self.columns.sequence[0]],
             )
         return self
-
-    def __str__(self):
-        return self.__repr__()
-
-    def __repr__(self):
-        return "[\n " + "\n ".join([str(e) for e in self]) + "\n]"

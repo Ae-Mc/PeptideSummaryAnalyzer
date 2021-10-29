@@ -14,11 +14,10 @@ class Table(ABC, list):
 
     unsafe_flag: bool
 
-    def __init__(self, tableFilename: str = None, unsafe_flag: bool = False):
+    def __init__(self, tableFilename: str, unsafe_flag: bool = False):
         self.unsafe_flag = unsafe_flag
         super().__init__()
-        if tableFilename is not None:
-            self.load(tableFilename)
+        self.load(tableFilename)
 
     @abstractmethod
     def load(self, table_filename: str) -> List[Any]:
@@ -49,3 +48,9 @@ class Table(ABC, list):
                     )
                 self.append(values)
         return self
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return "[\n " + "\n ".join([str(e) for e in self]) + "\n]"

@@ -3,10 +3,13 @@
 from sqlite3.dbapi2 import Cursor
 from typing import List
 
-from classes import PeptideRow
-from classes import RawPeptideTables
-from classes import Sequence
-from classes import SequenceDatabase
+from classes import (
+    PeptideRow,
+    RawPeptideTable,
+    RawTables,
+    Sequence,
+    SequenceDatabase,
+)
 
 
 class Fillers:
@@ -45,7 +48,7 @@ class Fillers:
                 ],
             )
 
-    def fill_raw_peptide(self, peptide_tables: RawPeptideTables):
+    def fill_raw_peptide(self, peptide_tables: RawTables[RawPeptideTable]):
         """Заполняет таблицы peptide_row и peptide_accession данными,
         считанными из DistinctPeptideSummary файлов.
 

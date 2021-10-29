@@ -1,25 +1,35 @@
-"""См. класс RawPeptideTables."""
+"""См. класс RawTables."""
 
 from os import listdir
-from typing import List
+from re import match
+from typing import Generic, List, Type, TypeVar
+from classes.base_classes.column_names import ColumnNames
 
-from .raw_peptide_table import RawPeptideTable
-from .peptide_columns import PeptideColumns
+from .base_classes import TableWithHeaders
 
 
-class RawPeptideTables(dict):
+Table = TypeVar("Table", bound=TableWithHeaders)
+
+
+class RawTables(dict, Generic[Table]):
     """Словарь вида {
-        "номер таблицы": RawPeptideTable,
+        "номер таблицы": TableType,
     }
 
     Attributes:
         column_names: имена стобцов (заголовки стобцов)
     """
 
-    column_names: PeptideColumns
+    column_names: ColumnNames
+    filename_pattern: str
+    table_to_instantiate: Type[Table]
 
     def __init__(
-        self, column_names: PeptideColumns, input_dir: str = None
+        self,
+        input_dir: str,
+        filename_pattern: str,
+        column_names: ColumnNames,
+        table_to_instantiate: Type[Table],
     ) -> None:
         """
         Args:
@@ -28,23 +38,24 @@ class RawPeptideTables(dict):
         """
 
         self.column_names = column_names
+        self.filename_pattern = filename_pattern
+        self.table_to_instantiate = table_to_instantiate
 
         super().__init__()
-        if input_dir is not None:
-            self.read_peptide_summaries(input_dir)
+        self.read_tables(input_dir)
 
-    def read_peptide_summaries(self, input_dir: str) -> None:
-        """Считывает все PeptideSummary файлы в словарь
+    def read_tables(self, input_dir: str) -> None:
+        """Считывает все файлы в словарь
 
         Args:
             inputDir: путь, из которого считываются таблицы
         """
         for filename in listdir(input_dir):
-            if "Peptide" in filename:
+            if match(self.filename_pattern, filename):
                 table_num = filename.split("_")[0]
-                self[table_num] = RawPeptideTable(
+                self[table_num] = self.table_to_instantiate(
                     input_dir + "/" + filename,
-                    unsafeFlag=True,
+                    unsafe_flag=True,
                     columns=self.column_names,
                 )
 
@@ -56,8 +67,8 @@ class RawPeptideTables(dict):
         return sorted(self.keys(), key=float)
 
     # pylint: disable=useless-super-delegation
-    def __getitem__(self, k: str) -> RawPeptideTable:
+    def __getitem__(self, k: str) -> Table:
         return super().__getitem__(k)
 
-    def __setitem__(self, k: str, v: RawPeptideTable) -> None:
+    def __setitem__(self, k: str, v: Table) -> None:
         return super().__setitem__(k, v)
