@@ -23,21 +23,29 @@ class RawPeptideTable(TableWithHeaders):
 
     def load(self, table_filename) -> List[PeptideRow]:
         super().load(table_filename)
-        for i, line in enumerate(self):
-            self[i] = PeptideRow(
-                accessions=list(
-                    map(
-                        lambda x: x.strip(),
-                        line[self.columns.accession[0]].split(";"),
-                    )
-                ),
-                confidence=Decimal(line[self.columns.confidence[0]]),
-                score=Decimal(line[self.columns.score[0]]),
-                peptide_intensity=(
-                    Decimal(line[self.columns.peptide_intensity[0]])
-                    if len(line[self.columns.peptide_intensity[0]].strip()) > 0
-                    else Decimal(0)
-                ),
-                sequence=line[self.columns.sequence[0]],
+        new_elements: List[PeptideRow] = []
+        for line in self:
+            if line[self.columns.n[0]] == "":
+                break
+            new_elements.append(
+                PeptideRow(
+                    accessions=list(
+                        map(
+                            lambda x: x.strip(),
+                            line[self.columns.accession[0]].split(";"),
+                        )
+                    ),
+                    confidence=Decimal(line[self.columns.confidence[0]]),
+                    score=Decimal(line[self.columns.score[0]]),
+                    peptide_intensity=(
+                        Decimal(line[self.columns.peptide_intensity[0]])
+                        if len(line[self.columns.peptide_intensity[0]].strip())
+                        > 0
+                        else Decimal(0)
+                    ),
+                    sequence=line[self.columns.sequence[0]],
+                )
             )
+        self.clear()
+        self.extend(new_elements)
         return self
