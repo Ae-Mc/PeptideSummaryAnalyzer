@@ -24,7 +24,7 @@ def get_file_lines(filename: str) -> Union[List[str], None]:
         or len(filename.strip()) == 0
     ):
         with open(filename, encoding="utf-8") as tfile:
-            return tfile.read().split("\n")
+            return tfile.read().strip().split("\n")
     return None
 
 
