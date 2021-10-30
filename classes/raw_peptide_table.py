@@ -17,7 +17,7 @@ class RawPeptideTable(TableWithHeaders):
         super().load(table_filename)
         filtered_elements: List[PeptideRow] = []
         for line in self:
-            if line[self.columns.n[0]] == "":
+            if line[self.columns.n[0]].strip() == "":
                 break
             filtered_elements.append(
                 PeptideRow(
