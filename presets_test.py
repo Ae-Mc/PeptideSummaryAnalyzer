@@ -115,7 +115,7 @@ class Preset:
             ("#Protein filter", "Protein filter header"),
             ("FDR", "Global FDR value"),
             ("ID exclusion list", "ID blacklist"),
-            ("Peptide confidence", "Protein group filter peptide confidence"),
+            ("Peptide confidence", "Protein filter peptide confidence"),
             (
                 "Protein grouping (conf)",
                 "Protein group filter peptide confidence",
@@ -207,15 +207,14 @@ def main():
     """Main function (Program entrypoint)."""
 
     error_code = 0
-    presets = [
-        "FDRdefault",
-        "FDR_none",
-        "IDexcl",
-        "MinMax",
-        "pepfilter",
-        "prot_grouping",
-        "protfilter",
-    ]
+    presets = {
+        "FDRfit",
+        # "IDexcl",
+        # "MinMax",
+        # "pepfilter",
+        # "prot_grouping",
+        # "protfilter",
+    }
     if len(argv) == 2:
         folder = argv[1]
         preset = Preset(folder)
