@@ -25,7 +25,7 @@ def main(input_params: Input = None):
         input_params = get_input()
     peptide_tables = RawTables(
         input_params.inputPath,
-        r"\d+\.\d+_DistinctPeptideSummary\.txt",
+        r"\d+\.\d+_.*DistinctPeptideSummary\.txt",
         PeptideColumns(),
         RawPeptideTable,
     )
@@ -35,10 +35,10 @@ def main(input_params: Input = None):
         database.fillers.fill_raw_peptide(peptide_tables)
         database.functions.test_fasta_database()
 
-        if input_params.fdr_type == FDRtype.NONE:
-            database.fdr.none()
-        elif input_params.fdr_type == FDRtype.DEFAULT:
+        if input_params.fdr_type == FDRtype.DEFAULT:
             database.fdr.default()
+        database.fdr.none()
+
         if input_params.exclusion_list:
             database.fillers.fill_exclusion(input_params.exclusion_list[1])
             database.functions.apply_exclusion()
