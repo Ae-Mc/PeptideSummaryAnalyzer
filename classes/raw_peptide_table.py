@@ -13,21 +13,13 @@ class RawPeptideTable(TableWithHeaders):
 
     columns: PeptideColumns
 
-    def __init__(
-        self,
-        table_filename: str,
-        unsafe_flag: bool = False,
-        columns: PeptideColumns = PeptideColumns(),
-    ):
-        super().__init__(table_filename, unsafe_flag, columns)
-
     def load(self, table_filename) -> List[PeptideRow]:
         super().load(table_filename)
-        new_elements: List[PeptideRow] = []
+        filtered_elements: List[PeptideRow] = []
         for line in self:
             if line[self.columns.n[0]] == "":
                 break
-            new_elements.append(
+            filtered_elements.append(
                 PeptideRow(
                     accessions=list(
                         map(
@@ -47,5 +39,5 @@ class RawPeptideTable(TableWithHeaders):
                 )
             )
         self.clear()
-        self.extend(new_elements)
+        self.extend(filtered_elements)
         return self
