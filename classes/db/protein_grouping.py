@@ -192,8 +192,8 @@ class ProteinGrouping:
                         SELECT id FROM filtered_peptide_accession
                         WHERE accession = (?)
                     )
-                    ORDER BY accession
-                ;""",
+                    ORDER BY accession;
+                """,
                 [representative_id, accession],
             )
 
