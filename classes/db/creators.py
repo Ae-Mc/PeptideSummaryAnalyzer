@@ -94,6 +94,7 @@ class Creators:
             CREATE TABLE peptide_row (
                 row_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 table_number TEXT NOT NULL,
+                N INTEGER NOT NULL,
                 confidence FLOAT NOT NULL,
                 score FLOAT NOT NULL,
                 peptide_intensity FLOAT NOT NULL,

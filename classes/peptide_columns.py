@@ -9,7 +9,7 @@ class PeptideColumns(ColumnNames):
     """Хранит номера и имена столбцов для Peptide таблиц
 
     Attributes:
-        n: номер и имя столбца Best N
+        N: номер и имя столбца Best N
         accession: номер и имя столбца Accession
         score: номер и имя столбца Score
         peptide_intensity: номер и имя столбца Peptide Intensity
@@ -18,7 +18,7 @@ class PeptideColumns(ColumnNames):
     """
 
     # pylint: disable=invalid-name
-    n: Tuple[int, str] = (1, "Best N (Peptide)")
+    N: Tuple[int, str] = (1, "Best N (Peptide)")
     accession: Tuple[int, str] = (3, "Accessions")
     score: Tuple[int, str] = (20, "Score")
     peptide_intensity: Tuple[int, str] = (23, "Intensity (Peptide)")

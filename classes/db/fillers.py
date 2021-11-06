@@ -60,13 +60,18 @@ class Fillers:
             for row in peptide_tables[table_num]:
                 self.cursor.execute(
                     """--sql
-            INSERT INTO peptide_row (
-                table_number, confidence, score, peptide_intensity, sequence
-            ) VALUES (
-                (?), (?), (?), (?), (?)
-            );""",
+                    INSERT INTO peptide_row (
+                        table_number,
+                        N,
+                        confidence,
+                        score,
+                        peptide_intensity,
+                        sequence
+                    ) VALUES ((?), (?), (?), (?), (?), (?));
+                    """,
                     [
                         table_num,
+                        row.N,
                         float(row.confidence),
                         float(row.score),
                         float(row.peptide_intensity),
