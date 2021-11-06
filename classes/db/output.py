@@ -4,7 +4,7 @@ from os import makedirs, path
 from sqlite3 import Cursor
 from typing import Any, Dict, List, Optional, TextIO, Tuple
 
-from classes.input import Input
+from classes.input import FDRtype, Input
 
 
 class Output:
@@ -57,6 +57,12 @@ class Output:
         self.generate_settings_file("Settings.txt")
         self.generate_protein_groups_file("Protein groups.txt")
         self.generate_proteins_in_groups_file("Proteins in groups.txt")
+        if self.input_params.fdr_type in [
+            FDRtype.FDR_K_RANGE,
+            FDRtype.FDR_KEST_RANGE,
+        ]:
+            self.generate_fdr_summary_file("FDRsummary.txt")
+            self.generate_fdr_data_files("{}_FDRdata.txt")
 
     def _fill_table_numbers(self) -> None:
         """Заполняет аттрибут tableNumbers"""
@@ -312,6 +318,112 @@ class Output:
                 }
                 """
             out_file.write("\n".join([m.strip() for m in text.split("\n")]))
+
+    def generate_fdr_summary_file(self, filename: str) -> None:
+        """Создаёт файл FDRsummary
+
+        Args:
+            filename: имя выходного файла."""
+
+        with self.open_output_file(filename) as out_file:
+            table = list(
+                map(
+                    list,
+                    zip(
+                        *self.cursor.execute(
+                            """
+                            --sql
+                            SELECT
+                                table_number,
+                                fdr_01,
+                                fdr_05,
+                                fdr_10,
+                                fdr_20,
+                                target_count,
+                                decoy_count,
+                                MY_ROUND(k, 3),
+                                MY_ROUND(a, 9),
+                                MY_ROUND(b, 9),
+                                MY_ROUND(squared_R, 4),
+                                MY_ROUND(MAE, 4),
+                                MY_ROUND(MAPE, 4)
+                            FROM fdr_summary
+                            ORDER BY CAST(table_number AS FLOAT);
+                            """
+                        ).fetchall()
+                    ),
+                )
+            )
+            row_headers = (
+                "Param",
+                "FDR_0.1",
+                "FDR_0.5",
+                "FDR_1.0",
+                "FDR_2.0",
+                "T[0.05;0.1]",
+                "D[0.05;0.1]",
+                "k",
+                "a",
+                "b",
+                "R^2",
+                "MAE",
+                "MAPE",
+            )
+            for i, header in enumerate(row_headers):
+                out_file.write(
+                    f"{header}\t" + "\t".join(map(str, table[i])) + "\n"
+                )
+
+    def generate_fdr_data_files(self, filename_pattern: str) -> None:
+        """Генерирует файлы с данными (FDRdata), полученными в результате
+        работы FDR фильтра. На каждую таблицу приходится один файл.
+
+        Args:
+            filename_pattern (str): Шаблон имени файла. У него будет вызван
+                метод format с одним аргуметом. Примеры шаблона:
+                "{}_FDRdata.txt", "LC1_{}_FDR_data_file.txt"
+        """
+        table_numbers: List[str] = list(
+            map(
+                lambda x: x[0],
+                self.cursor.execute(
+                    """
+                    --sql
+                    SELECT DISTINCT table_number FROM fdr_data
+                    ORDER BY CAST(table_number AS FLOAT);
+                    """
+                ).fetchall(),
+            )
+        )
+        for table_number in table_numbers:
+            with self.open_output_file(
+                filename_pattern.format(table_number)
+            ) as out_file:
+                out_file.write("N\tUnused\tAccession\tn\tgFDR*k")
+                for (
+                    table_n,
+                    unused,
+                    accession,
+                    n,  # pylint: disable=invalid-name
+                    observed_fdr,
+                ) in self.cursor.execute(
+                    """
+                    --sql
+                    SELECT
+                        table_n,
+                        MY_ROUND(unused, 3),
+                        accession,
+                        index_n,
+                        MY_ROUND(observed_fdr, 9)
+                    FROM fdr_data
+                    WHERE table_number = (?);
+                    """,
+                    [table_number],
+                ).fetchall():
+                    out_file.write(
+                        f"\n{table_n}\t{unused}\t{accession}\t{n}"
+                        f"\t{observed_fdr}"
+                    )
 
     def get_joint_output_filename(self, filename: str) -> str:
         """Возвращает путь к файлу с учётом input_params.output_path.
