@@ -208,12 +208,14 @@ def main():
 
     error_code = 0
     presets = {
+        "FDRdefault",
         "FDRfit",
-        # "IDexcl",
-        # "MinMax",
-        # "pepfilter",
-        # "prot_grouping",
-        # "protfilter",
+        "FDR_none",
+        "IDexcl",
+        "MinMax",
+        "pepfilter",
+        "prot_grouping",
+        "protfilter",
     }
     if len(argv) == 2:
         folder = argv[1]
