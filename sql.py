@@ -6,8 +6,10 @@ from classes import (
     Input,
     PeptideColumns,
     ProteinConfidenceType,
+    ProteinColumns,
     RawTables,
     RawPeptideTable,
+    RawProteinTable,
     get_input,
 )
 from classes.db import DB
@@ -37,6 +39,18 @@ def main(input_params: Input = None):
 
         if input_params.fdr_type == FDRtype.DEFAULT:
             database.fdr.default()
+        elif input_params.fdr_type in [
+            FDRtype.FDR_K_RANGE,
+            FDRtype.FDR_KEST_RANGE,
+        ]:
+            protein_tables = RawTables(
+                input_params.inputPath,
+                r"\d+\.\d+_.*ProteinSummary\.txt",
+                ProteinColumns(),
+                RawProteinTable,
+            )
+            database.fillers.fill_protein(protein_tables)
+            database.fdr.fill_main_accession()
         database.fdr.none()
 
         if input_params.exclusion_list:

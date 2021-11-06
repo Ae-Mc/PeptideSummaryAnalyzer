@@ -3,6 +3,7 @@
 доступных в запросах SQL."""
 
 from sqlite3.dbapi2 import Cursor
+from math import log, exp
 from typing import Optional
 
 
@@ -33,6 +34,14 @@ def group_number(table_number: str) -> int:
     return int(splitted[0])
 
 
+# pylint: disable=invalid-name
+def ln(number: Optional[float]) -> Optional[float]:
+    """Natural logarithm that accepts NULL as argument"""
+    if number is None:
+        return None
+    return log(number)
+
+
 def my_round(number: Optional[float], precision: int) -> Optional[str]:
     """Custom round. Converts float to string with custom precision."""
     if number is None:
@@ -40,6 +49,13 @@ def my_round(number: Optional[float], precision: int) -> Optional[str]:
     return (
         ("{:." + str(precision) + "f}").format(number).rstrip("0").rstrip(".")
     )
+
+
+def exponent(number: Optional[float]) -> Optional[float]:
+    """Returns e^number."""
+    if number is None:
+        return None
+    return exp(number)
 
 
 class Creators:
@@ -61,6 +77,10 @@ class Creators:
         self.cursor.connection.create_function(
             "GET_GROUP_NUMBER", 1, group_number
         )
+        self.cursor.connection.create_function("LN", 1, ln, deterministic=True)
+        self.cursor.connection.create_function(
+            "EXP", 1, exponent, deterministic=True
+        )
         self.cursor.connection.create_function(
             "MY_ROUND", 2, my_round, deterministic=True
         )
@@ -81,6 +101,8 @@ class Creators:
         self._create_joint_peptide_table_view()
         self._create_protein_group_table()
         self._create_protein_row_table()
+        self._create_fdr_data_table()
+        self._create_fdr_summary_table()
 
     def _create_sequence_table(self) -> None:
         self.cursor.execute(
@@ -224,6 +246,51 @@ class Creators:
                 accession TEXT NOT NULL,
                 unused FLOAT NOT NULL,
                 FOREIGN KEY (group_id) REFERENCES protein_group (group_id)
+            );
+            """
+        )
+
+    def _create_fdr_data_table(self) -> None:
+        self.cursor.execute(
+            """
+            --sql
+            CREATE TABLE fdr_data (
+                fdr_data_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                table_number TEXT NOT NULL,
+                table_n INTEGER NOT NULL,
+                unused FLOAT NOT NULL,
+                accession TEXT NOT NULL,
+                index_n INTEGER NOT NULL,
+                observed_fdr FLOAT NOT NULL,
+                UNIQUE (table_number, table_n),
+                UNIQUE (table_number, index_n)
+            );
+            """
+        )
+
+    def _create_fdr_summary_table(self) -> None:
+        self.cursor.execute(
+            """
+            --sql
+            CREATE TABLE fdr_summary (
+                table_number TEXT NOT NULL UNIQUE,
+                target_count INTEGER NULL,
+                decoy_count INTEGER NULL,
+                k FLOAT NULL
+                    AS (target_count * 1.0 / decoy_count) STORED,
+                a FLOAT NULL,
+                b FLOAT NULL,
+                fdr_01 INTEGER NULL
+                    AS (ROUND(ln(0.1 / a) / b, 0)) STORED,
+                fdr_05 INTEGER NULL
+                    AS (ROUND(ln(0.5 / a) / b, 0)) STORED,
+                fdr_10 INTEGER NULL
+                    AS (ROUND(ln(1.0 / a) / b, 0)) STORED,
+                fdr_20 INTEGER NULL
+                    AS (ROUND(ln(2.0 / a) / b, 0)) STORED,
+                squared_R FLOAT NULL,
+                MAE FLOAT NULL,
+                MAPE FLOAT NULL
             );
             """
         )

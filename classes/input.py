@@ -1,5 +1,6 @@
 """Содержит классы, отвечающие за хранение входных параметров скрипта."""
 
+import re
 from enum import Enum
 from typing import List, Optional, Tuple
 from classes.comparable import Comparable
@@ -11,6 +12,8 @@ class FDRtype(Enum):
 
     NONE = 0
     DEFAULT = 1
+    FDR_K_RANGE = 2
+    FDR_KEST_RANGE = 3
 
 
 class ProteinConfidenceType(Enum):
@@ -45,6 +48,9 @@ class Input:
     inputPath: str
     output_path: str = "Output"
     fdr_type: FDRtype
+    fdr_fdr: float
+    fdr_k: float
+    fdr_range: int
     seq_db: SequenceDatabase
     protein_confidence_type: ProteinConfidenceType
     __protein_confidence: Comparable
@@ -64,6 +70,10 @@ class Input:
             return ""
         if self.fdr_type == FDRtype.DEFAULT:
             return "default"
+        if self.fdr_type == FDRtype.FDR_K_RANGE:
+            return f"{self.fdr_fdr} {self.fdr_k} {self.fdr_range}"
+        if self.fdr_type == FDRtype.FDR_KEST_RANGE:
+            return f"{self.fdr_fdr} kest {self.fdr_range}"
         raise NotImplementedError("Unknown fdr_type")
 
     def set_fdr(self, value: str):
@@ -78,10 +88,22 @@ class Input:
                 входной строки.
         """
         value = value.strip()
+        fdr_k_match = re.match(r"(\d+(\.\d+)*)\ +(\d+(\.\d+)*)\ +(\d+)", value)
+        fdr_kest_match = re.match(r"(\d+(\.\d+)*)\ +kest\ +(\d+)", value)
+
         if value == "":
             self.fdr_type = FDRtype.NONE
         elif value == "default":
             self.fdr_type = FDRtype.DEFAULT
+        elif fdr_k_match:
+            self.fdr_type = FDRtype.FDR_K_RANGE
+            self.fdr_fdr = float(fdr_k_match.groups()[1])
+            self.fdr_k = float(fdr_k_match.groups()[2])
+            self.fdr_range = int(fdr_k_match.groups()[3])
+        elif fdr_kest_match:
+            self.fdr_type = FDRtype.FDR_KEST_RANGE
+            self.fdr_fdr = float(fdr_kest_match.group(1))
+            self.fdr_range = int(fdr_kest_match.group(3))
         else:
             raise NotImplementedError(
                 f"FDR param {value} support not implemented yet"
