@@ -92,7 +92,7 @@ class Creators:
         self.cursor.execute(
             """--sql
             CREATE TABLE peptide_row (
-                id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                row_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 table_number TEXT NOT NULL,
                 confidence FLOAT NOT NULL,
                 score FLOAT NOT NULL,
@@ -108,7 +108,7 @@ class Creators:
                 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 row_id INTEGER NOT NULL,
                 accession TEXT NOT NULL,
-                FOREIGN KEY (row_id) REFERENCES peptide_row (id)
+                FOREIGN KEY (row_id) REFERENCES peptide_row (row_id)
                     ON DELETE CASCADE
             );"""
         )
@@ -131,9 +131,8 @@ class Creators:
         self.cursor.execute(
             """--sql
             CREATE VIEW peptide_joint AS
-            SELECT row.*, p_acc.accession
-            FROM peptide_row row INNER JOIN peptide_accession p_acc
-                ON row.id = p_acc.row_id;"""
+                SELECT peptide_row.*, peptide_accession.accession
+                FROM peptide_row INNER JOIN peptide_accession USING(row_id);"""
         )
 
     def _create_peptide_table(self) -> None:

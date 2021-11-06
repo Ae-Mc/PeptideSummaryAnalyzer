@@ -161,8 +161,8 @@ class ProteinGrouping:
                 WHERE accession IN (
                     SELECT DISTINCT accession
                     FROM filtered_peptide_accession
-                    WHERE id IN (
-                        SELECT DISTINCT id
+                    WHERE row_id IN (
+                        SELECT DISTINCT row_id
                         FROM filtered_peptide_accession
                         WHERE accession = (?)
                     )
@@ -188,8 +188,8 @@ class ProteinGrouping:
                 INTO accession_group (representative_id, accession)
                     SELECT DISTINCT (?), accession
                     FROM filtered_peptide_accession
-                    WHERE id IN (
-                        SELECT id FROM filtered_peptide_accession
+                    WHERE row_id IN (
+                        SELECT row_id FROM filtered_peptide_accession
                         WHERE accession = (?)
                     )
                     ORDER BY accession;
@@ -223,5 +223,5 @@ class ProteinGrouping:
                 FROM peptide_accession
                     JOIN accession_group USING(accession)
                     JOIN representative USING(representative_id)
-            ) ON id = row_id;"""
+            ) USING(row_id);"""
         ).fetchall()

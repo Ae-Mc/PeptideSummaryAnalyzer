@@ -35,11 +35,11 @@ class Fillers:
         sequence: Sequence
         for sequence in seq_database.values():
             self.cursor.execute(
-                r"""INSERT INTO sequence (
-              accession, description, sequence, raw_sequence
-          ) VALUES (
-                  (?), (?), (?), (?)
-          );""",
+                """--sql
+                INSERT INTO sequence (
+                    accession, description, sequence, raw_sequence
+                ) VALUES ((?), (?), (?), (?));
+                """,
                 [
                     sequence.accession,
                     sequence.desc,
@@ -53,7 +53,7 @@ class Fillers:
         считанными из DistinctPeptideSummary файлов.
 
         Args:
-            peptide_tables (RawPeptideTables): считанные данные
+            peptide_tables (RawTables[RawPeptideTable]): считанные данные
         """
         for table_num in peptide_tables.get_sorted_table_nums():
             row: PeptideRow
@@ -77,8 +77,8 @@ class Fillers:
                 for accession in row.accessions:
                     self.cursor.execute(
                         """--sql
-              INSERT INTO peptide_accession (row_id, accession)
-              VALUES ((?), (?));""",
+                        INSERT INTO peptide_accession (row_id, accession)
+                        VALUES ((?), (?));""",
                         [row_id, accession],
                     )
 
@@ -92,5 +92,8 @@ class Fillers:
         """
         for accession in exclusiuon_list:
             self.cursor.execute(
-                """INSERT INTO exclusion (accession) VALUES (?)""", [accession]
+                """--sql
+                INSERT INTO exclusion (accession) VALUES ((?));
+                """,
+                [accession],
             )

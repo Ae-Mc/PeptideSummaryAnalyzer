@@ -57,9 +57,8 @@ class Functions:
             self.cursor.execute(
                 """--sql
                 DELETE FROM peptide_row
-                WHERE id IN (SELECT peptide_row.id AS id
-                    FROM peptide_row LEFT JOIN peptide_accession
-                        ON row_id = peptide_row.id
+                WHERE row_id IN (SELECT peptide_row.row_id AS row_id
+                    FROM peptide_row LEFT JOIN peptide_accession USING(row_id)
                     WHERE row_id IS NULL);"""
             )
 
@@ -72,10 +71,9 @@ class Functions:
         if confidence.operation is not None:
             self.cursor.execute(
                 f"""--sql
-                DELETE FROM peptide_row WHERE id NOT IN (
-                    SELECT DISTINCT pr.id
-                    FROM peptide_accession pa JOIN peptide_row pr
-                        ON pa.row_id = pr.id
+                DELETE FROM peptide_row WHERE row_id NOT IN (
+                    SELECT DISTINCT pr.row_id
+                    FROM peptide_accession pa JOIN peptide_row pr USING(row_id)
                     WHERE (table_number, accession) IN (
                         SELECT DISTINCT table_number, accession
                         FROM peptide_joint
@@ -91,8 +89,8 @@ class Functions:
         self.cursor.execute(
             """
             --sql
-            DELETE FROM peptide_row WHERE id NOT IN (
-                SELECT DISTINCT id FROM peptide_joint
+            DELETE FROM peptide_row WHERE row_id NOT IN (
+                SELECT DISTINCT row_id FROM peptide_joint
                 WHERE (table_number, accession) IN (
                     SELECT DISTINCT table_number, accession
                     FROM peptide_joint
