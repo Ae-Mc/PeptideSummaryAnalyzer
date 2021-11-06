@@ -36,7 +36,7 @@ class Output:
 
         # поле типа bool обозначает нужно ли добавлять столбцы Description и
         # Sequence Length
-        float_columns_to_files: Tuple[Tuple[str, str, bool], ...] = (
+        columns_to_files: Tuple[Tuple[str, str, bool], ...] = (
             ("sc_norm_to_file_norm_ratio", "Sc_norm.txt", True),
             ("sc_sum", "Sc_summ.txt", True),
             (
@@ -45,19 +45,13 @@ class Output:
                 True,
             ),
             ("peptide_intensity_sum", "Pep_intensity_summ.txt", True),
+            ("count", "Pep_counts.txt", False),
+            ("seq_length_sum", "Pep_seq_length_summ.txt", False),
         )
-        for column, filename, additional_columns in float_columns_to_files:
-            self.generate_table_file_by_float_column(
+        for column, filename, additional_columns in columns_to_files:
+            self.generate_table_file_by_numeric_column(
                 filename, column, additional_columns
             )
-
-        columns_to_files = (
-            ("count", "Pep_counts.txt"),
-            ("seq_length_sum", "Pep_seq_length_summ.txt"),
-        )
-
-        for column, filename in columns_to_files:
-            self.generate_table_file_by_column(filename, column, False)
 
         self.generate_sequences_files(("Sequences.fasta", "Sequences.txt"))
         self.generate_settings_file("Settings.txt")
@@ -78,11 +72,12 @@ class Output:
             )
         )
 
-    def generate_table_file_by_float_column(
+    def generate_table_file_by_numeric_column(
         self, filename: str, column: str, include_additional_columns: bool
     ) -> None:
         """Создаёт выходной файл на основе определённого столбца таблицы
-        peptide_with_sum, округляя его до 9 знаков после запятой.
+        peptide_with_sum, имеющего численное значение (должна быть возможность
+        применить к нему функцию round).
 
         Args:
             filename (str): имя выходного файла.
@@ -90,31 +85,6 @@ class Output:
             include_additional_columns (bool): включать ли стобцы
                 Sequence Length и Description в выходной файл.
         """
-        self._generate_table_file_by_column(
-            filename,
-            include_additional_columns,
-            f"RTRIM(RTRIM(ROUND(peptide_with_sum.{column}, 9), '0'), '.')",
-        )
-
-    def generate_table_file_by_column(
-        self, filename: str, column: str, include_additional_columns: bool
-    ) -> None:
-        """Создаёт выходной файл на основе определённого столбца таблицы
-        peptide_with_sum.
-
-        Args:
-            filename (str): имя выходного файла.
-            column (str): имя столбца.
-            include_additional_columns (bool): включать ли стобцы
-                Sequence Length и Description в выходной файл.
-        """
-        self._generate_table_file_by_column(
-            filename, include_additional_columns, f"peptide_with_sum.{column}"
-        )
-
-    def _generate_table_file_by_column(
-        self, filename: str, include_additional_columns: bool, column_sql: str
-    ) -> None:
         with open(
             self.get_joint_output_filename(filename), "w", encoding="utf-8"
         ) as out_file:
@@ -150,7 +120,7 @@ class Output:
                     table_number,
                     description,
                     LENGTH(sequence.sequence),
-                    {column_sql}
+                    MY_ROUND(peptide_with_sum.{column}, 9)
                 FROM peptide_with_sum JOIN sequence USING(accession)
                 ORDER BY accession, CAST(table_number AS FLOAT);"""
             ).fetchall():

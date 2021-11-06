@@ -3,6 +3,7 @@
 доступных в запросах SQL."""
 
 from sqlite3.dbapi2 import Cursor
+from typing import Optional
 
 
 def is_reversed(accession: str) -> bool:
@@ -32,6 +33,15 @@ def group_number(table_number: str) -> int:
     return int(splitted[0])
 
 
+def my_round(number: Optional[float], precision: int) -> Optional[str]:
+    """Custom round. Converts float to string with custom precision."""
+    if number is None:
+        return None
+    return (
+        ("{:." + str(precision) + "f}").format(number).rstrip("0").rstrip(".")
+    )
+
+
 class Creators:
     """Отвечает за создание таблиц и дополнительных функций
 
@@ -50,6 +60,9 @@ class Creators:
         self.cursor.connection.create_function("IS_REVERSED", 1, is_reversed)
         self.cursor.connection.create_function(
             "GET_GROUP_NUMBER", 1, group_number
+        )
+        self.cursor.connection.create_function(
+            "MY_ROUND", 2, my_round, deterministic=True
         )
 
     def create_all_tables(self):
