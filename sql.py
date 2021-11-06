@@ -51,6 +51,16 @@ def main(input_params: Input = None):
             )
             database.fillers.fill_protein(protein_tables)
             database.fdr.fill_main_accession()
+            database.fdr.initialize_fdr_summary_table()
+            database.fdr.fill_target_and_decoy_columns()
+
+            database.fdr.fill_fdr_data(input_params.fdr_k or None)
+
+            database.fdr.fill_a_and_b_columns(input_params.fdr_range)
+            database.fdr.fill_additional_statistic_columns(
+                input_params.fdr_range
+            )
+            database.fdr.apply_fdr_k(input_params.fdr_fdr)
         database.fdr.none()
 
         if input_params.exclusion_list:

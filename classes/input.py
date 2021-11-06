@@ -48,9 +48,9 @@ class Input:
     inputPath: str
     output_path: str = "Output"
     fdr_type: FDRtype
-    fdr_fdr: float
-    fdr_k: float
-    fdr_range: int
+    fdr_fdr: Optional[float]
+    fdr_k: Optional[float]
+    fdr_range: Optional[int]
     seq_db: SequenceDatabase
     protein_confidence_type: ProteinConfidenceType
     __protein_confidence: Comparable
@@ -63,6 +63,9 @@ class Input:
     def __init__(self) -> None:
         self.min_groups_with_accession = None
         self.max_group_lack = None
+        self.fdr_fdr = None
+        self.fdr_k = None
+        self.fdr_range = None
 
     def get_fdr_str(self) -> str:
         """Возвращает значение параметра fdr в виде строки."""
