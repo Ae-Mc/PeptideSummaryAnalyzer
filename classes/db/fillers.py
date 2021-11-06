@@ -6,10 +6,12 @@ from typing import List
 from classes import (
     PeptideRow,
     RawPeptideTable,
+    RawProteinTable,
     RawTables,
     Sequence,
     SequenceDatabase,
 )
+from classes.protein_row import ProteinRow
 
 
 class Fillers:
@@ -102,3 +104,35 @@ class Fillers:
                 """,
                 [accession],
             )
+
+    def fill_protein(self, protein_tables: RawTables[RawProteinTable]):
+        """Заполняет таблицы protein_group и protein_row данными,
+        считанными из ProteinSummary файлов.
+
+        Args:
+            protein_tables (RawTables[RawProteinTable]): считанные данные
+        """
+
+        for table_number in protein_tables.get_sorted_table_nums():
+            previous_n = -1
+            row: ProteinRow
+            for row in protein_tables[table_number]:
+                if row.n != previous_n:
+                    self.cursor.execute(
+                        """
+                        --sql
+                        INSERT INTO protein_group (table_number, N)
+                        VALUES ((?), (?));
+                        """,
+                        [table_number, row.n],
+                    )
+                    current_group_id = self.cursor.lastrowid
+                    previous_n = row.n
+                self.cursor.execute(
+                    """
+                    --sql
+                    INSERT INTO protein_row (group_id, accession, unused)
+                    VALUES ((?), (?), (?));
+                    """,
+                    [current_group_id, row.accession, str(row.unused)],
+                )

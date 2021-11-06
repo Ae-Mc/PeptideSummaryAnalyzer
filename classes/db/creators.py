@@ -79,6 +79,8 @@ class Creators:
         self._create_group_table()
         self._create_peptide_with_sum()
         self._create_joint_peptide_table_view()
+        self._create_protein_group_table()
+        self._create_protein_row_table()
 
     def _create_sequence_table(self) -> None:
         self.cursor.execute(
@@ -198,4 +200,30 @@ class Creators:
                 sc_norm_to_file_norm_ratio FLOAT NOT NULL,
                 peptide_intensity_norm_to_file_norm_ratio FLOAT NOT NULL
             );"""
+        )
+
+    def _create_protein_group_table(self) -> None:
+        self.cursor.execute(
+            """--sql
+            CREATE TABLE protein_group (
+                group_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                table_number TEXT NOT NULL,
+                N INTEGER NOT NULL,
+                main_accession TEXT NULL,
+                UNIQUE (table_number, N)
+            );
+            """
+        )
+
+    def _create_protein_row_table(self) -> None:
+        self.cursor.execute(
+            """--sql
+            CREATE TABLE protein_row (
+                row_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                group_id INTEGER NOT NULL,
+                accession TEXT NOT NULL,
+                unused FLOAT NOT NULL,
+                FOREIGN KEY (group_id) REFERENCES protein_group (group_id)
+            );
+            """
         )

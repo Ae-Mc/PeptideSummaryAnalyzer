@@ -52,3 +52,28 @@ class FDR:
                 """,
                 [row_id, table_num],
             )
+
+    def fill_main_accession(self) -> None:
+        """Заполняет столбец main_accession в таблице protein_group"""
+
+        self.cursor.execute(
+            """--sql
+            UPDATE protein_group
+            SET main_accession = (
+                SELECT accession FROM (
+                    SELECT
+                        group_id,
+                        accession,
+                        row_number() OVER (
+                            PARTITION BY group_id
+                            ORDER BY unused DESC, IS_REVERSED(accession) DESC
+                        ) AS row_priority
+                    FROM protein_row
+                ) pr
+                WHERE (
+                    row_priority = 1
+                    AND protein_group.group_id = pr.group_id
+                )
+            );
+            """
+        )
