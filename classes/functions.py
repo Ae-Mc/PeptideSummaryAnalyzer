@@ -53,9 +53,6 @@ def get_input() -> Input:
     input_params = Input()
     input_params.root_path = "."
     input_params.inputPath = "./Input"
-    input_params.seq_db = SequenceDatabase.from_file(
-        find_fasta_file(input_params.root_path)
-    )
     if len(argv) == 8:
         input_params.set_fdr(argv[1])
         black_list_lines = get_file_lines(argv[2])
@@ -97,4 +94,7 @@ def get_input() -> Input:
         temp = input("Max missing values per group: ")
         if len(temp.strip()) > 0:
             input_params.max_group_lack = int(temp)
+    input_params.seq_db = SequenceDatabase.from_file(
+        find_fasta_file(input_params.root_path)
+    )
     return input_params
