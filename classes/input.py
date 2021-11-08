@@ -100,9 +100,9 @@ class Input:
             self.fdr_type = FDRtype.DEFAULT
         elif fdr_k_match:
             self.fdr_type = FDRtype.FDR_K_RANGE
-            self.fdr_fdr = float(fdr_k_match.groups()[1])
-            self.fdr_k = float(fdr_k_match.groups()[2])
-            self.fdr_range = int(fdr_k_match.groups()[3])
+            self.fdr_fdr = float(fdr_k_match.group(1))
+            self.fdr_k = float(fdr_k_match.group(3))
+            self.fdr_range = int(fdr_k_match.group(5))
         elif fdr_kest_match:
             self.fdr_type = FDRtype.FDR_KEST_RANGE
             self.fdr_fdr = float(fdr_kest_match.group(1))
