@@ -209,7 +209,8 @@ def main():
     error_code = 0
     presets = {
         "FDRdefault",
-        "FDRfit",
+        "FDRfit_k",
+        "FDRfit_kest",
         "FDR_none",
         "IDexcl",
         "MinMax",
