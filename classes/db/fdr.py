@@ -222,12 +222,12 @@ class FDR:
             WITH fdr_params AS (
                 SELECT table_number, a * EXP(b * table_n) AS FDRc, observed_fdr
                 FROM fdr_data JOIN fdr_summary USING(table_number)
-                WHERE index_n < (?)
+                WHERE index_n <= (?)
             ),
             mO AS (
                 SELECT table_number, SUM(observed_fdr) / (?) AS mO
                 FROM fdr_data
-                WHERE index_n < (?)
+                WHERE index_n <= (?)
                 GROUP BY table_number
             )
             UPDATE fdr_summary
