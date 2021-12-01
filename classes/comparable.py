@@ -38,7 +38,8 @@ class Comparable:
             >=99"""
 
         matched = match(
-            r"^(([<>]=?)|=) *([-\d]+)$", sub("$==", "=", param_string.strip())
+            r"^(([<>]=?)|=) *(-?\d+(\.\d+)?)$",
+            sub("$==", "=", param_string.strip()),
         )
         if matched:
             self.operation = matched.group(1)
